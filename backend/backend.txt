@@ -1,7 +1,0 @@
-<<<<<<< HEAD
-Hola
-Backend Prueba
-=======
-PRueba
-qwerty
->>>>>>> 2f3f807feaee4ee509fc756342f14b84fc87416d
