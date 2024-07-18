@@ -1,5 +1,6 @@
 import React from "react";
-import Banner from "../../components/Home/Banner";
+import Header from "../../components/Home/Header";
+import CardsPetsMain from "../../components/Home/CardsPetsMain";
 
 //Components
 // import Banner from "../../components/Home/Banner";
@@ -7,7 +8,8 @@ import Banner from "../../components/Home/Banner";
 const index = () => {
   return (
     <div>
-      <Banner />
+      <Header />
+      <CardsPetsMain />
     </div>
   );
 };
