@@ -11,7 +11,9 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import logoHeader from '../../../src/components/shared/logo-header.png'; 
+import logoHeader from '../../../src/components/shared/logo-header.png';
+import LoginModal from './LoginModal';  // Asegúrate de ajustar la ruta según tu estructura de archivos
+import RegisterModal from './RegisterModal';  // Asegúrate de ajustar la ruta según tu estructura de archivos
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -55,6 +57,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [isLoginOpen, setLoginOpen] = React.useState(false);
+  const [isRegisterOpen, setRegisterOpen] = React.useState(false);  // <-- Añadir estado para el modal de registro
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -76,6 +80,24 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleOpenLogin = () => {
+    setLoginOpen(true);
+    handleMenuClose();
+  };
+
+  const handleCloseLogin = () => {
+    setLoginOpen(false);
+  };
+
+  const handleOpenRegister = () => {  // <-- Añadir manejador para abrir el modal de registro
+    setRegisterOpen(true);
+    handleCloseLogin();  // <-- Cerrar el modal de login cuando se abra el de registro
+  };
+
+  const handleCloseRegister = () => {  // <-- Añadir manejador para cerrar el modal de registro
+    setRegisterOpen(false);
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -93,8 +115,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleOpenLogin}>Profile</MenuItem>
+      <MenuItem onClick={handleOpenLogin}>My account</MenuItem>
     </Menu>
   );
 
@@ -115,7 +137,7 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleOpenLogin}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -168,7 +190,7 @@ export default function PrimarySearchAppBar() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={handleOpenLogin}
               color="inherit"
             >
               <AccountCircle />
@@ -198,6 +220,8 @@ export default function PrimarySearchAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      <LoginModal open={isLoginOpen} handleClose={handleCloseLogin} handleOpenRegister={handleOpenRegister} />  
+      <RegisterModal open={isRegisterOpen} handleClose={handleCloseRegister} />  
     </Box>
   );
 }
