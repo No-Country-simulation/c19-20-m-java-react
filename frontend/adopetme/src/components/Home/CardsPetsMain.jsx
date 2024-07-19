@@ -7,16 +7,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import theme from "../../theme";
+import { useTheme } from "@mui/material";
 
 //Icons
 import PetsIcon from "@mui/icons-material/Pets";
 import { FaBone } from "react-icons/fa6";
-
-//React icon
-import { PiBoneLight } from "react-icons/pi";
+import PlaceIcon from "@mui/icons-material/Place";
+import FemaleIcon from "@mui/icons-material/Female";
 
 const CardsPetsMain = () => {
+  const theme = useTheme();
   //*****************************************************USE STATE**************************************************************** */
   const [pets, setPets] = useState([]);
 
@@ -25,7 +25,7 @@ const CardsPetsMain = () => {
     const getPets = async () => {
       const response = await fetch("https://dog.ceo/api/breed/hound/images");
       const result = await response.json();
-      const resultSlice = result.message.slice(0, 30);
+      const resultSlice = result.message.slice(0, 10);
       setPets(resultSlice);
       //console.log("PETS", resultSlice);
     };
@@ -191,8 +191,16 @@ const CardsPetsMain = () => {
                     alignContent="flex-start"
                     columnGap={2}
                   >
-                    <PetsIcon color="primary" />
-                    <Typography variant="body1" fontWeight="fontWeightBold">
+                    <FemaleIcon
+                      fontSize="large"
+                      color="primary"
+                      sx={{ ml: -0.8 }}
+                    />
+                    <Typography
+                      sx={{ ml: -0.8 }}
+                      variant="body1"
+                      fontWeight="fontWeightBold"
+                    >
                       Genero
                     </Typography>
                   </Stack>
@@ -203,7 +211,7 @@ const CardsPetsMain = () => {
                     alignContent="flex-start"
                     columnGap={2}
                   >
-                    <PetsIcon color="primary" />
+                    <PlaceIcon color="primary" />
                     <Typography variant="body1" fontWeight="fontWeightBold">
                       Ubicación
                     </Typography>
