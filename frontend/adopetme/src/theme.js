@@ -10,11 +10,14 @@ const theme = createTheme({
       main: pink[200],
     },
     background: {
-      default: '#8c52ff',
+      default: "#8c52ff",
     },
   },
   typography: {
     fontFamily: ["Oxygen", "Fira Sans Condensed", "sans-serif"].join(","),
+    button: {
+      fontWeight: 700,
+    },
   },
 });
 
