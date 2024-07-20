@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Qualifier;
 import com.adopetme.pet_service.Dto.GenericResponseRecord;
+import com.adopetme.pet_service.Dto.PetAndImagesDto;
 import com.adopetme.pet_service.Dto.PetDto;
+import com.adopetme.pet_service.Exception.IsValidFormat;
 import com.adopetme.pet_service.Model.PetModel;
 import com.adopetme.pet_service.Service.PetService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -45,9 +48,42 @@ public class PetController {
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(petDto)));
     }
 
+    @GetMapping("/petimages/{id}")
+    public ResponseEntity<GenericResponseRecord<PetAndImagesDto>> readByIdPet(@PathVariable("id") Long id)
+            throws Exception {
+        PetAndImagesDto petImageDto = petService.readByIdPet(id);
+        return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(petImageDto)));
+    }
+
     @PostMapping
     public ResponseEntity<PetDto> save(@Valid @RequestBody PetDto petDto) throws Exception {
         PetModel petModel = petService.save(convertToEntity(petDto));
+        return new ResponseEntity<>(converToDto(petModel), HttpStatus.CREATED);
+    }
+
+    // @PostMapping("/savewithimage")
+    // public ResponseEntity<PetDto> saveWithImage(@Valid PetDto petDto,
+    // @RequestPart("image") List<MultipartFile> image) throws Exception {
+    // List<byte[]> imageBytes = new ArrayList<>();
+    // for (MultipartFile multipartFile : image) {
+    // imageBytes.add(multipartFile.getBytes());
+    // }
+    // PetModel petModel = petService.saveWithImage(convertToEntity(petDto),
+    // imageBytes);
+    // return new ResponseEntity<>(converToDto(petModel), HttpStatus.CREATED);
+    // }
+    @PostMapping("/savewithimage")
+    public ResponseEntity<PetDto> saveWithImage(@Valid PetDto petDto,
+            @RequestPart("image") List<MultipartFile> image) throws Exception {
+        List<byte[]> imageBytes = new ArrayList<>();
+        for (MultipartFile multipartFile : image) {
+            IsValidFormat isValidFormat = new IsValidFormat();
+            if (!isValidFormat.isValidFormat(multipartFile)) {
+                throw new Exception("Invalid file format: " + multipartFile.getOriginalFilename());
+            }
+            imageBytes.add(multipartFile.getBytes());
+        }
+        PetModel petModel = petService.saveWithImage(convertToEntity(petDto), imageBytes);
         return new ResponseEntity<>(converToDto(petModel), HttpStatus.CREATED);
     }
 
