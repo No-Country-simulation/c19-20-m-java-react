@@ -66,11 +66,14 @@ public class ImageController {
         List<ImageDto> imageDtos = new ArrayList<>();
         for (MultipartFile image : images) {
             try {
-                String originalFilename = image.getOriginalFilename();
-                String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-                if (!extension.equals("jpg") && !extension.equals("jpeg") && !extension.equals("png")) {
-                    throw new Exception("Invalid file format: " + originalFilename);
-                }
+                // String originalFilename = image.getOriginalFilename();
+                // String extension =
+                // originalFilename.substring(originalFilename.lastIndexOf(".") +
+                // 1).toLowerCase();
+                // if (!extension.equals("jpg") && !extension.equals("jpeg") &&
+                // !extension.equals("png")) {
+                // throw new Exception("Invalid file format: " + originalFilename);
+                // }
                 byte[] bytes = image.getBytes();
                 ImageModel imageModel = imageService.saveWithImage(idPet, bytes);
                 imageDtos.add(converToDto(imageModel));

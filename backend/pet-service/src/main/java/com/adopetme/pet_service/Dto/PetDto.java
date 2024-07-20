@@ -49,22 +49,10 @@ public class PetDto {
     @DecimalMax("100.0")
     private Double weight;
 
-    @NotNull
-    @Min(0)
-    @Max(1)
-    private Integer active;
-
     @Size(max = 500)
     private String tag;
 
-    @NotNull
     private Long createdBy;
-
-    // private Timestamp createdAt; Auto generated in the Model
-    // private Timestamp updatedAt;
-
-    @NotNull
-    private Long updatedBy;
 
     @NotNull
     private Long idSpecies;

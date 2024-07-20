@@ -1,9 +1,14 @@
 package com.adopetme.image_service.Service;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,13 +27,6 @@ public class ImageService {
 
     @Qualifier("defaultMapper")
     private final ModelMapper modelMapper;
-
-    private String getIdFieldName(Class<?> clazz) {
-        for (Field field : clazz.getDeclaredFields()) {
-            return field.getName();
-        }
-        return null;
-    }
 
     public ImageModel save(ImageModel img) throws Exception {
         return imageRepository.save(img);
@@ -58,15 +56,24 @@ public class ImageService {
     }
 
     public ImageModel update(ImageModel img, Long id) throws Exception {
-        Class<?> clazz = img.getClass();
-        String idFieldName = getIdFieldName(clazz);
-        String methodName = "set" + Character.toUpperCase(idFieldName.charAt(0)) + idFieldName.substring(1);
+        ImageModel existingImage = imageRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
+        BeanUtils.copyProperties(img, existingImage, getNullPropertyNames(img));
+        return imageRepository.save(existingImage);
+    }
 
-        Method setIdMethod = clazz.getMethod(methodName, id.getClass());
-        setIdMethod.invoke(img, id);
+    private String[] getNullPropertyNames(Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-        imageRepository.findById(id).orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
-        return imageRepository.save(img);
+        Set<String> emptyNames = new HashSet<String>();
+        for (PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null)
+                emptyNames.add(pd.getName());
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
     }
 
     public void delete(Long id) throws Exception {
