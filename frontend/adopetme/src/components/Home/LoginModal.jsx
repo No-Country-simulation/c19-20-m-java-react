@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Link from '@mui/material/Link';  // <-- Importar Link de Material-UI
+import Link from '@mui/material/Link';  
 
 const style = {
   position: 'absolute',
@@ -20,12 +20,12 @@ const style = {
   p: 4,
 };
 
-const LoginModal = ({ open, handleClose, handleOpenRegister }) => {  // <-- Asegúrate de pasar handleOpenRegister
+const LoginModal = ({ open, handleClose, handleOpenRegister }) => {  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Aquí puedes añadir la lógica para manejar el login
+    // Aqui se añadirá la lógica para manejar el login
     console.log('Email:', email, 'Password:', password);
     handleClose();
   };
