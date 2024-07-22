@@ -1,57 +1,80 @@
-//Material UI
+// Material UI
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-//Icosn
-import AddHomeIcon from "@mui/icons-material/AddHome";
+// Icons
+// import AddHomeIcon from "@mui/icons-material/AddHome";
+// Ser líderes en adopción de animales domésticos, creando un mundo donde cada mascota tenga un hogar amoroso y responsable.
 
-import logo from "../shared/logo-1.png";
+import mision from "../shared/mision.png";
+import vision from "../shared/vision.png";
 
 export default function Mision() {
   return (
     <Box
       sx={{
-        bgcolor: "cyan",
+        bgcolor: "#8c52ff",
+        padding: 2,
       }}
     >
-      {/* <Box sx={{ bgcolor: "bisque" }}>
-        <Typography variant="" color="initial">
-          BOX1
-        </Typography>
-      </Box>
-      <Box sx={{ bgcolor: "blueviolet" }}>
-        <Typography variant="" color="initial">
-          BOX2
-        </Typography>
-      </Box> */}
       <Stack
-        sx={{ bgcolor: "GrayText" }}
-        flexDirection={"row"}
-        justifyContent={"space-around"}
+        sx={{ bgcolor: "#8c52ff", padding: 2 }}
+        flexDirection={"column"}
+        spacing={4}
+        alignItems="center"
       >
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography variant="" color="secondary">
-            Mision
-          </Typography>
-          <Typography variant="" color="white">
-            gergekjsoeifj fjaweifpjaweipfjaewip fawijpfjsipajf aipsjfasiofj ip
-          </Typography>
-          <Avatar
-            alt="Remy Sharp"
-            src={logo}
-            sx={{ width: 200, height: 200 }}
-            variant="square"
-          />
-          <AddHomeIcon color="success" fontSize="300" />
-        </Box>
-
-        <Box>
-          <Typography variant="" color="initial">
-            Vision
-          </Typography>
-        </Box>
+        <Stack
+          sx={{ bgcolor: "#8c52ff", width: '100%' }}
+          flexDirection={{ xs: "column", md: "row" }}
+          spacing={4}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: '100%' }}>
+            <Typography fontWeight="fontWeightBold" variant="h3" color="white" textAlign="center">
+              Misión
+            </Typography>
+            <Stack
+              sx={{ bgcolor: "#8c52ff", width: '100%', padding: 2 }}
+              flexDirection={{ xs: "column", md: "row" }}
+              alignItems="center"
+              spacing={2}
+            >
+              <Typography variant="h5" color="black" textAlign="center" sx={{ maxWidth: '300px' }}>
+                Proveer hogares amorosos y seguros para animales domésticos necesitados, promoviendo la adopción responsable y el bienestar animal.
+              </Typography>
+              <Avatar
+                alt="Misión"
+                src={mision}
+                sx={{ width: { xs: 200, sm: 300, md: 400 }, height: { xs: 200, sm: 300, md: 400 } }}
+                variant="square"
+              />
+            </Stack>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: '100%' }}>
+            <Typography fontWeight="fontWeightBold" variant="h3" color="white" textAlign="center">
+              Visión
+            </Typography>
+            <Stack
+              sx={{ bgcolor: "#8c52ff", width: '100%', padding: 2 }}
+              flexDirection={{ xs: "column", md: "row" }}
+              alignItems="center"
+              spacing={2}
+            >
+              <Typography variant="h5" color="black" textAlign="center" sx={{ maxWidth: '300px' }}>
+                Ser líderes en adopción de animales domésticos, creando un mundo donde cada mascota tenga un hogar amoroso y responsable.
+              </Typography>
+              <Avatar
+                alt="Visión"
+                src={vision}
+                sx={{ width: { xs: 200, sm: 300, md: 400 }, height: { xs: 200, sm: 300, md: 400 } }}
+                variant="square"
+              />
+            </Stack>
+          </Box>
+        </Stack>
       </Stack>
     </Box>
   );
