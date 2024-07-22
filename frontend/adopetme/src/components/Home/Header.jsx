@@ -17,39 +17,40 @@ import RegisterModal from './RegisterModal';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
+
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
+  "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: "auto",
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
+  color: "inherit",
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
@@ -58,7 +59,7 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [isLoginOpen, setLoginOpen] = React.useState(false);
-  const [isRegisterOpen, setRegisterOpen] = React.useState(false);  // <-- Añadir estado para el modal de registro
+  const [isRegisterOpen, setRegisterOpen] = React.useState(false); // <-- Añadir estado para el modal de registro
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -89,6 +90,7 @@ export default function PrimarySearchAppBar() {
     setLoginOpen(false);
   };
 
+
   const handleOpenRegister = () => {  
     setRegisterOpen(true);
     handleCloseLogin();  
@@ -98,41 +100,45 @@ export default function PrimarySearchAppBar() {
     setRegisterOpen(false);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+
       <MenuItem onClick={handleOpenLogin}>Profile</MenuItem>
       <MenuItem onClick={handleOpenLogin}>My account</MenuItem>
+
+      <MenuItem onClick={handleMenuClose}>Inicio Sesión</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Registro Mascota</MenuItem>
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
@@ -147,7 +153,11 @@ export default function PrimarySearchAppBar() {
         >
           <AccountCircle />
         </IconButton>
-        <Typography variant="body1" component="p" sx={{ fontWeight: 'bold', ml: 1 }}>
+        <Typography
+          variant="body1"
+          component="p"
+          sx={{ fontWeight: "bold", ml: 1 }}
+        >
           Registro / Inicio de Sesión
         </Typography>
       </MenuItem>
@@ -155,32 +165,48 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, zIndex: 1, width: 1 }} position="absolute">
       <AppBar position="static">
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: "none", sm: "block" } }}
           >
-            <img src={logoHeader} alt="Logo" style={{ height: 'auto', maxHeight: '100%', width: 'auto', maxWidth: '100%' }} />
+            <img
+              src={logoHeader}
+              alt="Logo"
+              style={{
+                height: "auto",
+                maxHeight: "100%",
+                width: "auto",
+                maxWidth: "100%",
+              }}
+            />
           </Typography>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+
+              // placeholder="Search…"
+              // inputProps={{ "aria-label": "search" }}
+
+              placeholder="¿Qué quieres adoptar?"
               inputProps={{ 'aria-label': 'search' }}
+
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex', alignItems: 'center' } }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex", alignItems: "center" } }}
+          >
             <Typography
               variant="body1"
               component="p"
-              sx={{ fontWeight: 'bold', mr: 1 }}
+              sx={{ fontWeight: "bold", mr: 1 }}
             >
               Registro / Inicio de Sesión
             </Typography>
@@ -196,12 +222,12 @@ export default function PrimarySearchAppBar() {
               <AccountCircle />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <Typography
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { xs: 'flex', alignItems: 'center' } }}
+              sx={{ display: { xs: "flex", alignItems: "center" } }}
             >
               Registro / Inicio de Sesión
             </Typography>
@@ -220,8 +246,12 @@ export default function PrimarySearchAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <LoginModal open={isLoginOpen} handleClose={handleCloseLogin} handleOpenRegister={handleOpenRegister} />  
-      <RegisterModal open={isRegisterOpen} handleClose={handleCloseRegister} />  
+      <LoginModal
+        open={isLoginOpen}
+        handleClose={handleCloseLogin}
+        handleOpenRegister={handleOpenRegister}
+      />
+      <RegisterModal open={isRegisterOpen} handleClose={handleCloseRegister} />
     </Box>
   );
 }

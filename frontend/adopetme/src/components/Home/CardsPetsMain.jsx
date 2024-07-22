@@ -7,16 +7,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import theme from "../../theme";
+import { Button, CardActions, useTheme } from "@mui/material";
 
 //Icons
 import PetsIcon from "@mui/icons-material/Pets";
 import { FaBone } from "react-icons/fa6";
-
-//React icon
-import { PiBoneLight } from "react-icons/pi";
+import PlaceIcon from "@mui/icons-material/Place";
+import FemaleIcon from "@mui/icons-material/Female";
 
 const CardsPetsMain = () => {
+  const theme = useTheme();
   //*****************************************************USE STATE**************************************************************** */
   const [pets, setPets] = useState([]);
 
@@ -25,7 +25,7 @@ const CardsPetsMain = () => {
     const getPets = async () => {
       const response = await fetch("https://dog.ceo/api/breed/hound/images");
       const result = await response.json();
-      const resultSlice = result.message.slice(0, 30);
+      const resultSlice = result.message.slice(0, 6);
       setPets(resultSlice);
       //console.log("PETS", resultSlice);
     };
@@ -38,96 +38,110 @@ const CardsPetsMain = () => {
   };
 
   return (
-    <Stack
-      spacing={{
-        xs: 1,
-        sm: 4,
-      }}
-      direction="row"
-      useFlexGap
-      flexWrap="wrap"
-      justifyContent="center"
-      width="60%"
-      mx="auto"
-    >
-      {pets.length > 0 &&
-        pets.map((pet) => {
-          return (
-            <Card
-              key={Math.random()}
-              sx={{
-                width: 350,
-                cursor: "pointer",
-                "&:hover": {
-                  boxShadow: 6,
-                },
-              }}
-              onClick={handleClickPets}
-            >
-              <Box
-                p={2}
-                height={400}
-                //bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="space-between"
+    <Box marginY={4}>
+      <Typography
+        variant="h4"
+        fontWeight="fontWeightBold"
+        sx={{ color: "white", textAlign: "center" }}
+        gutterBottom
+      >
+        NUESTRAS MASCOTAS
+      </Typography>
+
+      <Stack
+        spacing={{
+          xs: 1,
+          sm: 4,
+        }}
+        direction="row"
+        useFlexGap
+        flexWrap="wrap"
+        justifyContent="center"
+        width="60%"
+        mx="auto"
+        sx={{ mt: 4 }}
+      >
+        {pets.length > 0 &&
+          pets.map((pet) => {
+            return (
+              <Card
+                key={Math.random()}
+                sx={{
+                  width: 350,
+                  cursor: "pointer",
+                  "&:hover": {
+                    boxShadow: 6,
+                  },
+                }}
+                onClick={handleClickPets}
               >
-                <Box width={1}>
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      width: "100%",
-                      height: 350,
-                      fontSize: "",
-                      borderRadius: "1",
-                    }}
-                    alt={"pet"}
-                    image={pet}
-                    title="pet"
-                  />
-
-                  <Box
-                    sx={{
-                      //transform: "rotate(45deg)",
-                      // bgcolor: "aquamarine",
-                      // width: 100,
-                      //height: 0,
-                      //margin: "auto",
-                      position: "relative",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-
-                      // p: 0,
-                      // margin: 0,
-                      // height: 150,
-                    }}
-                  >
-                    <FaBone fontSize={80} color={theme.palette.primary.main} />
-                    <Typography
+                <Box
+                  p={2}
+                  height={400}
+                  //bgcolor="primary.main"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box width={1}>
+                    <CardMedia
+                      component="img"
                       sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -80%)",
-                        // top: 0,
-                        // left: 0,
-                        // right: 0,
-                        // bottom: 0,
-                        // margin: "auto",
+                        width: "100%",
+                        height: 350,
+                        fontSize: "",
+                        borderRadius: "1",
                       }}
-                      mt={1}
-                      variant="h6"
-                      color="white"
-                      textAlign="center"
-                      fontWeight="fontWeightBold"
+                      alt={"pet"}
+                      image={pet}
+                      title="pet"
+                    />
+
+                    <Box
+                      sx={{
+                        //transform: "rotate(45deg)",
+                        // bgcolor: "aquamarine",
+                        // width: 100,
+                        //height: 0,
+                        //margin: "auto",
+                        position: "relative",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+
+                        // p: 0,
+                        // margin: 0,
+                        // height: 150,
+                      }}
                     >
-                      Firulais
-                    </Typography>
+                      <FaBone
+                        fontSize={80}
+                        color={theme.palette.primary.main}
+                      />
+                      <Typography
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -80%)",
+                          // top: 0,
+                          // left: 0,
+                          // right: 0,
+                          // bottom: 0,
+                          // margin: "auto",
+                        }}
+                        mt={1}
+                        variant="h6"
+                        color="white"
+                        textAlign="center"
+                        fontWeight="fontWeightBold"
+                      >
+                        Firulais
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-                {/* <Stack
+                  {/* <Stack
                   sx={{ width: 1 }}
                   flexDirection="row"
                   justifyContent={"space-between"}
@@ -162,56 +176,64 @@ const CardsPetsMain = () => {
                     <Typography variant="body1">Genero</Typography>
                   </Stack>
                 </Stack> */}
-              </Box>
+                </Box>
 
-              <CardContent>
-                <Stack
-                  sx={{ width: 1, mt: 2 }}
-                  //flexDirection="row"
-                  //sjustifyContent={"space-between"}
-                  //justifyContent={"space-between"}
-                  alignContent={"space-between"}
-                  rowGap={2}
-                >
+                <CardContent>
                   <Stack
-                    flexDirection="row"
-                    alignItems="center"
-                    alignContent="flex-start"
-                    columnGap={2}
+                    sx={{ width: 1, mt: 2 }}
+                    //flexDirection="row"
+                    //sjustifyContent={"space-between"}
+                    //justifyContent={"space-between"}
+                    alignContent={"space-between"}
+                    rowGap={2}
                   >
-                    <PetsIcon color="primary" />
-                    <Typography variant="body1" fontWeight="fontWeightBold">
-                      Edad
-                    </Typography>
-                  </Stack>
+                    <Stack
+                      flexDirection="row"
+                      alignItems="center"
+                      alignContent="flex-start"
+                      columnGap={2}
+                    >
+                      <PetsIcon color="primary" />
+                      <Typography variant="body1" fontWeight="fontWeightBold">
+                        Edad
+                      </Typography>
+                    </Stack>
 
-                  <Stack
-                    flexDirection="row"
-                    alignItems="center"
-                    alignContent="flex-start"
-                    columnGap={2}
-                  >
-                    <PetsIcon color="primary" />
-                    <Typography variant="body1" fontWeight="fontWeightBold">
-                      Genero
-                    </Typography>
-                  </Stack>
+                    <Stack
+                      flexDirection="row"
+                      alignItems="center"
+                      alignContent="flex-start"
+                      columnGap={2}
+                    >
+                      <FemaleIcon
+                        fontSize="large"
+                        color="primary"
+                        sx={{ ml: -0.8 }}
+                      />
+                      <Typography
+                        sx={{ ml: -0.8 }}
+                        variant="body1"
+                        fontWeight="fontWeightBold"
+                      >
+                        Genero
+                      </Typography>
+                    </Stack>
 
-                  <Stack
-                    flexDirection="row"
-                    alignItems="center"
-                    alignContent="flex-start"
-                    columnGap={2}
-                  >
-                    <PetsIcon color="primary" />
-                    <Typography variant="body1" fontWeight="fontWeightBold">
-                      Ubicación
-                    </Typography>
+                    <Stack
+                      flexDirection="row"
+                      alignItems="center"
+                      alignContent="flex-start"
+                      columnGap={2}
+                    >
+                      <PlaceIcon color="primary" />
+                      <Typography variant="body1" fontWeight="fontWeightBold">
+                        Ubicación
+                      </Typography>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </CardContent>
+                </CardContent>
 
-              {/* <CardContent>
+                {/* <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                   Descripción
                 </Typography>
@@ -225,10 +247,27 @@ const CardsPetsMain = () => {
                   malesuada magna. Suspendisse sapien lectus
                 </Typography>
               </CardContent> */}
-            </Card>
-          );
-        })}
-    </Stack>
+
+                <CardActions
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    //sx={{ fontWeight: "bold" }}
+                    variant="contained"
+                    size="large"
+                    //fontWeight="fontWeightBold"
+                  >
+                    Adoptar
+                  </Button>
+                </CardActions>
+              </Card>
+            );
+          })}
+      </Stack>
+    </Box>
   );
 };
 
