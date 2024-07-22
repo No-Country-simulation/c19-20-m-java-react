@@ -12,8 +12,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import logoHeader from '../../../src/components/shared/logo-header.png';
-import LoginModal from './LoginModal';  // Asegúrate de ajustar la ruta según tu estructura de archivos
-import RegisterModal from './RegisterModal';  // Asegúrate de ajustar la ruta según tu estructura de archivos
+import LoginModal from './LoginModal';  
+import RegisterModal from './RegisterModal';  
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -89,12 +89,12 @@ export default function PrimarySearchAppBar() {
     setLoginOpen(false);
   };
 
-  const handleOpenRegister = () => {  // <-- Añadir manejador para abrir el modal de registro
+  const handleOpenRegister = () => {  
     setRegisterOpen(true);
-    handleCloseLogin();  // <-- Cerrar el modal de login cuando se abra el de registro
+    handleCloseLogin();  
   };
 
-  const handleCloseRegister = () => {  // <-- Añadir manejador para cerrar el modal de registro
+  const handleCloseRegister = () => {  
     setRegisterOpen(false);
   };
 
