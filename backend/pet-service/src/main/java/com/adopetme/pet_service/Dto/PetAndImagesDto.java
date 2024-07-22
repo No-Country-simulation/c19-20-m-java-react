@@ -1,5 +1,7 @@
 package com.adopetme.pet_service.Dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.DecimalMax;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PetDto {
+public class PetAndImagesDto {
 
     private Long idPet;
 
@@ -49,10 +51,13 @@ public class PetDto {
     @DecimalMax("100.0")
     private Double weight;
 
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private Integer active;
+
     @Size(max = 500)
     private String tag;
-
-    private Long createdBy;
 
     @NotNull
     private Long idSpecies;
@@ -60,4 +65,5 @@ public class PetDto {
     @NotNull
     private Long idBreed;
 
+    private List<ImageDto> image;
 }

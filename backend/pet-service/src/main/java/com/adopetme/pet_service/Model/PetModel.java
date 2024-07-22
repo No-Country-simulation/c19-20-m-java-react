@@ -69,4 +69,7 @@ public class PetModel {
 
     @Column(name = "id_species", nullable = true)
     private Long idSpecies;
+
+    @Column(name = "id_breed", nullable = true)
+    private Long idBreed;
 }
