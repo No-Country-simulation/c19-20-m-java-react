@@ -117,8 +117,12 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+
       <MenuItem onClick={handleOpenLogin}>Profile</MenuItem>
       <MenuItem onClick={handleOpenLogin}>My account</MenuItem>
+=======
+      <MenuItem onClick={handleMenuClose}>Inicio Sesión</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Registro Mascota</MenuItem>
     </Menu>
   );
 
@@ -186,8 +190,13 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
+
+              // placeholder="Search…"
+              // inputProps={{ "aria-label": "search" }}
+
+              placeholder="¿Qué quieres adoptar?"
+              inputProps={{ 'aria-label': 'search' }}
+
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />

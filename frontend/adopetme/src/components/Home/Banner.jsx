@@ -23,6 +23,7 @@ const Banner = styled.div`
 const TextContainer = styled(Box)`
     color: #fff; 
     font-family:"Fira Sans Condensed", sans-serif;
+    font-weight: bold;
     
     
 `;
@@ -30,14 +31,15 @@ const TextContainer = styled(Box)`
 const Logo = styled.img`
     width: auto; 
     height: auto;
-    
+    margin: 50px;
+    margin-left: 10px;
 `;
 
 const HomeBanner = () => {
     return (
         <Banner>
             <TextContainer>
-                <Typography variant="h4">en ADOPETME las mascotas tienen una segunda oportunidad</Typography>
+                <Typography variant="h3"fontWeight="fontWeightBold">En ADOPETME las mascotas tienen una segunda oportunidad.</Typography>
             </TextContainer>
             <Logo src={logoImage} alt="Logo Adopetme" />
         </Banner>
