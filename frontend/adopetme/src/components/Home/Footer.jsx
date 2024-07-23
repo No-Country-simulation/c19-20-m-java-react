@@ -1,15 +1,19 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import logoImage from "../shared/logo-header.png"; // Reemplazar con la ruta de tu logo
+import logoImage from "../shared/logo-header.png"; 
 
 const FooterContainer = styled(Box)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main, // Color de fondo del footer
-    padding: theme.spacing(3), // Espaciado interno del footer
-    display: "flex", // Usamos flexbox para el posicionamiento
-    alignItems: "center", // Alineación vertical al centro
-    justifyContent: "center", // Alineación horizontal al centro
+    backgroundColor: theme.palette.primary.main, 
+    padding: theme.spacing(3), 
+    display: "flex", 
+    alignItems: "center", 
+    justifyContent: "center",
     marginTop: "auto",
+    width: "100%", 
+    position: "relative", 
+    left: 0, 
+    bottom: 0, 
 }));
 
 const Logo = styled("img")({

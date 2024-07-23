@@ -57,7 +57,7 @@ const CardsPetsMain = () => {
         useFlexGap
         flexWrap="wrap"
         justifyContent="center"
-        width="60%"
+        width="80%"
         mx="auto"
         sx={{ mt: 4 }}
       >
