@@ -49,6 +49,8 @@ public class PetDto {
     @DecimalMax("100.0")
     private Double weight;
 
+    private Integer active;
+
     @Size(max = 500)
     private String tag;
 
