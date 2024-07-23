@@ -1,0 +1,35 @@
+server:
+  port: 9091
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  application:
+    name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+  datasource:
+    url: jdbc:mariadb://localhost:3307/nc_user?useSSL=false&serverTimezone=UTC #Verificar el host que se este utilizando
+    username: adopetmedb
+    password: 1P3aYV2WDZlcNh1
+    driver-class-name: org.mariadb.jdbc.Driver
+
+jwt:
+  secret: aEPZLz7azPBLr4G5sfcjBzDtpEExdBZS
+
+admin-paths:
+  paths: #Agregar las urls que quieren que solo el admin acceda, tienen la plantilla comentada de abajo tanto para sin argumentos, como con argumentos en el caso del PUT
+#    -
+#      uri: "/clientes/crear"
+#      method: "POST"
+#    -
+#      uri: "/clientes/actualizar/{1}[1-9]+[0-9]*"
+#      method: "PUT"
