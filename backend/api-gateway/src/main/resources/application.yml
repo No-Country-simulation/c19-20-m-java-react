@@ -18,12 +18,12 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes: #Agregar sus rutas de la forma en la que esta abajo
-#        - id: clientes-service
-#          uri: lb://CLIENTES-SERVICE
-#          predicates:
-#            - Path=/clientes/**
-#          filters:
-#            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
+        - id: user-details-service
+          uri: lb://USER-DETAILS-SERVICE
+          predicates:
+            - Path=/users_details/**
+          filters:
+            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:

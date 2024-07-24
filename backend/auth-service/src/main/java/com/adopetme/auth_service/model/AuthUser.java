@@ -24,4 +24,5 @@ public class AuthUser {
     private String password;
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    private int id_user_details;
 }

@@ -1,13 +1,12 @@
 package com.adopetme.auth_service.service;
 
-import com.adopetme.auth_service.dto.AuthUserDTO;
-import com.adopetme.auth_service.dto.NewUserDTO;
-import com.adopetme.auth_service.dto.RequestDTO;
-import com.adopetme.auth_service.dto.TokenDTO;
+import com.adopetme.auth_service.dto.*;
 import com.adopetme.auth_service.enums.Rol;
 import com.adopetme.auth_service.model.AuthUser;
 import com.adopetme.auth_service.repository.AuthUserRepository;
+import com.adopetme.auth_service.repository.UserDetailsAPI;
 import com.adopetme.auth_service.security.JwtProvider;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,9 @@ public class AuthUserService {
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private UserDetailsAPI userDetailsAPI;
+
     public AuthUser save(NewUserDTO dto) {
         Optional<AuthUser> user = authUserRepository.findByUsername(dto.getUsername());
 
@@ -40,10 +42,14 @@ public class AuthUserService {
                 .rol(Rol.valueOf(dto.getRol().toUpperCase()))
                 .build();
 
+        ModelMapper modelMapper = new ModelMapper();
+        UserDetailsDTO userDetailsDTO = modelMapper.map(dto, UserDetailsDTO.class);
+
+        //userDetailsAPI.save(userDetailsDTO);
         return authUserRepository.save(authUser);
     }
 
-    public TokenDTO login(AuthUserDTO dto){
+    public TokenDTO login(AuthUserDTO dto) {
         Optional<AuthUser> user = authUserRepository.findByUsername(dto.getUsername());
 
         if (!user.isPresent()) {
@@ -58,7 +64,7 @@ public class AuthUserService {
     }
 
     public TokenDTO validate(String token, RequestDTO requestDTO) {
-        if (!jwtProvider.validateToken(token, requestDTO)){
+        if (!jwtProvider.validateToken(token, requestDTO)) {
             return null;
         }
 

@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewUserDTO {
-    private String username;
-    private String password;
+public class UserDetailsDTO {
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
     private String country;
     private String city;
-    private String rol;
 }
