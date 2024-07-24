@@ -35,17 +35,17 @@ public class AuthUserService {
             return null;
         }
 
+        ModelMapper modelMapper = new ModelMapper();
+        UserDetailsDTO userDetailsDTO = modelMapper.map(dto, UserDetailsDTO.class);
+
         String password = passwordEncoder.encode(dto.getPassword());
         AuthUser authUser = AuthUser.builder()
                 .username(dto.getUsername())
                 .password(password)
                 .rol(Rol.valueOf(dto.getRol().toUpperCase()))
+                //.id_user_details(userDetailsAPI.save(userDetailsDTO))
                 .build();
-
-        ModelMapper modelMapper = new ModelMapper();
-        UserDetailsDTO userDetailsDTO = modelMapper.map(dto, UserDetailsDTO.class);
-
-        //userDetailsAPI.save(userDetailsDTO);
+        
         return authUserRepository.save(authUser);
     }
 
