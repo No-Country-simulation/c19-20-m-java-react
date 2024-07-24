@@ -23,7 +23,7 @@ spring:
 #          predicates:
 #            - Path=/clientes/**
 #          filters:
-#            - AuthFilter
+#            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
