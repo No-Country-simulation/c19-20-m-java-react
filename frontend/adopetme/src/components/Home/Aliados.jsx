@@ -44,19 +44,23 @@ export default function Aliados() {
         spacing={2}
       >
         {[aliado1, aliado2, aliado3, aliado4].map((aliado, index) => (
-          <Box key={index} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box key={index} sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexWrap: "wrap", width: "100%", alignItems: "center" }}>
             <Avatar
               alt={`Aliado ${index + 1}`}
               src={aliado}
-              sx={{ width: { xs: 200, md: 400 }, height: { xs: 200, md: 400 } }}
+              sx={{ width: { xs: 200, md: 200 }, height: { xs: 200, md: 200 } }}
               variant="square"
+
+              
+
             />
             <Typography 
               fontWeight="fontWeightBold" 
-              variant="h4" 
+              variant="h5" 
               color="white"
               textAlign="center"
               sx={{ marginTop: 1 }}
+              // alignItems="flex-end"
             >
               {["HILL'S PET NUTRITION", "PETSMART", "PURINA", "PEDIGREE"][index]}
             </Typography>
