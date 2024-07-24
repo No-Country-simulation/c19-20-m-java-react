@@ -1,11 +1,163 @@
 import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+import { Formik, Form, Field } from 'formik';
+import * as yup from 'yup';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Modal,
+  MenuItem,
+  IconButton
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+
+// Lista de países de América Latina
+const countries = [
+  { name: 'Argentina', code: 'AR' },
+  { name: 'Bolivia', code: 'BO' },
+  { name: 'Brazil', code: 'BR' },
+  { name: 'Chile', code: 'CL' },
+  { name: 'Colombia', code: 'CO' },
+  { name: 'Costa Rica', code: 'CR' },
+  { name: 'Cuba', code: 'CU' },
+  { name: 'Dominican Republic', code: 'DO' },
+  { name: 'Ecuador', code: 'EC' },
+  { name: 'El Salvador', code: 'SV' },
+  { name: 'Guatemala', code: 'GT' },
+  { name: 'Honduras', code: 'HN' },
+  { name: 'Mexico', code: 'MX' },
+  { name: 'Nicaragua', code: 'NI' },
+  { name: 'Panama', code: 'PA' },
+  { name: 'Paraguay', code: 'PY' },
+  { name: 'Peru', code: 'PE' },
+  { name: 'Uruguay', code: 'UY' },
+  { name: 'Venezuela', code: 'VE' }
+];
+
+// Esquema de validación
+const validationSchema = yup.object({
+  fullName: yup.string().matches(/^[a-zA-Z\s]*$/, 'Nombre no debe contener signos de puntuación').required('Nombre es requerido'),
+  username: yup.string().required('Nombre de usuario es requerido'),
+  email: yup.string().email('Ingrese un correo válido').required('Correo es requerido'),
+  phone: yup.string().matches(/^\+\d{1,3}\d{7,14}$/, 'Teléfono debe ser un número válido con código de país').required('Teléfono es requerido'),
+  country: yup.string().required('País es requerido'),
+  city: yup.string().required('Ciudad es requerida'),
+  password: yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('Contraseña es requerida'),
+});
+
+const RegisterModal = ({ open, handleClose }) => {
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Box sx={style}>
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Typography id="register-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+          Registro
+        </Typography>
+        <Formik
+          initialValues={{
+            fullName: '',
+            username: '',
+            email: '',
+            phone: '',
+            country: '',
+            city: '',
+            password: ''
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            console.log(values);
+            handleClose();
+          }}
+        >
+          {({ errors, touched, setFieldValue }) => (
+            <Form>
+              <Field
+                as={TextField}
+                name="fullName"
+                label="Nombre Completo"
+                fullWidth
+                margin="normal"
+                error={touched.fullName && !!errors.fullName}
+                helperText={touched.fullName && errors.fullName}
+              />
+              <Field
+                as={TextField}
+                name="username"
+                label="Nombre de Usuario"
+                fullWidth
+                margin="normal"
+                error={touched.username && !!errors.username}
+                helperText={touched.username && errors.username}
+              />
+              <Field
+                as={TextField}
+                name="email"
+                label="Correo Electrónico"
+                fullWidth
+                margin="normal"
+                error={touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
+              />
+              <Field
+                as={TextField}
+                name="phone"
+                label="Teléfono"
+                fullWidth
+                margin="normal"
+                error={touched.phone && !!errors.phone}
+                helperText={touched.phone && errors.phone}
+              />
+              <Field
+                as={TextField}
+                select
+                name="country"
+                label="País"
+                fullWidth
+                margin="normal"
+                onChange={(event) => setFieldValue('country', event.target.value)}
+                error={touched.country && !!errors.country}
+                helperText={touched.country && errors.country}
+              >
+                {countries.map((country) => (
+                  <MenuItem key={country.code} value={country.name}>
+                    {country.name}
+                  </MenuItem>
+                ))}
+              </Field>
+              <Field
+                as={TextField}
+                name="city"
+                label="Ciudad"
+                fullWidth
+                margin="normal"
+                error={touched.city && !!errors.city}
+                helperText={touched.city && errors.city}
+              />
+              <Field
+                as={TextField}
+                name="password"
+                label="Contraseña"
+                type="password"
+                fullWidth
+                margin="normal"
+                error={touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+              />
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                Registrarse
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Modal>
+  );
+};
 
 const style = {
   position: 'absolute',
@@ -19,88 +171,4 @@ const style = {
   p: 4,
 };
 
-const RegisterModal = ({ open, handleClose }) => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-
-  const handleRegister = () => {
-    // Aquí puedes añadir la lógica para manejar el registro
-    console.log('Nombre Completo:', fullName, 'Email:', email, 'Teléfono:', phone, 'País:', country, 'Ciudad:', city);
-    handleClose();
-  };
-
-  return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="register-modal-title"
-      aria-describedby="register-modal-description"
-    >
-      <Box sx={style}>
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box> 
-        <Typography variant="h4" fontWeight="fontWeightBold" color = "#6a1e9a" sx={{ mb: 2 }}>
-          Registrate
-        </Typography>
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Nombre Completo"
-          variant="outlined"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Email"
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Teléfono"
-          variant="outlined"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="País de Residencia"
-          variant="outlined"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Ciudad/Estado"
-          variant="outlined"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          onClick={handleRegister}
-          sx={{ mt: 2 }}
-        >
-          Registrarse
-        </Button>
-      </Box>
-    </Modal>
-  );
-};
-
 export default RegisterModal;
-
