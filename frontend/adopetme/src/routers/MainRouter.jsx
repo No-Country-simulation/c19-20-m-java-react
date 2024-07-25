@@ -8,8 +8,6 @@ import MainLayout from "../Pages/layout/MainLayout";
 import AdoptPets from "../components/Pets/AdoptPets";
 import PetForm from "../Pages/PetForm";
 
-
-
 const MainRouter = () => {
   return (
     <BrowserRouter>
