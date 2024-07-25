@@ -1,10 +1,10 @@
 server:
-  port: 443
+  port: 5062
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: https://service04.mercelab.com/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -26,7 +26,6 @@ spring:
             allowed-origins: "*"
             allowed-methods: "*"
             allowed-headers: "*"
-            allow-credentials: true
       routes: #Agregar sus rutas de la forma en la que esta abajo
         - id: user-details-service
           uri: lb://USER-DETAILS-SERVICE
