@@ -43,6 +43,13 @@ public class SpeciesController {
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(speciesDto)));
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<GenericResponseRecord<SpeciesDto>> readByName(@PathVariable("name") String name)
+            throws Exception {
+        SpeciesDto speciesDto = converToDto(speciesService.readByname(name));
+        return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(speciesDto)));
+    }
+
     @PostMapping
     public ResponseEntity<SpeciesDto> save(@Valid @RequestBody SpeciesDto speciesDto) throws Exception {
         SpeciesModel imageModel = speciesService.save(convertToEntity(speciesDto));

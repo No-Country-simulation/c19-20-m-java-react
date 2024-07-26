@@ -13,14 +13,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import com.adopetme.pet_service.Auth.AuthService;
 import com.adopetme.pet_service.Dto.GenericResponseRecord;
 import com.adopetme.pet_service.Dto.PetAndImagesDto;
 import com.adopetme.pet_service.Dto.PetDto;
+import com.adopetme.pet_service.Dto.PetsDetailsDto;
+import com.adopetme.pet_service.Dto.RequestDTO;
 import com.adopetme.pet_service.Exception.IsValidFormat;
 import com.adopetme.pet_service.Model.PetModel;
 import com.adopetme.pet_service.Service.PetService;
@@ -36,10 +43,19 @@ public class PetController {
     @Qualifier("defaultMapper")
     private final ModelMapper modelMapper;
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping
     public ResponseEntity<GenericResponseRecord<PetDto>> readAll() throws Exception {
         List<PetDto> petDtos = petService.readAll().stream().map(this::converToDto).toList();
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", new ArrayList<>(petDtos)));
+    }
+
+    @GetMapping("/petimage")
+    public ResponseEntity<GenericResponseRecord<PetAndImagesDto>> readAllPet() throws Exception {
+        List<PetAndImagesDto> petAndImagesDtos = petService.readAllPet();
+        return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", new ArrayList<>(petAndImagesDtos)));
     }
 
     @GetMapping("/{id}")
@@ -53,6 +69,18 @@ public class PetController {
             throws Exception {
         PetAndImagesDto petImageDto = petService.readByIdPet(id);
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(petImageDto)));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<GenericResponseRecord<PetsDetailsDto>> search(@RequestHeader("Authorization") String token,
+            @RequestParam("param") String param)
+            throws Exception {
+        RequestDTO request = new RequestDTO("/pet/search", "GET");
+        if (!authService.validate(token, request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<PetsDetailsDto> petsDetailsDto = petService.search(param);
+        return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", new ArrayList<>(petsDetailsDto)));
     }
 
     @PostMapping

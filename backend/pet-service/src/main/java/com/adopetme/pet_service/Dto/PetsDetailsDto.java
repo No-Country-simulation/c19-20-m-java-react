@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PetAndImagesDto {
+public class PetsDetailsDto {
 
     private Long idPet;
 
@@ -80,4 +80,5 @@ public class PetAndImagesDto {
     private Long idBreed;
 
     private List<ImageDto> image;
+
 }

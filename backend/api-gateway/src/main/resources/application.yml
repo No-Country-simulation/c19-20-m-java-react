@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://service04.mercelab.com/eureka
+      defaultZone: http://localhost:5054/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -22,7 +22,7 @@ spring:
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowed-origins: "*"
             allowed-methods: "*"
             allowed-headers: "*"
@@ -37,3 +37,85 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
+        # Configuration for pet-service
+        - id: pet-service-get
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
+            - Method=GET
+        - id: pet-service-post
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
+            - Method=POST
+          filters:
+            - AuthFilter
+        - id: pet-service-put
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
+            - Method=PUT
+          filters:
+            - AuthFilter
+        - id: pet-service-delete
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
+            - Method=DELETE
+          filters:
+            - AuthFilter
+
+        # Configuration for specie-service
+        - id: specie-service-get
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/species/**
+            - Method=GET
+        - id: specie-service-post
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/species/**
+            - Method=POST
+          filters:
+            - AuthFilter
+        - id: specie-service-put
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/species/**
+            - Method=PUT
+          filters:
+            - AuthFilter
+        - id: specie-service-delete
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/species/**
+            - Method=DELETE
+          filters:
+            - AuthFilter
+        # Configuration for image-service
+        - id: image-service-get
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+            - Method=GET
+        - id: image-service-post
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+            - Method=POST
+          filters:
+            - AuthFilter
+        - id: image-service-put
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+            - Method=PUT
+          filters:
+            - AuthFilter
+        - id: image-service-delete
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+            - Method=DELETE
+          filters:
+            - AuthFilter

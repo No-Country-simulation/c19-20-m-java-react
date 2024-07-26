@@ -43,6 +43,13 @@ public class BreedController {
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", Arrays.asList(breedDto)));
     }
 
+    @GetMapping("/species/{id}")
+    public ResponseEntity<GenericResponseRecord<BreedDto>> readBySpeciesId(@PathVariable("id") Long id)
+            throws Exception {
+        List<BreedDto> breedDtos = breedService.readBySpeciesId(id).stream().map(this::converToDto).toList();
+        return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", new ArrayList<>(breedDtos)));
+    }
+
     @PostMapping
     public ResponseEntity<BreedDto> save(@Valid @RequestBody BreedDto breedDto) throws Exception {
         BreedModel imageModel = breedService.save(convertToEntity(breedDto));
