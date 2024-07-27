@@ -7,6 +7,8 @@ import PublicationsPets from "../components/Pets/PublicationsPets";
 import MainLayout from "../Pages/layout/MainLayout";
 import AdoptPets from "../components/Pets/AdoptPets";
 import PetForm from "../Pages/PetForm";
+import UserProfile from "../components/User/UserProfile";
+
 
 
 
@@ -19,6 +21,7 @@ const MainRouter = () => {
           <Route path="/publicaciones" element={<PublicationsPets />} />
           <Route path="/adopcion" element={<AdoptPets />} />
           <Route path="/registro-mascotas" element={<PetForm />} />
+          <Route path="/profile" element={<UserProfile/>} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
