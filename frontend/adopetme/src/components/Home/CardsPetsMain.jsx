@@ -11,23 +11,58 @@ import Button from "@mui/material/Button";
 import CardsPets from "../Pets/CardsPets";
 import ModalAdopt from "../Pets/ModalAdopt";
 
+//Utils
+import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
+
+import NoPhoto from "../../assets/img/nophoto.png";
+
 const CardsPetsMain = () => {
   const navigate = useNavigate();
   //*****************************************************USE STATE**************************************************************** */
   const [pets, setPets] = useState([]);
+  const [imgPets, setImgPets] = useState([]);
   const [openModalAdopt, setOpenModalAdopt] = useState(false);
   const [idPets, setIdPets] = useState();
+  const [loading, setLoading] = useState(false);
+  const [loadingImg, setLoadingImg] = useState(false);
 
   //*****************************************************USE EFFECT**************************************************************** */
   useEffect(() => {
+    setLoading(true);
     const getPets = async () => {
-      const response = await fetch("https://dog.ceo/api/breed/hound/images");
+      const response = await fetch("https://service01.mercelab.com/pet");
       const result = await response.json();
-      const resultSlice = result.message.slice(0, 6);
+      setLoading(false);
+      const resultSlice = result.data.slice(0, 6);
       setPets(resultSlice);
     };
     getPets();
   }, []);
+
+  useEffect(() => {
+    const getPets = async () => {
+      setLoadingImg(true);
+      const response = await fetch("https://service02.mercelab.com/image");
+      const result = await response.json();
+      console.log(result);
+      setLoadingImg(false);
+      const resultSlice = result.data.slice(0, 6);
+      setImgPets(resultSlice);
+    };
+    getPets();
+  }, []);
+
+  useEffect(() => {
+    if (pets.length > 0 && imgPets.length > 0) {
+      const newPets = pets.map((pet) => ({
+        ...pet,
+        ...imgPets.find((item) => item.idPet === pet.idPet),
+      }));
+
+      setPets(newPets);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgPets]);
 
   //*****************************************************FUNCTIONS**************************************************************** */
 
@@ -73,12 +108,16 @@ const CardsPetsMain = () => {
             return (
               <CardsPets
                 key={Math.random()}
-                id={Math.floor(Math.random() * 100)}
-                img={pet}
-                name="fido"
-                gender={"genero"}
+                id={pet.idPet}
+                img={
+                  pet.imagePet ? converterBase64ToUrl(pet.imagePet) : NoPhoto
+                }
+                name={pet.name}
+                gender={pet.gender === 0 ? "Macho" : "Hembra"}
                 ubication={"ubicacion"}
                 handleClickAdopt={handleClickAdopt}
+                loading={loading}
+                loadingImg={loadingImg}
               />
             );
           })}
@@ -101,6 +140,7 @@ const CardsPetsMain = () => {
         <ModalAdopt
           open={openModalAdopt}
           handleCloseModal={handleClodeModalAdopt}
+          id={idPets}
         />
       )}
     </Box>

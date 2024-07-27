@@ -10,8 +10,6 @@ import PetForm from "../Pages/PetForm";
 import UserProfile from "../components/User/UserProfile";
 
 
-
-
 const MainRouter = () => {
   return (
     <BrowserRouter>
