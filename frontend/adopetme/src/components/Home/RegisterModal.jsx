@@ -96,6 +96,16 @@ const RegisterModal = ({ open, handleClose }) => {
               />
               <Field
                 as={TextField}
+                name="password"
+                label="Contraseña"
+                type="password"
+                fullWidth
+                margin="normal"
+                error={touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+              />
+              <Field
+                as={TextField}
                 name="email"
                 label="Correo Electrónico"
                 fullWidth
@@ -137,16 +147,6 @@ const RegisterModal = ({ open, handleClose }) => {
                 margin="normal"
                 error={touched.city && !!errors.city}
                 helperText={touched.city && errors.city}
-              />
-              <Field
-                as={TextField}
-                name="password"
-                label="Contraseña"
-                type="password"
-                fullWidth
-                margin="normal"
-                error={touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
               />
               <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                 Registrarse
