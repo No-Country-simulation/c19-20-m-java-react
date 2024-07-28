@@ -5,19 +5,21 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
+import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import InputBase from '@mui/material/InputBase';
 import logoHeader from '../../../src/components/shared/logo-header.png';
 import LoginModal from './LoginModal';  
 import RegisterModal from './RegisterModal';  
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
@@ -56,10 +58,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [isLoginOpen, setLoginOpen] = React.useState(false);
-  const [isRegisterOpen, setRegisterOpen] = React.useState(false); // <-- Añadir estado para el modal de registro
+  const [isRegisterOpen, setRegisterOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -90,7 +94,6 @@ export default function PrimarySearchAppBar() {
     setLoginOpen(false);
   };
 
-
   const handleOpenRegister = () => {  
     setRegisterOpen(true);
     handleCloseLogin();  
@@ -117,12 +120,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-
-      <MenuItem onClick={handleOpenLogin}>Profile</MenuItem>
-      <MenuItem onClick={handleOpenLogin}>My account</MenuItem>
-
-      <MenuItem onClick={handleMenuClose}>Inicio Sesión</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Registro Mascota</MenuItem>
+      <MenuItem onClick={() => navigate('/profile')}>Mi Perfil</MenuItem>
+      <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
     </Menu>
   );
 
@@ -143,24 +142,55 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleOpenLogin}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <Typography
-          variant="body1"
-          component="p"
-          sx={{ fontWeight: "bold", ml: 1 }}
-        >
-          Registro / Inicio de Sesión
-        </Typography>
-      </MenuItem>
+      {user ? (
+        <>
+          <MenuItem onClick={() => navigate('/profile')}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Typography variant="body1">Mi Perfil</Typography>
+          </MenuItem>
+          <MenuItem onClick={logout}>
+            <IconButton
+              size="large"
+              aria-label="log out"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Typography variant="body1">Cerrar Sesión</Typography>
+          </MenuItem>
+        </>
+      ) : (
+        <>
+          <MenuItem onClick={handleOpenLogin}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ fontWeight: "bold", ml: 1 }}
+            >
+              Registro / Inicio de Sesión
+            </Typography>
+          </MenuItem>
+        </>
+      )}
     </Menu>
   );
 
@@ -190,47 +220,65 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-
-              // placeholder="Search…"
-              // inputProps={{ "aria-label": "search" }}
-
               placeholder="¿Qué quieres adoptar?"
               inputProps={{ 'aria-label': 'search' }}
-
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{ display: { xs: "none", md: "flex", alignItems: "center" } }}
           >
-            <Typography
-              variant="body1"
-              component="p"
-              sx={{ fontWeight: "bold", mr: 1 }}
-            >
-              Registro / Inicio de Sesión
-            </Typography>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleOpenLogin}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {user ? (
+              <>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </>
+            ) : (
+              <>
+                <Button
+                  sx={{
+                    color: 'black',
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    },
+                    marginRight: 2,
+                  }}
+                  onClick={handleOpenRegister}
+                >
+                  Regístrate
+                </Button>
+                <Button
+                  sx={{
+                    color: 'white',
+                    backgroundColor: 'secondary.main',
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                    '&:hover': {
+                      backgroundColor: 'rgba(236, 64, 122, 0.8)',
+                    },
+                  }}
+                  onClick={handleOpenLogin}
+                >
+                  Inicia Sesión
+                </Button>
+              </>
+            )}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: { xs: "flex", alignItems: "center" } }}
-            >
-              Registro / Inicio de Sesión
-            </Typography>
             <IconButton
               size="large"
               aria-label="show more"
@@ -255,3 +303,6 @@ export default function PrimarySearchAppBar() {
     </Box>
   );
 }
+
+
+

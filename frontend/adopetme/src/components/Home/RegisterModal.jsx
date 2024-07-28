@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
 import {
   Box,
   Button,
@@ -8,7 +9,8 @@ import {
   Typography,
   Modal,
   MenuItem,
-  IconButton
+  IconButton,
+  Alert
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -37,16 +39,39 @@ const countries = [
 
 // Esquema de validación
 const validationSchema = yup.object({
-  fullName: yup.string().matches(/^[a-zA-Z\s]*$/, 'Nombre no debe contener signos de puntuación').required('Nombre es requerido'),
+  firstname: yup.string().matches(/^[a-zA-Z\s]*$/, 'Nombre no debe contener signos de puntuación').required('Nombre es requerido'),
   username: yup.string().required('Nombre de usuario es requerido'),
   email: yup.string().email('Ingrese un correo válido').required('Correo es requerido'),
   phone: yup.string().matches(/^\+\d{1,3}\d{7,14}$/, 'Teléfono debe ser un número válido con código de país').required('Teléfono es requerido'),
   country: yup.string().required('País es requerido'),
   city: yup.string().required('Ciudad es requerida'),
   password: yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('Contraseña es requerida'),
+  lastname: yup.string().required('Apellidos son requeridos')
 });
 
 const RegisterModal = ({ open, handleClose }) => {
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState(''); // 'success' o 'error'
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    console.log('Enviando datos:', values);
+    try {
+      const response = await axios.post('https://service12.mercelab.com/auth/create', values, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      setMessageType('success');
+      setMessage('Registro exitoso');
+      console.log('Respuesta del servidor:', response.data);
+    } catch (error) {
+      setMessageType('error');
+      setMessage('Error en el registro');
+      console.error('Error en el registro:', error.response?.data || error.message);
+    }
+    setSubmitting(false);
+  };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -60,31 +85,21 @@ const RegisterModal = ({ open, handleClose }) => {
         </Typography>
         <Formik
           initialValues={{
-            fullName: '',
+            firstname: '',
+            lastname: '',
             username: '',
             email: '',
             phone: '',
             country: '',
             city: '',
-            password: ''
+            password: '',
+            rol: 'USER' // Valor por defecto
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-            handleClose();
-          }}
+          onSubmit={handleSubmit}
         >
-          {({ errors, touched, setFieldValue }) => (
+          {({ errors, touched, setFieldValue, isSubmitting }) => (
             <Form>
-              <Field
-                as={TextField}
-                name="fullName"
-                label="Nombre Completo"
-                fullWidth
-                margin="normal"
-                error={touched.fullName && !!errors.fullName}
-                helperText={touched.fullName && errors.fullName}
-              />
               <Field
                 as={TextField}
                 name="username"
@@ -103,6 +118,24 @@ const RegisterModal = ({ open, handleClose }) => {
                 margin="normal"
                 error={touched.password && !!errors.password}
                 helperText={touched.password && errors.password}
+              />
+              <Field
+                as={TextField}
+                name="firstname"
+                label="Nombre"
+                fullWidth
+                margin="normal"
+                error={touched.firstname && !!errors.firstname}
+                helperText={touched.firstname && errors.firstname}
+              />
+              <Field
+                as={TextField}
+                name="lastname"
+                label="Apellidos"
+                fullWidth
+                margin="normal"
+                error={touched.lastname && !!errors.lastname}
+                helperText={touched.lastname && errors.lastname}
               />
               <Field
                 as={TextField}
@@ -148,12 +181,17 @@ const RegisterModal = ({ open, handleClose }) => {
                 error={touched.city && !!errors.city}
                 helperText={touched.city && errors.city}
               />
-              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={isSubmitting}>
                 Registrarse
               </Button>
             </Form>
           )}
         </Formik>
+        {message && (
+          <Alert severity={messageType} sx={{ mt: 2 }}>
+            {message}
+          </Alert>
+        )}
       </Box>
     </Modal>
   );
@@ -172,3 +210,4 @@ const style = {
 };
 
 export default RegisterModal;
+
