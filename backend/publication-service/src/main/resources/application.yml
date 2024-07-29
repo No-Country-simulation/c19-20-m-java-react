@@ -1,10 +1,24 @@
-spring.application.name=publication-service
-server.port=8081
+spring:
+  application:
+    name: publication-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://nc-country.mysql.database.azure.com:3306/nc_pet
+    username: adopetmedb
+    password: 1P3aYV2WDZlcNh1
 
-spring.datasource.url=jdbc:mariadb://nc-country.mysql.database.azure.com:3306/nc_pet
-spring.datasource.password=1P3aYV2WDZlcNh1
 
+server:
+  port: 5051
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.database-platform=org.hibernate.dialect.MariaDBDialect
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:5054/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+

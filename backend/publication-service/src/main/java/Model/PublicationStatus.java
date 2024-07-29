@@ -1,2 +1,7 @@
-package Model;public class PublicationStatus {
+package Model;
+
+public enum PublicationStatus {
+    PENDING,
+    APPROVED,
+    REJECTED
 }

@@ -1,6 +1,8 @@
-package Exceptions;
+package com.adopetme.adoption_request_service.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
+
+public class ResourceNotFoundException extends RuntimeException{
+
     public ResourceNotFoundException(String message) {
         super(message);
     }

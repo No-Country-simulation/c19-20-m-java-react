@@ -1,0 +1,61 @@
+[33m1cb37d3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbackend[m[33m, [m[1;31morigin/backend[m[33m)[m Update code in pet-service and specie-service
+[33mbcfee29[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33mbfce9ca[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33m561245e[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33macd7de6[m Pequeños cambios en el application.properties
+[33madccfe3[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33ma5ff546[m Merge remote-tracking branch 'origin/backend' into backend
+[33m8009fb6[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33md8220ff[m Merge pull request #7 from No-Country-simulation/frontend
+[33md402a57[m se agrega modal adoptar y ruta publicaciones
+[33m3f77e15[m Merge remote-tracking branch 'origin/backend' into backend
+[33m979dce2[m Implementacion del primer prototipo de auth-service + update de api-gateway
+[33m73c8e11[m Merge branch 'backend' of https://github.com/No-Country-simulation/c19-20-m-java-react into backend
+[33m3ab1b40[m carga de servicios de crear, eliminar y obtener
+[33m23c7a54[m Add 'active' field to PetDto
+[33m0d7062a[m Merge remote-tracking branch 'origin/backend' into backend
+[33m4432731[m agregacion de Mision y Vision al igual que marcas aliadas
+[33m1e4e725[m creación pagina de registro de mascotas y ruta puesta en el router
+[33m6cbbffe[m Refactor image and pet services
+[33m1c23716[m create layout
+[33m062c680[m Primera version de servicios funcionales
+[33mddb11b9[m add title cards pets
+[33mf0727c5[m Merge branch 'frontend' of https://github.com/No-Country-simulation/c19-20-m-java-react into frontend
+[33medf2742[m router
+[33maf8a8e8[m prueba2 mision
+[33m5a7ddb9[m Prueba de Mision
+[33mb94e868[m Actualizacion del Header y modales tanto de Login como de Registro
+[33ma3a2d3d[m add virtual-router-dom
+[33m56db21a[m Cambios en el index.jsx y en el theme.js para cambios en el background
+[33mb1756cd[m Creacion de CarouselPets
+[33mb9b094a[m prueba
+[33m8fcfcaf[m Se han agregado header, banner y footer
+[33m23907a6[m cambio del header
+[33m8bac57a[m se agrega cards mascotas
+[33m93ed169[m se agrega tipografia y color
+[33m0c82f3c[m Build Pet(Model, DTO, Controller, Service and Repository)
+[33m2912419[m Merge pull request #6 from No-Country-simulation/backend
+[33md01a42d[m Config custom exception
+[33m0d14630[m package fix
+[33m6352dd1[m base project frontend
+[33mbea0395[m prueba
+[33m42e423b[m delete notepad
+[33m5bfa43e[m api-gateway implementado
+[33m9443b61[m eureka-server implementado
+[33me050434[m estructura basica
+[33mac1878b[m deleted
+[33m647cede[m Creacion proyecto Spring
+[33m48c9f67[m Add "Backend Prueba" to backend.txt
+[33m2f3f807[m Add "qwerty" to backend.txt
+[33me52a9b6[m Add new line to backend.txt
+[33m353bf98[m Add "PRueba" to backend.txt
+[33m3fc15af[m Esto es una prueba
+[33mb565ca9[m frontend
+[33m84f2d66[m prueba
+[33mfc13563[m prueba
+[33m687d91d[m prueba
+[33m4eaf128[m prueba
+[33mbe3df61[m prueba
+[33ma8031ef[m carpeta
+[33m896ca1e[m README.md
+[33m31c39ac[m Initial commit
