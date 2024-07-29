@@ -1,10 +1,6 @@
 package com.adopetme.pet_service.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -52,7 +48,8 @@ public class PetService {
         return petRepository.save(pet);
     }
 
-    public PetModel saveWithImage(PetModel pet, List<byte[]> imageBytes) throws Exception {
+    public PetModel saveWithImage(PetModel pet, List<byte[]> imageBytes, Integer idUser) throws Exception {
+        pet.setCreatedBy(Long.valueOf(idUser));
         petRepository.save(pet);
         List<MultipartFile> multipartFiles = new ArrayList<>();
         for (byte[] bytes : imageBytes) {
@@ -62,12 +59,29 @@ public class PetService {
         return pet;
     }
 
-    public List<PetModel> readAll() throws Exception {
-        return petRepository.findAll();
+    public List<PetModel> readAll(Integer idUser) throws Exception {
+        return petRepository.findByCreatedBy(Long.valueOf(idUser));
     }
 
     public List<PetAndImagesDto> readAllPet() throws Exception {
         List<PetModel> pets = petRepository.findAll();
+        List<PetAndImagesDto> petAndImagesDtos = new ArrayList<>();
+        for (PetModel pet : pets) {
+            List<ImageDto> images = imageFeignClient.readByIdPet(pet.getIdPet());
+            Long idSpecies = pet.getIdSpecies();
+            ResponseEntity<GenericResponseRecord<SpeciesDto>> species = speciesClient.readById(idSpecies);
+            String speciesName = species.getBody().data().get(0).getName();
+
+            PetAndImagesDto petAndImagesDto = converToDtoImage(pet, images);
+            petAndImagesDto.setSpecies(speciesName);
+
+            petAndImagesDtos.add(petAndImagesDto);
+        }
+        return petAndImagesDtos;
+    }
+
+    public List<PetAndImagesDto> readAllPetUser(Integer idUser) throws Exception {
+        List<PetModel> pets = petRepository.findByCreatedBy(Long.valueOf(idUser));
         List<PetAndImagesDto> petAndImagesDtos = new ArrayList<>();
         for (PetModel pet : pets) {
             List<ImageDto> images = imageFeignClient.readByIdPet(pet.getIdPet());
@@ -118,11 +132,11 @@ public class PetService {
         return converToDtoImage(pet, images);
     }
 
-    public PetModel update(PetModel pet, Long id) throws Exception {
-        PetModel existingPet = petRepository.findById(id)
-                .orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
+    public PetModel update(PetModel pet, Long id, Integer idUser) throws Exception {
+        Optional<PetModel> optionalPet = petRepository.findByIdPetAndCreatedBy(id, Long.valueOf(idUser));
+        PetModel existingPet = optionalPet.orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
         BeanUtils.copyProperties(pet, existingPet, getNullPropertyNames(pet));
-
+        pet.setUpdatedBy(Long.valueOf(idUser));
         return petRepository.save(existingPet);
     }
 
@@ -140,9 +154,10 @@ public class PetService {
         return emptyNames.toArray(result);
     }
 
-    public void delete(Long id) throws Exception {
-        petRepository.findById(id).orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
-        petRepository.deleteById(id);
+    public void delete(Long id, Integer idUser) throws Exception {
+        Optional<PetModel> optionalPet = petRepository.findByIdPetAndCreatedBy(id, Long.valueOf(idUser));
+        PetModel existingPet = optionalPet.orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
+        petRepository.delete(existingPet);
     }
 
     private PetAndImagesDto converToDtoImage(PetModel object, List<ImageDto> images) {

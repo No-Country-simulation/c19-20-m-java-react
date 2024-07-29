@@ -29,33 +29,28 @@ public class UserDetailsController {
     @GetMapping("/{id}")
     @ApiOperation(value = "Search a product with an ID")
     @ApiResponses({
-            @ApiResponse(code=200,message="OK"),
-            @ApiResponse(code=404 , message = "User not found")
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "User not found")
     })
-    public ResponseEntity<UserDetails> getUserDetails(@ApiParam(value = "The id of the product", required = true, example = "7")
-                                              @PathVariable("id") int id) {
+    public ResponseEntity<UserDetails> getUserDetails(
+            @ApiParam(value = "The id of the product", required = true, example = "7") @PathVariable("id") int id) {
         return getUserByIdService.execute(id)
                 .map(userDetails -> new ResponseEntity<>(userDetails, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/save")
-    public ResponseEntity<UserDetails> save (@RequestBody UserDetails userDetails){
-        return new ResponseEntity<>(createUserService.execute(userDetails),HttpStatus.CREATED);
+    public ResponseEntity<UserDetails> save(@RequestBody UserDetails userDetails) {
+        return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable("id") int userDetailsId) {
-        if(deleteUserByIdService.delete(userDetailsId)){
+        if (deleteUserByIdService.delete(userDetailsId)) {
             return new ResponseEntity(HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
-
-
-
-
-
 
 }
