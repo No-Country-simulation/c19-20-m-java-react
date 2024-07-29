@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+// import { useSearch } from '../../contexts/SearchContext'; // Importar el contexto
 
 //Material Ui
 import Box from "@mui/material/Box";
@@ -30,6 +31,8 @@ const PublicationsPets = () => {
   const [page, setPage] = React.useState(1);
   const [count, setCount] = useState();
   const [numberItems] = useState(12);
+
+  const { filteredPets } = useSearch(); // Obtener mascotas filtradas del contexto
 
   //*****************************************************USE EFFECT**************************************************************** */
   useEffect(() => {
@@ -73,6 +76,18 @@ const PublicationsPets = () => {
 
   useEffect(() => {}, [pets]);
 
+
+  useEffect(() => {
+    if (filteredPets) {
+      const pages = Math.ceil(filteredPets.length / numberItems);
+      setCount(pages);
+      const data = filteredPets.slice((page - 1) * numberItems, page * numberItems);
+      setPets(data);
+    }
+  }, [filteredPets, page]);
+
+
+
   //*****************************************************USE FUNCTIONS**************************************************************** */
 
   const handleClickAdopt = (id) => {
@@ -85,23 +100,7 @@ const PublicationsPets = () => {
   };
 
   const handleChangePagination = (event, value) => {
-    if (allPets) {
-      setPage(value);
-      const start = value * numberItems - numberItems;
-      const end = value * numberItems;
-
-      const data = allPets.slice(start, end);
-      setPets(data);
-    }
-  };
-
-  const pagination = (array) => {
-    const petsLength = array.length;
-    const pages = Math.ceil(petsLength / numberItems);
-    setCount(pages);
-
-    const data = array.slice(0, numberItems);
-    setPets(data);
+    setPage(value);
   };
 
   return (
