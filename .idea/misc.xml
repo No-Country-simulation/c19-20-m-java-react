@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/backend/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/pet-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/tag-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/city-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/image-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/state-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/specie-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/country-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/publication-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/user-details-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/adoption-request-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
