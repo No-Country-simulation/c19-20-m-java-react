@@ -129,7 +129,7 @@ const PublicationsPets = () => {
         flexWrap="wrap"
         justifyContent="center"
         width="90%"
-        //mx="auto"
+        mx="auto"
         sx={{ mt: 4 }}
       >
         {pets.length > 0 &&

@@ -8,8 +8,9 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
-import { useTheme } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
+import huesito from "../../assets/img/huesito.png";
 
 //Icons
 import { FaBone } from "react-icons/fa6";
@@ -230,29 +231,48 @@ const CardsPets = ({
 
               <Box
                 sx={{
+                  //backgroundColor: "aliceblue",
                   position: "relative",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  //width: 300,
+                  height: 50,
+                  //p: 4,
+                  mt: 1,
                 }}
               >
-                <FaBone fontSize={80} color={theme.palette.primary.main} />
-                <Typography
+                <Stack
                   sx={{
                     position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -80%)",
-                    textTransform: "capitalize",
+                    //border: 1,
+                    width: `${name.length > 9 ? "35%" : "30%"}`,
+                    height: 50,
+                    backgroundImage: `url(${huesito})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "contain",
+                    display: "flex",
                   }}
-                  mt={1}
-                  variant="h6"
-                  color="white"
-                  textAlign="center"
-                  fontWeight="fontWeightBold"
                 >
-                  {name}
-                </Typography>
+                  <Typography
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -85%)",
+                      textTransform: "capitalize",
+                      fontSize: `${name.length > 9 ? "1rem" : "1.1rem"}`,
+                    }}
+                    mt={1}
+                    //variant="h6"
+                    color="white"
+                    textAlign="center"
+                    fontWeight="fontWeightBold"
+                  >
+                    {name}
+                  </Typography>
+                </Stack>
               </Box>
             </Box>
           </Box>
@@ -310,6 +330,7 @@ const CardsPets = ({
             sx={{
               display: "flex",
               justifyContent: "center",
+              pb: 2.5,
             }}
           >
             <Button
@@ -317,7 +338,7 @@ const CardsPets = ({
               size="large"
               onClick={() => handleClickAdopt(id)}
             >
-              Adoptar
+              Ver perfil
             </Button>
           </CardActions>
         </Card>
