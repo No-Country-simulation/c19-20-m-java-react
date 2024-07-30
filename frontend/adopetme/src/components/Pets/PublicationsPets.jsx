@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
-// import { useSearch } from '../../contexts/SearchContext'; // Importar el contexto
+import { useSearch } from "../../contexts/SearchContext"; // Importar el contexto
 
 //Material Ui
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
-
-//Material Ui
 import Typography from "@mui/material/Typography";
+
+//Icons Material Ui
+import StorageIcon from "@mui/icons-material/Storage";
+
+//Components
 import CardsPets from "./CardsPets";
 import ModalAdopt from "./ModalAdopt";
 
 //Util
 import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
 
+//imgs
 import NoPhoto from "../../assets/img/nophoto.png";
+
+//Share
+import Loading from "../shared/Loading";
 
 const PublicationsPets = () => {
   //*****************************************************USE STATE**************************************************************** */
@@ -32,7 +39,7 @@ const PublicationsPets = () => {
   const [count, setCount] = useState();
   const [numberItems] = useState(12);
 
-  const { filteredPets } = useSearch(); // Obtener mascotas filtradas del contexto
+  const { filteredPets, loading: loadingSearch } = useSearch(); // Obtener mascotas filtradas del contexto
 
   //*****************************************************USE EFFECT**************************************************************** */
   useEffect(() => {
@@ -40,8 +47,9 @@ const PublicationsPets = () => {
     const getPets = async () => {
       const response = await fetch("https://service01.mercelab.com/pet");
       const result = await response.json();
+      console.log("result", result);
       setLoading(false);
-      pagination(result.data);
+      //Pagination(result.data);
       setAllPets(result.data);
       //const resultSlice = result.data.slice(startIndex, endIndex);
       //setPets(result.data);
@@ -74,21 +82,20 @@ const PublicationsPets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imgPets, page]);
 
-  useEffect(() => {}, [pets]);
+  // useEffect(() => {
+  //   if (filteredPets) {
+  //     console.log("result search", filteredPets);
+  //     const pages = Math.ceil(filteredPets.length / numberItems);
+  //     setCount(pages);
+  //     const data = filteredPets.slice(
+  //       (page - 1) * numberItems,
+  //       page * numberItems
+  //     );
+  //     setPets(data);
+  //   }
+  // }, [filteredPets, page]);
 
-
-  useEffect(() => {
-    if (filteredPets) {
-      const pages = Math.ceil(filteredPets.length / numberItems);
-      setCount(pages);
-      const data = filteredPets.slice((page - 1) * numberItems, page * numberItems);
-      setPets(data);
-    }
-  }, [filteredPets, page]);
-
-
-
-  //*****************************************************USE FUNCTIONS**************************************************************** */
+  //***************************************************** FUNCTIONS**************************************************************** */
 
   const handleClickAdopt = (id) => {
     setOpenModalAdopt(true);
@@ -128,10 +135,10 @@ const PublicationsPets = () => {
         flexWrap="wrap"
         justifyContent="center"
         width="90%"
-        //mx="auto"
+        mx="auto"
         sx={{ mt: 4 }}
       >
-        {pets.length > 0 &&
+        {pets.length > 0 ? (
           pets.map((pet) => {
             return (
               <CardsPets
@@ -148,7 +155,15 @@ const PublicationsPets = () => {
                 loadingImg={loadingImg}
               />
             );
-          })}
+          })
+        ) : (
+          <Stack alignItems={"center"}>
+            <StorageIcon color="secondary" sx={{ fontSize: 100 }} />
+            <Typography textAlign={"center"} color={"secondary"} variant="h6">
+              Sin resultados
+            </Typography>
+          </Stack>
+        )}
       </Stack>
 
       <Stack alignItems={"center"} mt={4}>
@@ -168,6 +183,8 @@ const PublicationsPets = () => {
           id={idPets}
         />
       )}
+
+      <Loading open={loadingSearch} />
     </Box>
   );
 };

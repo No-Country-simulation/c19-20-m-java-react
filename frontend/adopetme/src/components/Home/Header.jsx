@@ -1,27 +1,28 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import InputBase from '@mui/material/InputBase';
-import logoHeader from '../../../src/components/shared/logo-header.png';
-import LoginModal from './LoginModal';  
-import RegisterModal from './RegisterModal';  
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-// import { useSearch } from '../../contexts/SearchContext'; // IMPORTACIÓN CONTEXTO 
+import * as React from "react";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import SearchIcon from "@mui/icons-material/Search";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import InputBase from "@mui/material/InputBase";
+import logoHeader from "../../../src/components/shared/logo-header.png";
+import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../../contexts/SearchContext"; // IMPORTACIÓN CONTEXTO
+import { Paper } from "@mui/material";
+//import { SearchProvider } from "../../contexts/SearchContext";
 
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
@@ -65,15 +66,25 @@ export default function PrimarySearchAppBar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [isLoginOpen, setLoginOpen] = React.useState(false);
   const [isRegisterOpen, setRegisterOpen] = React.useState(false);
+  const [valueSearch, setValueSearch] = React.useState();
   const navigate = useNavigate();
-  // const { setSearchTerm, fetchPets } = useSearch(); // Obtener funciones del contexto
-  
+  const { setSearchTerm, fetchPets } = useSearch(); // Obtener funciones del contexto
 
-  // const handleSearch = () => {
-  //   setSearchTerm(searchInput);
-  //   fetchPets(searchInput);
-  //   navigate('/publicaciones');
+  // const handleSearch = (event) => {
+  //   //const value = event.target.value;
+  //   // setSearchTerm(searchInput);
+  //   //fetchPets(searchInput);
+  //   //navigate("/publicaciones");
   // };
+
+  const handleSubmitSearch = (e) => {
+    e.preventDefault();
+    if (valueSearch) {
+      fetchPets(valueSearch);
+      navigate("/publicaciones");
+    }
+    console.log("submit search", valueSearch);
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -104,12 +115,12 @@ export default function PrimarySearchAppBar() {
     setLoginOpen(false);
   };
 
-  const handleOpenRegister = () => {  
+  const handleOpenRegister = () => {
     setRegisterOpen(true);
-    handleCloseLogin();  
+    handleCloseLogin();
   };
 
-  const handleCloseRegister = () => {  
+  const handleCloseRegister = () => {
     setRegisterOpen(false);
   };
 
@@ -130,7 +141,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => navigate('/profile')}>Mi Perfil</MenuItem>
+      <MenuItem onClick={() => navigate("/profile")}>Mi Perfil</MenuItem>
       <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
     </Menu>
   );
@@ -154,7 +165,7 @@ export default function PrimarySearchAppBar() {
     >
       {user ? (
         <>
-          <MenuItem onClick={() => navigate('/profile')}>
+          <MenuItem onClick={() => navigate("/profile")}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -180,26 +191,24 @@ export default function PrimarySearchAppBar() {
           </MenuItem>
         </>
       ) : (
-        <>
-          <MenuItem onClick={handleOpenLogin}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Typography
-              variant="body1"
-              component="p"
-              sx={{ fontWeight: "bold", ml: 1 }}
-            >
-              Registro / Inicio de Sesión
-            </Typography>
-          </MenuItem>
-        </>
+        <MenuItem onClick={handleOpenLogin}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ fontWeight: "bold", ml: 1 }}
+          >
+            Registro / Inicio de Sesión
+          </Typography>
+        </MenuItem>
       )}
     </Menu>
   );
@@ -225,16 +234,23 @@ export default function PrimarySearchAppBar() {
               }}
             />
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="¿Qué quieres adoptar?"
-              inputProps={{ 'aria-label': 'search' }}
-              // onKeyDown={handleSearch} // Manejar la búsqueda en Enter
-            />
-          </Search>
+          <Paper
+            elevation={0}
+            sx={{ bgcolor: "transparent", p: 0, m: 0 }}
+            component="form"
+            onSubmit={handleSubmitSearch}
+          >
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="¿Qué quieres adoptar?"
+                inputProps={{ "aria-label": "search" }}
+                onKeyDown={(event) => setValueSearch(event.target.value)} // Manejar la búsqueda en Enter
+              />
+            </Search>
+          </Paper>
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{ display: { xs: "none", md: "flex", alignItems: "center" } }}
@@ -257,13 +273,13 @@ export default function PrimarySearchAppBar() {
               <>
                 <Button
                   sx={{
-                    color: 'black',
-                    backgroundColor: 'white',
-                    borderColor: 'black',
+                    color: "black",
+                    backgroundColor: "white",
+                    borderColor: "black",
                     borderWidth: 1,
-                    borderStyle: 'solid',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderStyle: "solid",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.8)",
                     },
                     marginRight: 2,
                   }}
@@ -273,13 +289,13 @@ export default function PrimarySearchAppBar() {
                 </Button>
                 <Button
                   sx={{
-                    color: 'white',
-                    backgroundColor: 'secondary.main',
-                    borderColor: 'black',
+                    color: "white",
+                    backgroundColor: "secondary.main",
+                    borderColor: "black",
                     borderWidth: 1,
-                    borderStyle: 'solid',
-                    '&:hover': {
-                      backgroundColor: 'rgba(236, 64, 122, 0.8)',
+                    borderStyle: "solid",
+                    "&:hover": {
+                      backgroundColor: "rgba(236, 64, 122, 0.8)",
                     },
                   }}
                   onClick={handleOpenLogin}
@@ -314,6 +330,3 @@ export default function PrimarySearchAppBar() {
     </Box>
   );
 }
-
-
-

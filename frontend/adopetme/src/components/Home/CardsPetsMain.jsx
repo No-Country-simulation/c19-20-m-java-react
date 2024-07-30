@@ -32,8 +32,9 @@ const CardsPetsMain = () => {
     const getPets = async () => {
       const response = await fetch("https://service01.mercelab.com/pet");
       const result = await response.json();
+      console.log("pets", result);
       setLoading(false);
-      const resultSlice = result.data.slice(0, 6);
+      const resultSlice = result.data.slice(0, 8);
       setPets(resultSlice);
     };
     getPets();
@@ -46,7 +47,7 @@ const CardsPetsMain = () => {
       const result = await response.json();
       console.log(result);
       setLoadingImg(false);
-      const resultSlice = result.data.slice(0, 6);
+      const resultSlice = result.data.slice(0, 8);
       setImgPets(resultSlice);
     };
     getPets();
@@ -99,7 +100,7 @@ const CardsPetsMain = () => {
         useFlexGap
         flexWrap="wrap"
         justifyContent="center"
-        width="70%"
+        width="80%"
         mx="auto"
         sx={{ mt: 4 }}
       >

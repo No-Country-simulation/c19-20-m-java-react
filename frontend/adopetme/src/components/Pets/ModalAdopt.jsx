@@ -11,10 +11,13 @@ import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
+import IconButton from "@mui/material/IconButton";
 
 //Material Icons
 import PetsIcon from "@mui/icons-material/Pets";
 import Divider from "@mui/material/Divider";
+import CloseIcon from "@mui/icons-material/Close";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 import { Carousel } from "react-responsive-carousel";
 
@@ -23,6 +26,7 @@ import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
 
 //Img
 import noPhoto from "../../assets/img/nophoto.png";
+import ProfileContact from "./ProfileContact";
 
 const ModalAdopt = ({ open, handleCloseModal, id }) => {
   //*****************************************************USE STATE**************************************************************** */
@@ -32,6 +36,9 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
   const [indexImgZoom, setIndexImgZoom] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingImg, setLoadingImg] = useState(false);
+
+  const [openModalContact, setOpenModalContact] = useState(false);
+  const [idContact, setIdContact] = useState(id);
 
   //*****************************************************USE EFFECT**************************************************************** */
 
@@ -86,14 +93,30 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
     setOpenZoom(false);
   };
 
+  const handleCloseModalContact = () => {
+    setOpenModalContact(false);
+  };
+
   return (
     <React.Fragment>
       <Dialog
         open={open}
         onClose={handleCloseModal}
-        fullWidth={true}
+        //fullWidth={true}
         maxWidth={"md"}
       >
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {loading ? (
           <DialogContent sx={{ py: 6 }}>
             <Grid container columnSpacing={3}>
@@ -423,7 +446,11 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                     alignItems={"center"}
                     mt={12}
                   >
-                    <Stack justifyContent={"center"} alignItems={"center"}>
+                    <Stack
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      flexDirection={"column-reverse"}
+                    >
                       <Typography
                         variant="body"
                         color="primary"
@@ -446,7 +473,11 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                       flexItem
                       sx={{ mx: 2 }}
                     />
-                    <Stack justifyContent={"center"} alignItems={"center"}>
+                    <Stack
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      flexDirection={"column-reverse"}
+                    >
                       <Typography
                         variant="body"
                         color="primary"
@@ -460,7 +491,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         fontWeight="fontWeightBold"
                         mt={-0.5}
                       >
-                        Tipo de mascota
+                        Mascota
                       </Typography>
                     </Stack>
                     <Divider
@@ -469,7 +500,11 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                       flexItem
                       sx={{ mx: 2 }}
                     />
-                    <Stack justifyContent={"center"} alignItems={"center"}>
+                    <Stack
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      flexDirection={"column-reverse"}
+                    >
                       <Typography
                         variant="body"
                         color="primary"
@@ -526,8 +561,10 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         size="medium"
                         color="primary"
                         variant="contained"
+                        onClick={() => setOpenModalContact(true)}
+                        startIcon={<RemoveRedEyeIcon />}
                       >
-                        Contacto
+                        Ver contacto
                       </Button>
                     </Box>
                   </Grid>
@@ -536,33 +573,13 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
             </Grid>
           </DialogContent>
         )}
-
-        <DialogActions>
-          {loading ? (
-            <Skeleton variant="rounded">
-              <Button
-                sx={{ color: "white" }}
-                color="secondary"
-                variant="contained"
-                onClick={handleCloseModal}
-                size="medium"
-              >
-                Cancelar
-              </Button>
-            </Skeleton>
-          ) : (
-            <Button
-              sx={{ color: "white" }}
-              color="secondary"
-              variant="contained"
-              onClick={handleCloseModal}
-              size="medium"
-            >
-              Cancelar
-            </Button>
-          )}
-        </DialogActions>
       </Dialog>
+
+      <ProfileContact
+        open={openModalContact}
+        handleClose={handleCloseModalContact}
+        id={idContact}
+      />
 
       {indexImgZoom && (
         <Dialog
