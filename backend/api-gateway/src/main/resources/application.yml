@@ -80,3 +80,21 @@ spring:
           uri: lb://IMAGE-SERVICE
           predicates:
             - Path=/image/**
+
+        # Configuration for country-service
+        - id: country-service
+          uri: lb://COUNTRY-SERVICE
+          predicates:
+            - Path=/country/**
+
+        # Configuration for state-service
+        - id: state-service
+          uri: lb://STATE-SERVICE
+          predicates:
+            - Path=/state/**
+
+        # Configuration for city-service
+        - id: city-service
+          uri: lb://CITY-SERVICE
+          predicates:
+            - Path=/city/**
