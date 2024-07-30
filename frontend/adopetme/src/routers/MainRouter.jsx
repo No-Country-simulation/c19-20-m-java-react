@@ -9,6 +9,7 @@ import MainLayout from "../Pages/layout/MainLayout";
 import AdoptPets from "../components/Pets/AdoptPets";
 import PetForm from "../Pages/PetForm";
 import UserProfile from "../components/User/UserProfile";
+import EditPetModal from "../components/User/EditPetModal";
 
 
 const MainRouter = () => {
@@ -22,6 +23,7 @@ const MainRouter = () => {
             <Route path="/adopcion" element={<AdoptPets />} />
             <Route path="/registro-mascotas" element={<PetForm />} />
             <Route path="/profile" element={<UserProfile/>} />
+            <Route path="/editor-mascotas-info" element={<EditPetModal/>} />
           </Routes>
         </MainLayout>
       </SearchProvider>

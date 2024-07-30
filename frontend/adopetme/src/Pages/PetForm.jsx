@@ -61,8 +61,8 @@ const PetForm = () => {
       return;
     }
 
-    if (countWords(description) > 500) {
-      setError("La descripción no puede exceder 500 palabras.");
+    if (description.length < 50 || description.length > 250) {
+      setError("La descripción debe tener entre 50 y 250 caracteres.");
       return;
     }
 
@@ -198,9 +198,9 @@ const PetForm = () => {
               margin="normal"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              inputProps={{ maxLength: 500 }}
+              inputProps={{ minLength: 50, maxLength: 250 }} // Rango de caracteres
               required
-              helperText="La descripción no puede exceder 500 palabras."
+              helperText="La descripción debe tener entre 50 y 250 caracteres."
             />
 
             <Button
