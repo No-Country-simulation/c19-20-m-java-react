@@ -9,7 +9,7 @@ public interface UserDetailsDAO {
 
     Optional<UserDetails> getUserDetailsByID(int id);
 
-    UserDetails save(UserDetails userDetails);
+    Integer save(UserDetails userDetails);
 
     void delete (int idUserDetails);
 }

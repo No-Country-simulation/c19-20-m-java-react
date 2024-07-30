@@ -1,4 +1,6 @@
 package com.adopetme.user_details_service.persistence.config;
+import com.adopetme.user_details_service.domain.dao.CityDAO;
+import com.adopetme.user_details_service.domain.dao.CountryDAO;
 import com.adopetme.user_details_service.domain.dao.UserDetailsDAO;
 import com.adopetme.user_details_service.domain.service.CreateUserService;
 import com.adopetme.user_details_service.domain.service.DeleteUserByIdService;
@@ -14,8 +16,8 @@ public class Config {
         return new GetUserByIdService(userDetailsDAO);
     }
     @Bean
-    public CreateUserService createUserService (UserDetailsDAO userDetailsDAO){
-        return new CreateUserService(userDetailsDAO);}
+    public CreateUserService createUserService (UserDetailsDAO userDetailsDAO, CountryDAO countryDAO, CityDAO cityDAO){
+        return new CreateUserService(userDetailsDAO, countryDAO, cityDAO);}
     @Bean
     public DeleteUserByIdService deleteUserByIdService(UserDetailsDAO userDetailsDAO, GetUserByIdService getUserByIdService){
         return new DeleteUserByIdService(userDetailsDAO,getUserByIdService);

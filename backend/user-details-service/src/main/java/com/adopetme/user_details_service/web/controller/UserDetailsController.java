@@ -4,7 +4,6 @@ import com.adopetme.user_details_service.domain.UserDetails;
 import com.adopetme.user_details_service.domain.service.CreateUserService;
 import com.adopetme.user_details_service.domain.service.DeleteUserByIdService;
 import com.adopetme.user_details_service.domain.service.GetUserByIdService;
-import com.adopetme.user_details_service.domain.service.UpdateUserByIdService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -33,16 +32,21 @@ public class UserDetailsController {
             @ApiResponse(code = 404, message = "User not found")
     })
     public ResponseEntity<UserDetails> getUserDetails(
-            @ApiParam(value = "The id of the product", required = true, example = "7") @PathVariable("id") int id) {
+            @ApiParam(value = "The id of the user", required = true, example = "7") @PathVariable("id") int id) {
         return getUserByIdService.execute(id)
                 .map(userDetails -> new ResponseEntity<>(userDetails, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/save")
+   /* @PostMapping("/save")
     public ResponseEntity<UserDetails> save(@RequestBody UserDetails userDetails) {
         return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
-    }
+    }*/
+   @PostMapping("/save")
+   public ResponseEntity<Integer> save(@RequestBody UserDetails userDetails) {
+       return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
+   }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable("id") int userDetailsId) {
