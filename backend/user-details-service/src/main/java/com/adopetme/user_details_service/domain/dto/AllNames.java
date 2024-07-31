@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AllNames {
 
-    private String countryName;
-    private String stateName;
-    private String cityName;
+    private String name_country;
+    private String name_state;
+    private String name_city;
 
 }
