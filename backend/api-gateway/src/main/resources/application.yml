@@ -83,6 +83,11 @@ spring:
           uri: lb://SPECIE-SERVICE
           predicates:
             - Path=/species/**
+        # Configuration for specie-service
+        - id: specie-service-get
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/breed/**
         # Configuration for image-service
         - id: image-service-get
           uri: lb://IMAGE-SERVICE
