@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:5054/eureka
+      defaultZone: http://localhost:5061/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -42,6 +42,15 @@ spring:
           uri: lb://PET-SERVICE
           predicates:
             - Path=/pet/petimage
+        - id: pet-service-get-search
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/search
+        - id: pet-service-get-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
+            - Method=GET
         - id: pet-service-get
           uri: lb://PET-SERVICE
           predicates:
