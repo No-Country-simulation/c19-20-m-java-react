@@ -19,7 +19,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "../../contexts/SearchContext"; // IMPORTACIÓN CONTEXTO
 import { Paper } from "@mui/material";
-//import { SearchProvider } from "../../contexts/SearchContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -117,6 +116,16 @@ export default function PrimarySearchAppBar() {
     setRegisterOpen(false);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const handleProfile = () => {
+    navigate('/profile');
+    handleMenuClose();
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -134,8 +143,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => navigate("/profile")}>Mi Perfil</MenuItem>
-      <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+      <MenuItem onClick={handleProfile}>Mi Perfil</MenuItem>
+      <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
     </Menu>
   );
 
@@ -158,75 +167,75 @@ export default function PrimarySearchAppBar() {
     >
       {user ? (
         <>
-          <MenuItem onClick={() => navigate("/profile")}>
+          <MenuItem onClick={handleProfile}>
             <IconButton
               size="large"
               aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
+              aria-controls={menuId}
               aria-haspopup="true"
               color="inherit"
             >
               <AccountCircle />
             </IconButton>
-            <Typography variant="body1">Mi Perfil</Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ fontWeight: 'bold', ml: 1 }}
+            >
+              Mi Perfil
+            </Typography>
           </MenuItem>
-          <MenuItem onClick={logout}>
+          <MenuItem onClick={handleLogout}>
             <IconButton
               size="large"
               aria-label="log out"
-              aria-controls="primary-search-account-menu"
+              aria-controls={menuId}
               aria-haspopup="true"
               color="inherit"
             >
               <AccountCircle />
             </IconButton>
-            <Typography variant="body1">Cerrar Sesión</Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ fontWeight: 'bold', ml: 1 }}
+            >
+              Cerrar Sesión
+            </Typography>
           </MenuItem>
         </>
       ) : (
-        <MenuItem onClick={handleOpenLogin}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <Typography
-            variant="body1"
-            component="p"
-            sx={{ fontWeight: "bold", ml: 1 }}
-          >
-            Registro / Inicio de Sesión
-          </Typography>
-        </MenuItem>
+        <>
+          <MenuItem onClick={handleOpenRegister}>
+            <Button variant="outlined" sx={{ color: 'black', borderColor: 'black', width: '100%' }}>
+              Regístrate
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleOpenLogin}>
+            <Button variant="contained" sx={{ backgroundColor: 'secondary.main', color: 'primary.main', width: '100%' }}>
+              Iniciar Sesión
+            </Button>
+          </MenuItem>
+        </>
       )}
     </Menu>
   );
 
   return (
-    <Box sx={{ flexGrow: 1, zIndex: 1, width: 1 }} position="absolute">
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            <img
-              src={logoHeader}
-              alt="Logo"
-              style={{
-                height: "auto",
-                maxHeight: "100%",
-                width: "auto",
-                maxWidth: "100%",
-              }}
-            />
-          </Typography>
+          <Box
+            component="img"
+            src={logoHeader}
+            alt="Logo"
+            sx={{
+              height: 40,
+              cursor: 'pointer',
+              display: { xs: 'none', sm: 'block' },
+            }}
+            onClick={() => navigate('/')}
+          />
           <Paper
             elevation={0}
             sx={{ bgcolor: "transparent", p: 0, m: 0 }}
@@ -240,14 +249,13 @@ export default function PrimarySearchAppBar() {
               <StyledInputBase
                 placeholder="¿Qué quieres adoptar?"
                 inputProps={{ "aria-label": "search" }}
-                //onKeyDown={(event) => setValueSearch(event.target.value)} // Manejar la búsqueda en Enter
                 onChange={(event) => {
                   setValueSearch(event.target.value);
                   if (!event.target.value) {
                     setSearchTerm("");
                     setFilteredPets([]);
                   }
-                }} // Manejar la búsqueda en Enter
+                }}
               />
             </Search>
           </Paper>

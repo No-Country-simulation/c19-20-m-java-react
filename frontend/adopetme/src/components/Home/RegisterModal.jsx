@@ -10,7 +10,9 @@ import {
   Modal,
   MenuItem,
   IconButton,
-  Alert
+  Alert,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -52,6 +54,8 @@ const validationSchema = yup.object({
 const RegisterModal = ({ open, handleClose }) => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // 'success' o 'error'
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSubmit = async (values, { setSubmitting }) => {
     console.log('Enviando datos:', values);
@@ -74,7 +78,7 @@ const RegisterModal = ({ open, handleClose }) => {
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box sx={style}>
+      <Box sx={style(fullScreen)}>
         <Box display="flex" justifyContent="flex-end">
           <IconButton onClick={handleClose}>
             <CloseIcon />
@@ -197,17 +201,18 @@ const RegisterModal = ({ open, handleClose }) => {
   );
 };
 
-const style = {
+const style = (fullScreen) => ({
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: fullScreen ? '90%' : 400,
+  maxHeight: '90vh',
+  overflowY: 'auto',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-};
+});
 
 export default RegisterModal;
-
