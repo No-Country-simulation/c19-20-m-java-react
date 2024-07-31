@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "country-service", url = "http://localhost:8087")
+@FeignClient(name = "country-service", url = "http://localhost:5057")
 public interface CountryServiceClient {
 
     @GetMapping("/country/idsbyname/{namecountry}/{namestate}/{namecity}")
