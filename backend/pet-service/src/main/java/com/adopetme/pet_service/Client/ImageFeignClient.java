@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.adopetme.pet_service.Dto.ImageDto;
 import com.adopetme.pet_service.Dto.ImagesPetDto;
 
-@FeignClient(name = "image-service", url = "http://localhost:5062")
+@FeignClient(name = "image-service", url = "https://service12.mercelab.com")
 public interface ImageFeignClient {
 
         @PostMapping(value = "/image/savewithimage/{idPet}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
