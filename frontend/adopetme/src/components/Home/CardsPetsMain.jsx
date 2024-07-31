@@ -31,16 +31,25 @@ const CardsPetsMain = () => {
   useEffect(() => {
     setLoading(true);
     const getPets = async () => {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/pet/petimage`
-      );
-      const result = await response.json();
-      setLoading(false);
-      const resultSlice = result.data.slice(0, 8);
-      setPets(resultSlice);
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/pet/petimage`
+        );
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setLoading(false);
+        const resultSlice = result.data.slice(0, 8);
+        setPets(resultSlice);
+      } catch (error) {
+        console.error("Failed to fetch pets:", error);
+        setLoading(false);
+      }
     };
     getPets();
   }, []);
+
 
   //*****************************************************FUNCTIONS**************************************************************** */
 
