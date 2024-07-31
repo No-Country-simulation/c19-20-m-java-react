@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@FeignClient(name = "state-service", url = "http://localhost:8088")
+@FeignClient(name = "state-service", url = "http://localhost:5058")
 public interface StateFeingClient {
     @GetMapping("/state/all/{idcountry}")
     List<StateDTO> getAllStatesByCountry(@PathVariable("idcountry") @Valid Long idcountry);

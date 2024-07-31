@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "city-service", url = "http://localhost:8089")
+@FeignClient(name = "city-service", url = "http://localhost:5059")
 public interface CityFeingClient {
     @GetMapping("/city/all/{idcountry}/{idstate}")
     List<CityDTO> getAllCitiesByCountryAndState(@PathVariable("idcountry") @Valid Long idcountry, @PathVariable("idstate") @Valid Long idstate);
