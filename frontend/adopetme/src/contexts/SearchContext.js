@@ -11,19 +11,33 @@ export const SearchProvider = ({ children }) => {
   const fetchPets = async (value) => {
     try {
       setLoading(true);
+      // const response = await axios.get(
+      //   `https://service01.mercelab.com/pet/search?param=${value}`
+      // );
+
       const response = await axios.get(
-        `https://service01.mercelab.com/pet/search?param=${value}`
+        `${process.env.REACT_APP_API_URL}/pet/search?param=${value}`
       );
+
       setLoading(false);
       setFilteredPets(response.data.data);
     } catch (error) {
+      setLoading(false);
+      setFilteredPets([]);
       console.error("Error fetching pets:", error);
     }
   };
 
   return (
     <SearchContext.Provider
-      value={{ searchTerm, setSearchTerm, filteredPets, fetchPets, loading }}
+      value={{
+        searchTerm,
+        setSearchTerm,
+        filteredPets,
+        fetchPets,
+        loading,
+        setFilteredPets,
+      }}
     >
       {children}
     </SearchContext.Provider>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 //Material UI
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -47,11 +46,14 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
       console.log("ID", id);
       setLoading(true);
       const response = await fetch(`https://service01.mercelab.com/pet/${id}`);
+      // const response = await fetch(
+      //   `${process.env.REACT_APP_API_URL}/pet/${id}`
+      // );
+
       const result = await response.json();
       setLoading(false);
-      console.log("singlePets", result.data[0]);
-
       setSinglePets(result.data[0]);
+      setIdContact(result.data[0].createdBy);
     };
 
     getSinglePets();
@@ -64,6 +66,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
         const response = await fetch(
           `https://service02.mercelab.com/image/pet/${id}`
         );
+
         const result = await response.json();
         setLoadingImg(false);
         if (result.status === 404) {
@@ -575,11 +578,13 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
         )}
       </Dialog>
 
-      <ProfileContact
-        open={openModalContact}
-        handleClose={handleCloseModalContact}
-        id={idContact}
-      />
+      {idContact && (
+        <ProfileContact
+          open={openModalContact}
+          handleClose={handleCloseModalContact}
+          id={idContact}
+        />
+      )}
 
       {indexImgZoom && (
         <Dialog
