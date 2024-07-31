@@ -1,9 +1,11 @@
 package com.adopetme.user_details_service.web.controller;
 
 import com.adopetme.user_details_service.domain.UserDetails;
+import com.adopetme.user_details_service.domain.dto.AllNames;
 import com.adopetme.user_details_service.domain.service.CreateUserService;
 import com.adopetme.user_details_service.domain.service.DeleteUserByIdService;
 import com.adopetme.user_details_service.domain.service.GetUserByIdService;
+import com.adopetme.user_details_service.domain.service.LocationDetailsService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -18,12 +20,21 @@ import org.springframework.web.bind.annotation.*;
 public class UserDetailsController {
 
     @Autowired
-    private GetUserByIdService getUserByIdService;
+    private final GetUserByIdService getUserByIdService;
     @Autowired
-    private CreateUserService createUserService;
+    private final CreateUserService createUserService;
+    @Autowired
+    private final DeleteUserByIdService deleteUserByIdService;
+    @Autowired
+    private final LocationDetailsService locationDetailsService;
 
-    @Autowired
-    private DeleteUserByIdService deleteUserByIdService;
+    public UserDetailsController(GetUserByIdService getUserByIdService, CreateUserService createUserService, DeleteUserByIdService deleteUserByIdService, LocationDetailsService locationDetailsService) {
+        this.getUserByIdService = getUserByIdService;
+        this.createUserService = createUserService;
+        this.deleteUserByIdService = deleteUserByIdService;
+        this.locationDetailsService = locationDetailsService;
+    }
+
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Search a product with an ID")
@@ -38,10 +49,7 @@ public class UserDetailsController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-   /* @PostMapping("/save")
-    public ResponseEntity<UserDetails> save(@RequestBody UserDetails userDetails) {
-        return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
-    }*/
+
    @PostMapping("/save")
    public ResponseEntity<Integer> save(@RequestBody UserDetails userDetails) {
        return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
@@ -55,6 +63,14 @@ public class UserDetailsController {
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/namesbyid/{idcountry}/{idstate}/{idcity}")
+    public ResponseEntity<AllNames> getLocationNames(@PathVariable("idcountry") Long countryId,
+                                                         @PathVariable("idstate") Long stateId,
+                                                         @PathVariable("idcity") Long cityId) {
+        AllNames locationNames = locationDetailsService.getLocationNamesById(countryId, stateId, cityId);
+        return ResponseEntity.ok(locationNames);
     }
 
 }

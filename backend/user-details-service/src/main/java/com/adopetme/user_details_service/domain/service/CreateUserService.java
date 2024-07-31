@@ -1,11 +1,12 @@
 package com.adopetme.user_details_service.domain.service;
 
 import com.adopetme.user_details_service.domain.UserDetails;
-import com.adopetme.user_details_service.domain.dao.CityDAO;
-import com.adopetme.user_details_service.domain.dao.CountryDAO;
 import com.adopetme.user_details_service.domain.dao.UserDetailsDAO;
+import com.adopetme.user_details_service.domain.dto.IdsAll;
 import com.adopetme.user_details_service.domain.exception.UserExistException;
+import com.adopetme.user_details_service.persistence.webclient.CountryServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 public class CreateUserService {
 
@@ -13,28 +14,29 @@ public class CreateUserService {
     private  final UserDetailsDAO userDetailsDAO;
 
     @Autowired
-    private final CountryDAO countryDAO;
+    private final CountryServiceClient countryServiceClient;
 
-    @Autowired
-    private final CityDAO cityDAO;
-
-    public CreateUserService(UserDetailsDAO userDetailsDAO, CountryDAO countryDAO, CityDAO cityDAO) {
+    public CreateUserService(UserDetailsDAO userDetailsDAO, CountryServiceClient countryServiceClient) {
         this.userDetailsDAO = userDetailsDAO;
-        this.countryDAO = countryDAO;
-        this.cityDAO = cityDAO;
+        this.countryServiceClient = countryServiceClient;
     }
+
 
     public Integer execute(UserDetails userDetails) {
 
-        int idCountry = countryDAO.getIdCountry(userDetails.getCountry());
-        int idCity = cityDAO.getIdCity(userDetails.getCity());
+        ResponseEntity<IdsAll> response = countryServiceClient.getIdsByName(userDetails.getCountry(), userDetails.getState(), userDetails.getCity());
+        IdsAll idsAll = response.getBody();
+
+        if (idsAll != null) {
+            userDetails.setCountry(String.valueOf(idsAll.getId_country()));
+            userDetails.setState(String.valueOf(idsAll.getId_state()));
+            userDetails.setCity(String.valueOf(idsAll.getId_city()));
+        }
 
         if(userDetailsDAO.getUserDetailsByID(userDetails.getId()).isPresent()){
             throw new UserExistException("El usuario ya esta registrado");
         }
 
-        userDetails.setCity(String.valueOf(idCity));
-        userDetails.setCountry(String.valueOf(idCountry));
 
         return userDetailsDAO.save(userDetails);
     }

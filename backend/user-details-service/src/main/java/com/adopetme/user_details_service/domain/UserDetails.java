@@ -25,9 +25,10 @@ public class UserDetails {
     @NotNull(message = "El correo electrónico no puede ser nulo")
     private String email;
 
-
     @NotNull(message = "El campo country no puede ser nulo")
     private String country;
+    @NotNull(message = "El campo sate no puede ser nulo")
+    private String state;
     @NotNull(message = "El campo country no puede ser nulo")
     private String city;
 
