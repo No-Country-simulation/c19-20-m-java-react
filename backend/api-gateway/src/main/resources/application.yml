@@ -30,9 +30,7 @@ spring:
         - id: user-details-service
           uri: lb://USER-DETAILS-SERVICE
           predicates:
-            - Path=/users_details/**
-          filters:
-            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
+            - Path=/users_details/** #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
