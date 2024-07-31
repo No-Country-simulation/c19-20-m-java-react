@@ -26,7 +26,7 @@ spring:
       client:
         config:
           userdetailsapi:
-            url: http://localhost:433/users_details
+            url: http://localhost:5056/user-details-service
 
 jwt:
   secret: aEPZLz7azPBLr4G5sfcjBzDtpEExdBZS
