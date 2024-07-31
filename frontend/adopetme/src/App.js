@@ -1,13 +1,8 @@
-import NavBar from "./Pages/layout/navbar";
-import Home from "./Pages/Home";
+import React from "react";
+import MainRouter from "./routers/MainRouter";
 
 function App() {
-  return (
-    <div className="App">
-      <NavBar />
-      <Home />
-    </div>
-  );
+  return <MainRouter />;
 }
 
 export default App;
