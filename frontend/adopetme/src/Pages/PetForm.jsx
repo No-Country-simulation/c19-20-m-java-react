@@ -17,6 +17,7 @@ import {
 import { styled } from "@mui/system";
 import { useTheme } from "@mui/material";
 import Loading from "../components/shared/Loading";
+import { useNavigate } from "react-router-dom";
 
 const FormWrapper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -43,6 +44,14 @@ const PetForm = () => {
       setError("Solo puedes subir un máximo de 4 fotografías.");
     }
   };
+
+  const navigate = useNavigate();
+  const authToken = localStorage.getItem('token');
+
+    if (!authToken) {
+      navigate('/not-found');
+      return;
+    }
 
   const validateName = (name) => {
     const namePattern = /^[A-Za-z\s]+$/;
@@ -90,11 +99,14 @@ const PetForm = () => {
     files.map((file) => formData.append("image", file));
 
     try {
+      console.log("url", process.env.REACT_APP_API_URL);
+      
       // Simulación de envío de datos a una base de datos
       setLoading(true);
       const response = await fetch(
-        "https://service01.mercelab.com/pet/savewithimage",
+        `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
         {
+          Authorization: `Bearer ${authToken}`,
           method: "POST",
           body: formData,
         }
