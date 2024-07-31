@@ -79,6 +79,8 @@ public class PetsDetailsDto {
     @NotNull
     private Long idBreed;
 
+    private Long createdBy;
+
     private List<ImageDto> image;
 
 }

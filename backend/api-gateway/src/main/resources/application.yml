@@ -46,11 +46,10 @@ spring:
           uri: lb://PET-SERVICE
           predicates:
             - Path=/pet/search
-        - id: pet-service-get-id
+        - id: pet-service-get-by-id
           uri: lb://PET-SERVICE
           predicates:
-            - Path=/pet/**
-            - Method=GET
+            - Path=/pet/{id}
         - id: pet-service-get
           uri: lb://PET-SERVICE
           predicates:

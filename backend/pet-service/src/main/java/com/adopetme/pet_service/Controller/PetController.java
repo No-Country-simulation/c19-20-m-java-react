@@ -78,8 +78,7 @@ public class PetController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<GenericResponseRecord<PetsDetailsDto>> search(@RequestHeader("Authorization") String token,
-            @RequestParam("param") String param)
+    public ResponseEntity<GenericResponseRecord<PetsDetailsDto>> search(@RequestParam("param") String param)
             throws Exception {
         List<PetsDetailsDto> petsDetailsDto = petService.search(param);
         return ResponseEntity.ok(new GenericResponseRecord<>(200, "success", new ArrayList<>(petsDetailsDto)));
