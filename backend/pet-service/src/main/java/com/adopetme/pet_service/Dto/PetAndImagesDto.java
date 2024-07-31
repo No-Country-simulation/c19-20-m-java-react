@@ -1,7 +1,6 @@
 package com.adopetme.pet_service.Dto;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.DecimalMax;
@@ -78,6 +77,8 @@ public class PetAndImagesDto {
 
     @NotNull
     private Long idBreed;
+
+    private Long CreatedBy;
 
     private List<ImageDto> image;
 }
