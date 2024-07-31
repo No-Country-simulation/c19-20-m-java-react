@@ -1,21 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import {
-  Box,
-  Typography,
-  Avatar,
-  Grid,
-  Paper,
-  Stack,
-  Divider,
-  IconButton,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 
 //Icon
 import EmailIcon from "@mui/icons-material/Email";
@@ -23,54 +17,42 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-// import { makeStyles } from "@material-ui/core";
 
-import { SxProps } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//   return <Slide direction="right" ref={ref} {...props} />;
-// });
 
 const ProfileContact = ({ open, handleClose, id }) => {
   const navigate = useNavigate();
-  // const sx: SxProps = {
-  //   "& .MuiDialog-container": {
-  //     alignItems: "flex-start",
-  //   },
-  // };
+
+  const [profile, setProfile] = useState();
+
+  useEffect(() => {
+    const getProfileContact = async () => {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/users_details/${id}`
+      );
+      const result = await response.json();
+      setProfile(result);
+    };
+
+    getProfileContact();
+  });
+
   return (
     <Dialog
-      //sx={sx}
       sx={{
         zIndex: 1500,
         "& .MuiDialog-paper": {
-          width: "20%",
           minHeight: 445,
         },
         "& .MuiDialog-container": {
           bgcolor: "transparent",
-          //flexWrap: "wrap",
-          //justifyContent: "flex-end",
-          // alignItems: "flex-start",
-          //  mr: 11,
         },
       }}
-      //PaperProps={{ sx: { mt: "50px" } }}
       open={open}
-      //  TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
     >
-      {/* <DialogTitle
-        textAlign={"center"}
-        sx={{ m: 0, p: 2 }}
-        id="customized-dialog-title"
-        variant="h5"
-      >
-        Información de Contacto
-      </DialogTitle> */}
       <IconButton
         aria-label="close"
         onClick={handleClose}

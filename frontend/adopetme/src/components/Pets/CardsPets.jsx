@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
-import { IconButton, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import huesito from "../../assets/img/huesito.png";
 
@@ -113,7 +113,7 @@ const CardsPets = ({
                   width={20}
                   height={20}
                 >
-                  {gender === "Macho" ? (
+                  {gender === "MACHO" ? (
                     <MaleIcon
                       fontSize="large"
                       color="primary"
@@ -289,7 +289,7 @@ const CardsPets = ({
                 alignContent="flex-start"
                 columnGap={2}
               >
-                {gender === "Macho" ? (
+                {gender === "MACHO" ? (
                   <MaleIcon
                     fontSize="large"
                     color="primary"

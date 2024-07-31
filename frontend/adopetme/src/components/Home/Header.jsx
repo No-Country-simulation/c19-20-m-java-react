@@ -68,22 +68,15 @@ export default function PrimarySearchAppBar() {
   const [isRegisterOpen, setRegisterOpen] = React.useState(false);
   const [valueSearch, setValueSearch] = React.useState();
   const navigate = useNavigate();
-  const { setSearchTerm, fetchPets } = useSearch(); // Obtener funciones del contexto
-
-  // const handleSearch = (event) => {
-  //   //const value = event.target.value;
-  //   // setSearchTerm(searchInput);
-  //   //fetchPets(searchInput);
-  //   //navigate("/publicaciones");
-  // };
+  const { setSearchTerm, fetchPets, setFilteredPets } = useSearch(); // Obtener funciones del contexto
 
   const handleSubmitSearch = (e) => {
     e.preventDefault();
     if (valueSearch) {
+      setSearchTerm(valueSearch);
       fetchPets(valueSearch);
       navigate("/publicaciones");
     }
-    console.log("submit search", valueSearch);
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -247,7 +240,14 @@ export default function PrimarySearchAppBar() {
               <StyledInputBase
                 placeholder="¿Qué quieres adoptar?"
                 inputProps={{ "aria-label": "search" }}
-                onKeyDown={(event) => setValueSearch(event.target.value)} // Manejar la búsqueda en Enter
+                //onKeyDown={(event) => setValueSearch(event.target.value)} // Manejar la búsqueda en Enter
+                onChange={(event) => {
+                  setValueSearch(event.target.value);
+                  if (!event.target.value) {
+                    setSearchTerm("");
+                    setFilteredPets([]);
+                  }
+                }} // Manejar la búsqueda en Enter
               />
             </Search>
           </Paper>

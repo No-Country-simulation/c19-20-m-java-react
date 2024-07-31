@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+//Context
 import { useSearch } from "../../contexts/SearchContext"; // Importar el contexto
 
 //Material Ui
@@ -13,6 +15,7 @@ import StorageIcon from "@mui/icons-material/Storage";
 //Components
 import CardsPets from "./CardsPets";
 import ModalAdopt from "./ModalAdopt";
+import SkeletonCards from "./SkeletonCards";
 
 //Util
 import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
@@ -26,74 +29,48 @@ import Loading from "../shared/Loading";
 const PublicationsPets = () => {
   //*****************************************************USE STATE**************************************************************** */
   const [pets, setPets] = useState([]);
-  const [imgPets, setImgPets] = useState([]);
 
   const [openModalAdopt, setOpenModalAdopt] = useState(false);
   const [idPets, setIdPets] = useState();
 
   const [loading, setLoading] = useState();
-  const [loadingImg, setLoadingImg] = useState();
+  const [loadingImg] = useState();
 
   const [allPets, setAllPets] = useState();
   const [page, setPage] = React.useState(1);
   const [count, setCount] = useState();
   const [numberItems] = useState(12);
 
-  const { filteredPets, loading: loadingSearch } = useSearch(); // Obtener mascotas filtradas del contexto
+  const { filteredPets, loading: loadingSearch, searchTerm } = useSearch(); // Obtener mascotas filtradas del contexto
 
   //*****************************************************USE EFFECT**************************************************************** */
   useEffect(() => {
     setLoading(true);
-    const getPets = async () => {
-      const response = await fetch("https://service01.mercelab.com/pet");
-      const result = await response.json();
-      console.log("result", result);
+
+    if (filteredPets.length >= 0 && searchTerm) {
       setLoading(false);
-      //Pagination(result.data);
-      setAllPets(result.data);
-      //const resultSlice = result.data.slice(startIndex, endIndex);
-      //setPets(result.data);
-    };
-    getPets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const getPets = async () => {
-      setLoadingImg(true);
-      const response = await fetch("https://service02.mercelab.com/image");
-      const result = await response.json();
-      setLoadingImg(false);
-      //const resultSlice = result.data.slice(0, 6);
-      setImgPets(result.data);
-    };
-    getPets();
-  }, []);
-
-  useEffect(() => {
-    if (pets.length > 0 && imgPets.length > 0) {
-      const newPets = pets.map((pet) => ({
-        ...pet,
-        ...imgPets.find((item) => item.idPet === pet.idPet),
-      }));
-
-      setPets(newPets);
+      if (filteredPets.length === 0) {
+        pagination(filteredPets);
+        setAllPets([]);
+      } else {
+        pagination(filteredPets);
+        setAllPets(filteredPets);
+      }
+    } else {
+      const getPets = async () => {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/pet/petimage`
+        );
+        const result = await response.json();
+        setLoading(false);
+        pagination(result.data);
+        setAllPets(result?.data);
+      };
+      getPets();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgPets, page]);
 
-  // useEffect(() => {
-  //   if (filteredPets) {
-  //     console.log("result search", filteredPets);
-  //     const pages = Math.ceil(filteredPets.length / numberItems);
-  //     setCount(pages);
-  //     const data = filteredPets.slice(
-  //       (page - 1) * numberItems,
-  //       page * numberItems
-  //     );
-  //     setPets(data);
-  //   }
-  // }, [filteredPets, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredPets]);
 
   //***************************************************** FUNCTIONS**************************************************************** */
 
@@ -107,7 +84,23 @@ const PublicationsPets = () => {
   };
 
   const handleChangePagination = (event, value) => {
-    setPage(value);
+    if (allPets) {
+      setPage(value);
+      const start = value * numberItems - numberItems;
+      const end = value * numberItems;
+
+      const data = allPets.slice(start, end);
+      setPets(data);
+    }
+  };
+
+  const pagination = (array) => {
+    const petsLength = array.length;
+    const pages = Math.ceil(petsLength / numberItems);
+    setCount(pages);
+
+    const data = array.slice(0, numberItems);
+    setPets(data);
   };
 
   return (
@@ -138,17 +131,23 @@ const PublicationsPets = () => {
         mx="auto"
         sx={{ mt: 4 }}
       >
-        {pets.length > 0 ? (
+        {loading ? (
+          [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
+            <SkeletonCards key={index} />
+          ))
+        ) : pets.length > 0 ? (
           pets.map((pet) => {
             return (
               <CardsPets
                 key={pet.idPet}
                 id={pet.idPet}
                 img={
-                  pet.imagePet ? converterBase64ToUrl(pet.imagePet) : NoPhoto
+                  pet.image.length > 0
+                    ? converterBase64ToUrl(pet.image[0].imagePet)
+                    : NoPhoto
                 }
-                name={pet.name}
-                gender={pet.gender === 0 ? "Macho" : "Hembra"}
+                name={pet?.name}
+                gender={pet?.gender}
                 ubication={"ubicacion"}
                 handleClickAdopt={handleClickAdopt}
                 loading={loading}
@@ -166,15 +165,17 @@ const PublicationsPets = () => {
         )}
       </Stack>
 
-      <Stack alignItems={"center"} mt={4}>
-        <Pagination
-          count={count}
-          page={page}
-          //variant="outlined"
-          color="secondary"
-          onChange={handleChangePagination}
-        />
-      </Stack>
+      {!loading && (
+        <Stack alignItems={"center"} mt={4}>
+          <Pagination
+            count={count}
+            page={page}
+            //variant="outlined"
+            color="secondary"
+            onChange={handleChangePagination}
+          />
+        </Stack>
+      )}
 
       {idPets && (
         <ModalAdopt

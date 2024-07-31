@@ -1,4 +1,3 @@
-// src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client"; // Importa desde react-dom/client
 import { ThemeProvider } from "@mui/material/styles";

@@ -10,60 +10,37 @@ import Button from "@mui/material/Button";
 //Compponent
 import CardsPets from "../Pets/CardsPets";
 import ModalAdopt from "../Pets/ModalAdopt";
+import SkeletonCards from "../Pets/SkeletonCards";
 
 //Utils
 import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
 
+//Img
 import NoPhoto from "../../assets/img/nophoto.png";
 
 const CardsPetsMain = () => {
   const navigate = useNavigate();
   //*****************************************************USE STATE**************************************************************** */
   const [pets, setPets] = useState([]);
-  const [imgPets, setImgPets] = useState([]);
   const [openModalAdopt, setOpenModalAdopt] = useState(false);
   const [idPets, setIdPets] = useState();
   const [loading, setLoading] = useState(false);
-  const [loadingImg, setLoadingImg] = useState(false);
+  const [loadingImg] = useState(false);
 
   //*****************************************************USE EFFECT**************************************************************** */
   useEffect(() => {
     setLoading(true);
     const getPets = async () => {
-      const response = await fetch("https://service01.mercelab.com/pet");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/pet/petimage`
+      );
       const result = await response.json();
-      console.log("pets", result);
       setLoading(false);
       const resultSlice = result.data.slice(0, 8);
       setPets(resultSlice);
     };
     getPets();
   }, []);
-
-  useEffect(() => {
-    const getPets = async () => {
-      setLoadingImg(true);
-      const response = await fetch("https://service02.mercelab.com/image");
-      const result = await response.json();
-      console.log(result);
-      setLoadingImg(false);
-      const resultSlice = result.data.slice(0, 8);
-      setImgPets(resultSlice);
-    };
-    getPets();
-  }, []);
-
-  useEffect(() => {
-    if (pets.length > 0 && imgPets.length > 0) {
-      const newPets = pets.map((pet) => ({
-        ...pet,
-        ...imgPets.find((item) => item.idPet === pet.idPet),
-      }));
-
-      setPets(newPets);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgPets]);
 
   //*****************************************************FUNCTIONS**************************************************************** */
 
@@ -104,24 +81,29 @@ const CardsPetsMain = () => {
         mx="auto"
         sx={{ mt: 4 }}
       >
-        {pets.length > 0 &&
-          pets.map((pet) => {
-            return (
-              <CardsPets
-                key={Math.random()}
-                id={pet.idPet}
-                img={
-                  pet.imagePet ? converterBase64ToUrl(pet.imagePet) : NoPhoto
-                }
-                name={pet.name}
-                gender={pet.gender === 0 ? "Macho" : "Hembra"}
-                ubication={"ubicacion"}
-                handleClickAdopt={handleClickAdopt}
-                loading={loading}
-                loadingImg={loadingImg}
-              />
-            );
-          })}
+        {loading
+          ? [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
+              <SkeletonCards key={Math.random()} />
+            ))
+          : pets.map((pet) => {
+              return (
+                <CardsPets
+                  key={Math.random()}
+                  id={pet.idPet}
+                  img={
+                    pet.image.length > 0
+                      ? converterBase64ToUrl(pet.image[0].imagePet)
+                      : NoPhoto
+                  }
+                  name={pet.name}
+                  gender={pet?.gender}
+                  ubication={"ubicacion"}
+                  handleClickAdopt={handleClickAdopt}
+                  loading={loading}
+                  loadingImg={loadingImg}
+                />
+              );
+            })}
       </Stack>
 
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
