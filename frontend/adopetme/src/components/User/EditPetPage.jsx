@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, TextField, MenuItem, FormControl, InputLabel, Select, CircularProgress, Typography, Box, Container, Paper, Alert } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, TextField, MenuItem, FormControl, InputLabel, Select, Typography, Box, Container, Paper, Alert, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const FormWrapper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -19,7 +16,7 @@ const ButtonWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const EditPetModal = ({ open, onClose, petId }) => {
+const EditPetPage = ({ open, onClose }) => {
   const [petName, setPetName] = useState('');
   const [petType, setPetType] = useState('');
   const [gender, setGender] = useState('');
@@ -28,37 +25,6 @@ const EditPetModal = ({ open, onClose, petId }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const { authToken } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!authToken) {
-      navigate('/not-found');
-      return;
-    }
-
-    if (open) {
-      setLoading(true);
-      axios.get(`https://service02.mercelab.com/pet/${petId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        }
-      })
-      .then(response => {
-        const pet = response.data;
-        setPetName(pet.name);
-        setPetType(pet.idSpecies === 1 ? 'Perro' : 'Gato');
-        setGender(pet.gender === 0 ? 'Macho' : 'Hembra');
-        setDescription(pet.description);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        navigate('/not-found');
-      });
-    }
-  }, [open, petId, authToken, navigate]);
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
@@ -69,7 +35,7 @@ const EditPetModal = ({ open, onClose, petId }) => {
     }
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (description.length < 50 || description.length > 250) {
@@ -77,59 +43,17 @@ const EditPetModal = ({ open, onClose, petId }) => {
       return;
     }
 
-    const petFormData = new FormData();
-    petFormData.append("name", petName);
-    petFormData.append("age", 0);
-    petFormData.append("longevity", "");
-    petFormData.append("description", description);
-    petFormData.append("gender", gender === 'Macho' ? 0 : 1);
-    petFormData.append("size", 0);
-    petFormData.append("weight", 0);
-    petFormData.append("tag", "");
-    petFormData.append("createdBy", "");
-    petFormData.append("idSpecies", petType === 'Perro' ? 1 : 0);
-    petFormData.append("idBreed", 1);
-
-    try {
-      setLoading(true);
-      
-      // Enviar la información de la mascota
-      const response = await axios.put(`https://service02.mercelab.com/pet/${petId}`, petFormData, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      // Actualizar imágenes
-      if (files.length > 0) {
-        const imageFormData = new FormData();
-        files.forEach(file => imageFormData.append("image", file));
-
-        await axios.post(`https://service02.mercelab.com/image/${petId}`, imageFormData, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-      }
-
+    // Simulación de éxito
+    setLoading(true);
+    setTimeout(() => {
       setLoading(false);
-      if (response.status === 200) {
-        setSuccess("¡Mascota actualizada exitosamente!");
-        setError('');
-        onClose();
-      } else {
-        setError("Error al actualizar la mascota. Inténtalo de nuevo.");
-      }
-    } catch (error) {
-      setLoading(false);
-      setError("Error al conectar con la base de datos.");
-      console.error(error);
-    }
+      setSuccess("¡Mascota actualizada exitosamente!");
+      setError('');
+      // Puedes agregar lógica para manejar la edición aquí
+    }, 1000);
   };
 
-  // if (!open) return null;
+  // if (!open) return null;  // Puedes descomentar esta línea si necesitas que el modal se oculte cuando 'open' es false
 
   return (
     <Container maxWidth="sm">
@@ -245,21 +169,22 @@ const EditPetModal = ({ open, onClose, petId }) => {
             </Button>
 
             <Button
-              type="button"
-              variant="outlined"
-              sx={{
+            type="button"
+            variant="outlined"
+            sx={{
                 flex: 1,
                 ml: 2,
                 borderColor: 'purple', // Borde morado
                 color: 'purple', // Texto morado
                 '&:hover': {
-                  borderColor: 'darkpurple', // Borde morado oscuro al pasar el ratón
-                  color: 'darkpurple', // Texto morado oscuro al pasar el ratón
+                borderColor: 'darkpurple', // Borde morado oscuro al pasar el ratón
+                color: 'darkpurple', // Texto morado oscuro al pasar el ratón
                 },
-              }}
+            }}
             >
-              Cancelar
+            Cancelar
             </Button>
+
           </ButtonWrapper>
         </Box>
       </FormWrapper>
@@ -269,4 +194,4 @@ const EditPetModal = ({ open, onClose, petId }) => {
   );
 };
 
-export default EditPetModal;
+export default EditPetPage;

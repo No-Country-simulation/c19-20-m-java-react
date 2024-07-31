@@ -42,7 +42,7 @@ export default function Mision() {
               alignItems="center"
               spacing={2}
             >
-              <Typography variant="h5" color="black" textAlign="center" sx={{ maxWidth: '300px' }}>
+              <Typography variant="h5" color="black" textAlign="left" sx={{ maxWidth: '300px' }}>
                 Proveer hogares amorosos y seguros para animales domésticos necesitados, promoviendo la adopción responsable y el bienestar animal.
               </Typography>
               <Avatar
@@ -63,8 +63,8 @@ export default function Mision() {
               alignItems="center"
               spacing={2}
             >
-              <Typography variant="h5" color="black" textAlign="center" sx={{ maxWidth: '300px' }}>
-                Ser líderes en adopción de animales domésticos, creando un mundo donde cada mascota tenga un hogar amoroso y responsable.
+              <Typography variant="h5" color="black" textAlign="left" sx={{ maxWidth: '300px' }}>
+                Ser líderes en adopción de animales domésticos desde un sitio web muy amigable y sencillo de utilizar, creando un mundo donde cada mascota tenga un hogar amoroso y responsable.
               </Typography>
               <Avatar
                 alt="Visión"

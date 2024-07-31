@@ -246,7 +246,7 @@ const CardsPets = ({
                   sx={{
                     position: "absolute",
                     //border: 1,
-                    width: `${name.length > 9 ? "35%" : "30%"}`,
+                    width: `${name?.length > 9 ? "35%" : "30%"}`,
                     height: 50,
                     backgroundImage: `url(${huesito})`,
                     backgroundRepeat: "no-repeat",
@@ -262,7 +262,7 @@ const CardsPets = ({
                       left: "50%",
                       transform: "translate(-50%, -85%)",
                       textTransform: "capitalize",
-                      fontSize: `${name.length > 9 ? "1rem" : "1.1rem"}`,
+                      fontSize: `${name?.length > 9 ? "1rem" : "1.1rem"}`,
                     }}
                     mt={1}
                     //variant="h6"
