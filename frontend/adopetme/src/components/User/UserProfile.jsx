@@ -1,20 +1,42 @@
-// src/components/User/UserProfile.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Avatar, Grid, TextField, Button, Modal, IconButton, Paper, CircularProgress } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../contexts/AuthContext';
-import { Box, Typography, Avatar, Grid, TextField, Button, Paper } from '@mui/material';
+import PetForm from '../../Pages/PetForm';
 
 const UserProfile = () => {
-  const { user } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const { user, fetchUserDetails } = useAuth();
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isPetFormModalOpen, setIsPetFormModalOpen] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setUserData(user);
-    }
-  }, [user]);
+    const fetchData = async () => {
+      if (user) {
+        try {
+          const details = await fetchUserDetails(user.id);
+          setUserDetails(details);
+        } catch (error) {
+          console.error('Error fetching user details:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
 
-  if (!userData) {
-    return <Typography>Cargando...</Typography>;
+    fetchData();
+  }, [user, fetchUserDetails]);
+
+  const handleOpenPetFormModal = () => {
+    setIsPetFormModalOpen(true);
+  };
+
+  const handleClosePetFormModal = () => {
+    setIsPetFormModalOpen(false);
+  };
+
+  if (loading) {
+    return <CircularProgress />;
   }
 
   return (
@@ -25,12 +47,12 @@ const UserProfile = () => {
       <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
         <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
           <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
-          <Typography variant="h6" sx={{ textAlign: 'center' }}>{userData.fullName}</Typography>
+          <Typography variant="h6" sx={{ textAlign: 'center' }}>{userDetails?.fullName}</Typography>
           <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center' }}>
-            @{userData.username}
+            @{userDetails?.username}
           </Typography>
           <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center', mt: 2 }}>
-            {userData.description}
+            {userDetails?.description}
           </Typography>
         </Box>
       </Paper>
@@ -43,7 +65,7 @@ const UserProfile = () => {
             <TextField
               fullWidth
               label="Correo Electrónico"
-              value={userData.email}
+              value={userDetails?.email || ''}
               disabled
             />
           </Grid>
@@ -51,7 +73,7 @@ const UserProfile = () => {
             <TextField
               fullWidth
               label="Teléfono"
-              value={userData.phone}
+              value={userDetails?.phone || ''}
               disabled
             />
           </Grid>
@@ -59,7 +81,7 @@ const UserProfile = () => {
             <TextField
               fullWidth
               label="País"
-              value={userData.country}
+              value={userDetails?.country || ''}
               disabled
             />
           </Grid>
@@ -67,7 +89,7 @@ const UserProfile = () => {
             <TextField
               fullWidth
               label="Ciudad"
-              value={userData.city}
+              value={userDetails?.city || ''}
               disabled
             />
           </Grid>
@@ -79,9 +101,40 @@ const UserProfile = () => {
             Editar Perfil
           </Button>
         </Grid>
+        <Grid item xs={12}>
+          <Button variant="contained" color="primary" fullWidth onClick={handleOpenPetFormModal}>
+            Registrar Mascota
+          </Button>
+        </Grid>
       </Grid>
+
+      <Modal open={isPetFormModalOpen} onClose={handleClosePetFormModal}>
+        <Box sx={modalStyle}>
+          <Box display="flex" justifyContent="flex-end">
+            <IconButton onClick={handleClosePetFormModal}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+            Registrar Mascota
+          </Typography>
+          <PetForm />
+        </Box>
+      </Modal>
     </Box>
   );
+};
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
 };
 
 export default UserProfile;

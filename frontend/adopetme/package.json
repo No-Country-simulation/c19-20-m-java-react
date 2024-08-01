@@ -14,6 +14,7 @@
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",
+    "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",

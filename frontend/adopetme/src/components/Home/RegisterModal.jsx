@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -12,32 +12,10 @@ import {
   IconButton,
   Alert,
   useMediaQuery,
-  useTheme
+  useTheme,
+  CircularProgress
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
-// Lista de países de América Latina
-const countries = [
-  { name: 'Argentina', code: 'AR' },
-  { name: 'Bolivia', code: 'BO' },
-  { name: 'Brazil', code: 'BR' },
-  { name: 'Chile', code: 'CL' },
-  { name: 'Colombia', code: 'CO' },
-  { name: 'Costa Rica', code: 'CR' },
-  { name: 'Cuba', code: 'CU' },
-  { name: 'Dominican Republic', code: 'DO' },
-  { name: 'Ecuador', code: 'EC' },
-  { name: 'El Salvador', code: 'SV' },
-  { name: 'Guatemala', code: 'GT' },
-  { name: 'Honduras', code: 'HN' },
-  { name: 'Mexico', code: 'MX' },
-  { name: 'Nicaragua', code: 'NI' },
-  { name: 'Panama', code: 'PA' },
-  { name: 'Paraguay', code: 'PY' },
-  { name: 'Peru', code: 'PE' },
-  { name: 'Uruguay', code: 'UY' },
-  { name: 'Venezuela', code: 'VE' }
-];
 
 // Esquema de validación
 const validationSchema = yup.object({
@@ -54,13 +32,45 @@ const validationSchema = yup.object({
 const RegisterModal = ({ open, handleClose }) => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // 'success' o 'error'
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loadingCountries, setLoadingCountries] = useState(true);
+  const [loadingCities, setLoadingCities] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/country/all`);
+        setCountries(response.data);
+        setLoadingCountries(false);
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+        setLoadingCountries(false);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const handleCountryChange = async (event, setFieldValue) => {
+    const country = event.target.value;
+    setFieldValue('country', country);
+    setLoadingCities(true);
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/country/states/${country}`);
+      setCities(response.data);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+    setLoadingCities(false);
+  };
 
   const handleSubmit = async (values, { setSubmitting }) => {
     console.log('Enviando datos:', values);
     try {
-      const response = await axios.post('https://service12.mercelab.com/auth/create', values, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/create`, values, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -159,32 +169,47 @@ const RegisterModal = ({ open, handleClose }) => {
                 error={touched.phone && !!errors.phone}
                 helperText={touched.phone && errors.phone}
               />
-              <Field
-                as={TextField}
-                select
-                name="country"
-                label="País"
-                fullWidth
-                margin="normal"
-                onChange={(event) => setFieldValue('country', event.target.value)}
-                error={touched.country && !!errors.country}
-                helperText={touched.country && errors.country}
-              >
-                {countries.map((country) => (
-                  <MenuItem key={country.code} value={country.name}>
-                    {country.name}
-                  </MenuItem>
-                ))}
-              </Field>
-              <Field
-                as={TextField}
-                name="city"
-                label="Ciudad"
-                fullWidth
-                margin="normal"
-                error={touched.city && !!errors.city}
-                helperText={touched.city && errors.city}
-              />
+              {loadingCountries ? (
+                <CircularProgress />
+              ) : (
+                <Field
+                  as={TextField}
+                  select
+                  name="country"
+                  label="País"
+                  fullWidth
+                  margin="normal"
+                  onChange={(event) => handleCountryChange(event, setFieldValue)}
+                  error={touched.country && !!errors.country}
+                  helperText={touched.country && errors.country}
+                >
+                  {countries.map((country) => (
+                    <MenuItem key={country.code} value={country.name}>
+                      {country.name}
+                    </MenuItem>
+                  ))}
+                </Field>
+              )}
+              {loadingCities ? (
+                <CircularProgress />
+              ) : (
+                <Field
+                  as={TextField}
+                  select
+                  name="city"
+                  label="Ciudad"
+                  fullWidth
+                  margin="normal"
+                  error={touched.city && !!errors.city}
+                  helperText={touched.city && errors.city}
+                >
+                  {cities.map((city) => (
+                    <MenuItem key={city.id} value={city.name}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </Field>
+              )}
               <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={isSubmitting}>
                 Registrarse
               </Button>

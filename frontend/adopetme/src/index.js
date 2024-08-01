@@ -1,17 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom/client"; // Importa desde react-dom/client
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import App from "./App";
-import theme from "./theme";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import App from './App';
+import theme from './theme';
+import { AuthProvider } from './contexts/AuthContext';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    </AuthProvider>
+  </React.StrictMode>,
+document.getElementById('root')
 );

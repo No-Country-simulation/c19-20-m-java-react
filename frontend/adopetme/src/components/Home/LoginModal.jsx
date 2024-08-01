@@ -1,14 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Alert from '@mui/material/Alert';
-import Link from '@mui/material/Link';  
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import { useAuth } from '../../contexts/AuthContext';
+import { Box, Button, TextField, Typography, Modal } from '@mui/material';
+
+const validationSchema = yup.object({
+  username: yup.string().required('Nombre de usuario es requerido'),
+  password: yup.string().required('Contraseña es requerida'),
+});
+
+const LoginModal = ({ open, handleClose }) => {
+  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        await login(values.username, values.password);
+        handleClose();
+      } catch (error) {
+        setErrorMessage('Error en el inicio de sesión');
+        setSubmitting(false);
+      }
+    },
+  });
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Box sx={style}>
+        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+          Iniciar Sesión
+        </Typography>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            fullWidth
+            id="username"
+            name="username"
+            label="Nombre de Usuario"
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            id="password"
+            name="password"
+            label="Contraseña"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            margin="normal"
+          />
+          <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
+            Iniciar Sesión
+          </Button>
+        </form>
+        {errorMessage && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Typography>
+        )}
+      </Box>
+    </Modal>
+  );
+};
 
 const style = {
   position: 'absolute',
@@ -22,92 +86,4 @@ const style = {
   p: 4,
 };
 
-const LoginModal = ({ open, handleClose, handleOpenRegister }) => {
-  const { login } = useAuth();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
-
-  useEffect(() => {
-    if (!open) {
-      setUsername('');
-      setPassword('');
-      setMessage('');
-    }
-  }, [open]);
-
-  const handleLogin = async () => {
-    try {
-      await login(username, password);
-      setMessage('Inicio de sesión exitoso');
-      setMessageType('success');
-      handleClose();
-    } catch (error) {
-      setMessage('Error en el inicio de sesión');
-      setMessageType('error');
-    }
-  };
-
-  return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="login-modal-title"
-      aria-describedby="login-modal-description"
-    >
-      <Box sx={style}>
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Typography variant="h4" fontWeight="fontWeightBold" color="#6a1e9a" sx={{ mb: 2 }}>
-          Iniciar Sesión
-        </Typography>
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Nombre de Usuario"
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          type="password"
-          label="Contraseña"
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          onClick={handleLogin}
-          sx={{ mt: 2 }}
-        >
-          Iniciar Sesión
-        </Button>
-        <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
-          ¿No tienes una cuenta?{' '}
-          <Link component="button" variant="body2" onClick={handleOpenRegister}>  
-            Regístrate aquí
-          </Link>
-        </Typography>
-        {message && (
-          <Alert severity={messageType} sx={{ mt: 2 }}>
-            {message}
-          </Alert>
-        )}
-      </Box>
-    </Modal>
-  );
-};
-
 export default LoginModal;
-
-
-

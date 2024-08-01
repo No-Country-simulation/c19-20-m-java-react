@@ -1,8 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import { SearchProvider } from '../../contexts/SearchContext';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-//Components
+// Components
 import Home from "../Pages/Home/index";
 import PublicationsPets from "../components/Pets/PublicationsPets";
 import MainLayout from "../Pages/layout/MainLayout";
@@ -14,29 +13,31 @@ import { AuthProvider } from "../contexts/AuthContext";
 import NotFoundPage from "../Pages/NotFoundPage";
 import EditPetPage from "../components/User/EditPetPage";
 import EditPetModal from "../components/User/EditPetModal";
+import Profile from "../components/Profile/Profile";
 
 const MainRouter = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
         <SearchProvider>
-          {/* Proveer el contexto */}
           <MainLayout>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/publicaciones" element={<PublicationsPets />} />
               <Route path="/adopcion" element={<AdoptPets />} />
               <Route path="/registro-mascotas" element={<PetForm />} />
               <Route path="/profile" element={<UserProfile />} />
-              <Route path="/editor-mascotas-info" element={<EditPetModal/>} />
-              <Route path="/editor-mascotas" element={<EditPetPage/>} />
-              <Route path="*" element={<NotFoundPage/>} />
+              <Route path="/editor-mascotas-info" element={<EditPetModal />} />
+              <Route path="/editor-mascotas" element={<EditPetPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </MainLayout>
         </SearchProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   );
 };
 
 export default MainRouter;
+
