@@ -1,0 +1,48 @@
+server:
+  port: 5062
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://service11.mercelab.com/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
+        - AddResponseHeader=Access-Control-Allow-Origin, *
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "*"
+            allowed-methods: "*"
+            allowed-headers: "*"
+      routes: #Agregar sus rutas de la forma en la que esta abajo
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+        - id: user-details-service
+          uri: lb://USER-DETAILS-SERVICE
+          predicates:
+            - Path=/users_details/**
+          filters:
+            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
+
+public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no necesiten token
+  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
+    -
+      uri: "/auth/login"
+      method: "POST"
+    -
+      uri: "/auth/validate"
+      method: "POST"

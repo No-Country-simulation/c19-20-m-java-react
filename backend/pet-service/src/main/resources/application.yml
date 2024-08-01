@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: pet-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://nc-country.mysql.database.azure.com:3306/nc_pet
+    username: adopetmedb
+    password: 1P3aYV2WDZlcNh1
+
+server:
+  port: 5051
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:5061/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
