@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "userdetailsapi", url = "http://localhost:433/users_details")
+@FeignClient(name = "userdetailsapi")
 public interface UserDetailsAPI {
     @PostMapping("/save")
-    int save (@RequestBody UserDetailsDTO userDetails);
+    int save(@RequestBody UserDetailsDTO userDetails);
 }

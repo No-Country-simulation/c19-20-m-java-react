@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://service04.mercelab.com/eureka
+      defaultZone: https://service11.mercelab.com/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -27,13 +27,22 @@ spring:
             allowed-methods: "*"
             allowed-headers: "*"
       routes: #Agregar sus rutas de la forma en la que esta abajo
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
         - id: user-details-service
           uri: lb://USER-DETAILS-SERVICE
           predicates:
             - Path=/users_details/**
           filters:
             - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/**
+
+public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no necesiten token
+  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
+    -
+      uri: "/auth/login"
+      method: "POST"
+    -
+      uri: "/auth/validate"
+      method: "POST"
