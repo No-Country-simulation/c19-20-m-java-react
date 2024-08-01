@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://service11.mercelab.com/eureka
+      defaultZone: https://localhost:5061/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -26,7 +26,7 @@ spring:
       client:
         config:
           userdetailsapi:
-            url: http://localhost:433/user-details-service/users_details
+            url: http://localhost:5062/user-details-service/users_details
 
 
 jwt:
