@@ -44,4 +44,9 @@ public class PublicationController {
         publicationService.deletePublication(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}")
+    public List<Publication> getPublicationsByUserId(@PathVariable(value = "userId") Long userId) {
+        return publicationService.getPublicationsByUserId(userId);
+    }
 }
