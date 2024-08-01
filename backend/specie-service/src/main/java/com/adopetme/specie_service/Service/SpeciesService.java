@@ -42,6 +42,10 @@ public class SpeciesService {
         return speciesRepository.findById(id).orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
     }
 
+    public SpeciesModel readByname(String name) throws Exception {
+        return speciesRepository.findByName(name);
+    }
+
     public SpeciesModel update(SpeciesModel species, Long id) throws Exception {
         Class<?> clazz = species.getClass();
         String idFieldName = getIdFieldName(clazz);

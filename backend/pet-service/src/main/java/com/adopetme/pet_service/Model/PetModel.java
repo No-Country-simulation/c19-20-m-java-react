@@ -39,6 +39,7 @@ public class PetModel {
     private String description;
 
     @Column(name = "gender", nullable = false)
+    // 0 Macho, 1 Hembra
     private Integer gender;
 
     @Column(name = "size", nullable = true)

@@ -1,7 +1,6 @@
 package com.adopetme.pet_service.Dto;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.DecimalMax;
@@ -43,6 +42,18 @@ public class PetAndImagesDto {
     @Max(1)
     private Integer gender;
 
+    public String getGender() {
+        if (gender == null) {
+            return null;
+        } else if (gender == 0) {
+            return "MACHO";
+        } else if (gender == 1) {
+            return "HEMBRA";
+        } else {
+            return "Desconocido";
+        }
+    }
+
     @DecimalMin("0.0")
     @DecimalMax("10.0")
     private Double size;
@@ -62,8 +73,12 @@ public class PetAndImagesDto {
     @NotNull
     private Long idSpecies;
 
+    private String species;
+
     @NotNull
     private Long idBreed;
+
+    private Long CreatedBy;
 
     private List<ImageDto> image;
 }

@@ -27,10 +27,10 @@ public class UserDetailsDaoImp implements UserDetailsDAO {
         return userDetails.map(user_details -> mapper.map(user_details, UserDetails.class));
     }
     @Override
-    public UserDetails save(UserDetails userDetails) {
+    public Integer save(UserDetails userDetails) {
         User_Details user = mapper.map(userDetails,User_Details.class);
-        userDetailsRepositoryJPA.save(user);
-        return userDetails;}
+        User_Details userSave = userDetailsRepositoryJPA.save(user);
+        return userSave.getId();}
 
     @Override
     public void delete(int idUserDetails) {

@@ -15,20 +15,24 @@ public class User_Details {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id_user")
+    @Column(name ="user_id")
     private int id;
-    @Column(name = "names")
-    private String name;
-    @Column(name = "lastnames")
+    @Column(name = "firstname")
+    private String firstName;
+    @Column(name = "lastname")
     private String lastName;
-    @Column(name = "dni")
-    private String dni;
-    @Column(name = "birthday")
-    private LocalDateTime birthDate;
     @Column(name = "phone")
     private String phone;
     @Column(name = "email")
     private String email;
-    @Column(name = "user_id")
-    private int user_id;
+
+
+    @Column(name="country")
+    private String country;
+    @Column(name="state")
+    private String state;
+    @Column(name="city")
+    private String city;
+
+
 }

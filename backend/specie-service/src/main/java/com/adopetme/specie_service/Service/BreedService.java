@@ -42,6 +42,10 @@ public class BreedService {
         return breedRepository.findById(id).orElseThrow(() -> new ModelNotFoundException("Id not found: " + id));
     }
 
+    public List<BreedModel> readBySpeciesId(Long id) throws Exception {
+        return breedRepository.findByIdSpecies(id);
+    }
+
     public BreedModel update(BreedModel breed, Long id) throws Exception {
         Class<?> clazz = breed.getClass();
         String idFieldName = getIdFieldName(clazz);
