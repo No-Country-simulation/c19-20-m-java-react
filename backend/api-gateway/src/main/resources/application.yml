@@ -35,11 +35,24 @@ spring:
           uri: lb://USER-DETAILS-SERVICE
           predicates:
             - Path=/users_details/**
+        # Configuration for pet-service
+        - id: pet-service
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/**
           filters:
             - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
-
+        # Configuration for species-service
+        # Configuration for image-service
+        # Configuration for city-service
+        # Configuration for state-service
+        # Configuration for country-service
+        # Configuration for pet-service
 public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no necesiten token
   paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
     -
-#      uri: "/auth/login"
-#      method: "POST"
+      uri: "/pet/petimage"
+      method: "GET"
+    -
+      uri: "/pet/search"
+      method: "GET"
