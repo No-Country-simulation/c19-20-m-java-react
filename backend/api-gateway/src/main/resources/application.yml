@@ -35,8 +35,6 @@ spring:
           uri: lb://USER-DETAILS-SERVICE
           predicates:
             - Path=/users_details/**
-          filters:
-            - AuthFilter
         # Configuration for pet-service
         - id: pet-service-post
           uri: lb://PET-SERVICE
