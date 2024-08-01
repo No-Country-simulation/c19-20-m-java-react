@@ -2,10 +2,8 @@ package com.adopetme.user_details_service.web.controller;
 
 import com.adopetme.user_details_service.domain.UserDetails;
 import com.adopetme.user_details_service.domain.dto.AllNames;
-import com.adopetme.user_details_service.domain.service.CreateUserService;
-import com.adopetme.user_details_service.domain.service.DeleteUserByIdService;
-import com.adopetme.user_details_service.domain.service.GetUserByIdService;
-import com.adopetme.user_details_service.domain.service.LocationDetailsService;
+import com.adopetme.user_details_service.domain.dto.UserDetailsWithPublications;
+import com.adopetme.user_details_service.domain.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -28,11 +26,12 @@ public class UserDetailsController {
     @Autowired
     private final LocationDetailsService locationDetailsService;
 
-    public UserDetailsController(GetUserByIdService getUserByIdService, CreateUserService createUserService, DeleteUserByIdService deleteUserByIdService, LocationDetailsService locationDetailsService) {
+    public UserDetailsController(GetUserByIdService getUserByIdService, CreateUserService createUserService, DeleteUserByIdService deleteUserByIdService, LocationDetailsService locationDetailsService, GetUserWithPublicationsService getUserWithPublicationsService) {
         this.getUserByIdService = getUserByIdService;
         this.createUserService = createUserService;
         this.deleteUserByIdService = deleteUserByIdService;
         this.locationDetailsService = locationDetailsService;
+        this.getUserWithPublicationsService = getUserWithPublicationsService;
     }
 
 
@@ -71,6 +70,14 @@ public class UserDetailsController {
                                                          @PathVariable("idcity") Long cityId) {
         AllNames locationNames = locationDetailsService.getLocationNamesById(countryId, stateId, cityId);
         return ResponseEntity.ok(locationNames);
+    }
+
+    private final GetUserWithPublicationsService getUserWithPublicationsService;
+
+    @GetMapping("/{id}/publications")
+    public ResponseEntity<UserDetailsWithPublications> getUserWithPublications(@PathVariable Long id) {
+        UserDetailsWithPublications userWithPublications = getUserWithPublicationsService.getUserWithPublications(Math.toIntExact(id));
+        return ResponseEntity.ok(userWithPublications);
     }
 
 }

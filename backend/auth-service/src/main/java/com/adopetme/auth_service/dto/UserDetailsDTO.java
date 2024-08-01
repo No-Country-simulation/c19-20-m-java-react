@@ -13,5 +13,6 @@ public class UserDetailsDTO {
     private String email;
     private String phone;
     private String country;
+    private String state;
     private String city;
 }

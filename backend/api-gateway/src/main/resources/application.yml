@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:5061/eureka
+      defaultZone: https://localhost:5061/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -22,92 +22,24 @@ spring:
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          "[/**]":
+          '[/**]':
             allowed-origins: "*"
             allowed-methods: "*"
             allowed-headers: "*"
       routes: #Agregar sus rutas de la forma en la que esta abajo
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
         - id: user-details-service
           uri: lb://USER-DETAILS-SERVICE
           predicates:
             - Path=/users_details/**
           filters:
             - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/**
-        # Configuration for pet-service
-        - id: pet-service-get-all
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/petimage
-        - id: pet-service-get-search
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/search
-        - id: pet-service-get-by-id
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/{id}
-        - id: pet-service-get
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/petuser
-          filters:
-            - AuthFilter
-        - id: pet-service-post
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/**
-            - Method=POST
-          filters:
-            - AuthFilter
-        - id: pet-service-put
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/**
-            - Method=PUT
-          filters:
-            - AuthFilter
-        - id: pet-service-delete
-          uri: lb://PET-SERVICE
-          predicates:
-            - Path=/pet/**
-            - Method=DELETE
-          filters:
-            - AuthFilter
 
-        # Configuration for specie-service
-        - id: specie-service-get
-          uri: lb://SPECIE-SERVICE
-          predicates:
-            - Path=/species/**
-        # Configuration for specie-service
-        - id: specie-service-get
-          uri: lb://SPECIE-SERVICE
-          predicates:
-            - Path=/breed/**
-        # Configuration for image-service
-        - id: image-service-get
-          uri: lb://IMAGE-SERVICE
-          predicates:
-            - Path=/image/**
-
-        # Configuration for country-service
-        - id: country-service
-          uri: lb://COUNTRY-SERVICE
-          predicates:
-            - Path=/country/**
-
-        # Configuration for state-service
-        - id: state-service
-          uri: lb://STATE-SERVICE
-          predicates:
-            - Path=/state/**
-
-        # Configuration for city-service
-        - id: city-service
-          uri: lb://CITY-SERVICE
-          predicates:
-            - Path=/city/**
+public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no necesiten token
+  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
+    -
+#      uri: "/auth/login"
+#      method: "POST"

@@ -53,7 +53,7 @@ public class StateServiceImpl implements StateService{
 
     @Override
     public List<CityDTO> getCitiesByCountryAndState(Long country,String state){
-        Optional<State> optionalState = stateRepository.findByName(state);
+        Optional<State> optionalState = stateRepository.findByCountryIdAndName(country,state);
         if(optionalState.isEmpty()){
             throw new StateNotFoundException("State not found with name: "+state);
         }

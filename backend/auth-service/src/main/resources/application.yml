@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:5061/eureka/
+      defaultZone: https://localhost:5061/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -26,16 +26,14 @@ spring:
       client:
         config:
           userdetailsapi:
-            url: http://localhost:433/users_details
+            url: http://localhost:5062/user-details-service/users_details
+
 
 jwt:
   secret: aEPZLz7azPBLr4G5sfcjBzDtpEExdBZS
 
-admin-paths:
-  paths: #Agregar las urls que quieren que solo el admin acceda, tienen la plantilla comentada de abajo tanto para sin argumentos, como con argumentos en el caso del PUT
+admin-paths: #Agregar las urls que quieren que solo el admin acceda, tienen la plantilla comentada de abajo tanto para sin argumentos, como con argumentos en el caso del PUT
+  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
 #    -
 #      uri: "/clientes/crear"
 #      method: "POST"
-#    -
-#      uri: "/clientes/actualizar/{1}[1-9]+[0-9]*"
-#      method: "PUT"
