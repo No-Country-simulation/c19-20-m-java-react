@@ -19,7 +19,7 @@
 ### *Backend*
 | Nombre  |  Contacto |
 | ------------ | ------------ |
-|  Agustin Arango | [Linkedin](http://https://www.linkedin.com/in/alexis-agust%C3%ADn-arag%C3%B3n/ "Linkedin")  |
+|  Agustin Aragon | [Linkedin](http://https://www.linkedin.com/in/alexis-agust%C3%ADn-arag%C3%B3n/ "Linkedin")  |
 |  Axel Cubas | [Linkedin](http://https://www.linkedin.com/in/axel-pedro-c-054998139/ "Linkedin")  |
 | Leandro Duarte  | [Linkedin](http://https://www.linkedin.com/in/leandrogduarte/ "Linkedin")  |
 | Pedro Coreghetti  |   |
