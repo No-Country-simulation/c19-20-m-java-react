@@ -194,44 +194,87 @@ const EditPetModal = ({ open, onClose }) => {
       setLoading(true);
 
       // Enviar la información de la mascota
-      const requestOptions = {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          // "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-        redirect: "follow",
+      // const requestOptions = {
+      //   headers: {
+      //     Authorization: `Bearer ${authToken}`,
+      //     // "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(body),
+      //   redirect: "follow",
+      // };
+      // const response = await axios.put(
+      //   `${process.env.REACT_APP_API_URL}/pet/${petId}`,
+      //   body
+      // );
+
+      // const myHeaders = new Headers();
+      // myHeaders.append("Content-Type", "application/json");
+      // myHeaders.append("Authorization", `Bearer ${authToken}`);
+
+      // const raw = JSON.stringify({
+      //   name: "prueba",
+      //   age: 0,
+      //   longevity: "",
+      //   description: "Updated description of the pet dsdfsijfisdjfosdjdspjp.",
+      //   gender: 0,
+      //   size: 0,
+      //   weight: 0,
+      //   tag: "",
+      //   createdBy: "",
+      //   idSpecies: 1,
+      //   idBreed: 1,
+      // });
+
+      // const requestOptions = {
+      //   method: "PUT",
+      //   headers: myHeaders,
+      //   body: raw,
+      //   redirect: "follow",
+      // };
+
+      // fetch("https://service01.mercelab.com/pet/1", requestOptions)
+      //   .then((response) => response.text())
+      //   .then((result) => console.log(result))
+      //   .catch((error) => console.error(error));
+
+      const body = {
+        imagePet: previews[0].imagePet,
+        idPet: petId,
       };
-      const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/pet/${petId}`,
-        body
-      );
 
-      // // Actualizar imágenes
+      const idImg = previews[0].idImage;
+
+      console.log("idImg", idImg);
+      console.log("body", body);
+
+      // Actualizar imágenes
       // if (files.length > 0) {
-      //   const imageFormData = new FormData();
-      //   files.forEach((file) => imageFormData.append("image", file));
+      const imageFormData = new FormData();
+      files.forEach((file) => imageFormData.append("image", file));
 
-      //   await axios.post(
-      //     `${process.env.REACT_APP_API_URL}/image/${petId}`,
-      //     imageFormData,
-      //     {
-      //       headers: {
-      //         Authorization: `Bearer ${authToken}`,
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //     }
-      //   );
+      await axios
+        .put(`https://service01.mercelab.com/image/${idImg}`, body, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("result img", response);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
       // }
 
       setLoading(false);
-      if (response.status === 200) {
-        setSuccess("¡Mascota actualizada exitosamente!");
-        setError("");
-        onClose();
-      } else {
-        setError("Error al actualizar la mascota. Inténtalo de nuevo.");
-      }
+      // if (response.status === 200) {
+      //   setSuccess("¡Mascota actualizada exitosamente!");
+      //   setError("");
+      //   onClose();
+      // } else {
+      //   setError("Error al actualizar la mascota. Inténtalo de nuevo.");
+      // }
     } catch (error) {
       setLoading(false);
       setError("Error al conectar con la base de datos.");
@@ -348,7 +391,6 @@ const EditPetModal = ({ open, onClose }) => {
           {previews.length > 0 && (
             <ImagePreviewWrapper>
               {previews.map((preview, index) => {
-                console.log(preview);
                 return (
                   <ImagePreview key={index}>
                     <img
@@ -392,7 +434,8 @@ const EditPetModal = ({ open, onClose }) => {
                   color: "darkpurple", // Texto morado oscuro al pasar el ratón
                 },
               }}
-              onClick={onClose}
+              //onClick={onClose}
+              onClick={() => navigate("/profile")}
             >
               Cancelar
             </Button>
