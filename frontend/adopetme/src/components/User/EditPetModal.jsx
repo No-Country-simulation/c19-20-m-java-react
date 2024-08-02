@@ -1,33 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, TextField, MenuItem, FormControl, InputLabel, Select, CircularProgress, Typography, Box, Container, Paper, Alert } from '@mui/material';
-import { styled } from '@mui/system';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Button,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  CircularProgress,
+  Typography,
+  Box,
+  Container,
+  Paper,
+  Alert,
+  Avatar,
+} from "@mui/material";
+import { styled } from "@mui/system";
 // import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
+import base64ToBlob from "../../utils/converterBase64ToUrl";
 
 // Estilos para la vista previa de imágenes
 const ImagePreviewWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
+  display: "flex",
   gap: theme.spacing(1),
-  flexWrap: 'wrap',
+  flexWrap: "wrap",
   marginTop: theme.spacing(2), // Espacio entre el botón y las imágenes previsualizadas
 }));
 
 const ImagePreview = styled(Box)(({ theme }) => ({
-  position: 'relative',
+  position: "relative",
   width: 100,
   height: 100,
   margin: theme.spacing(1),
 }));
 
-const DeleteIcon = styled('span')(({ theme }) => ({
-  position: 'absolute',
+const DeleteIcon = styled("span")(({ theme }) => ({
+  position: "absolute",
   top: 0,
   right: 0,
-  background: 'rgba(0,0,0,0.6)',
-  color: 'white',
-  borderRadius: '50%',
-  cursor: 'pointer',
+  background: "rgba(0,0,0,0.6)",
+  color: "white",
+  borderRadius: "50%",
+  cursor: "pointer",
   padding: theme.spacing(0.5),
 }));
 
@@ -38,62 +53,83 @@ const FormWrapper = styled(Paper)(({ theme }) => ({
 }));
 
 const ButtonWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
+  display: "flex",
   gap: theme.spacing(2),
-  [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
   },
 }));
 
-const EditPetModal = ({ open, onClose, petId }) => {
-  const [petName, setPetName] = useState('');
-  const [petType, setPetType] = useState('');
-  const [gender, setGender] = useState('');
-  const [description, setDescription] = useState('');
+const EditPetModal = ({ open, onClose }) => {
+  const [petName, setPetName] = useState("");
+  const [petType, setPetType] = useState("");
+  const [gender, setGender] = useState("");
+  const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [imgPets, setImgPets] = useState();
 
   const navigate = useNavigate();
+  const { petId } = useParams();
 
-  const authToken = localStorage.getItem('token');
+  const authToken = localStorage.getItem("token");
 
   useEffect(() => {
     if (!authToken) {
-      navigate('/not-found');
+      navigate("/not-found");
       return;
     }
 
-    if (open) {
-      setLoading(true);
-      axios.get(`${process.env.REACT_APP_API_URL}/pet/${petId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        }
+    // if (open) {
+    setLoading(true);
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/pet/${petId}`, {
+        // headers: {
+        //   Authorization: `Bearer ${authToken}`,
+        // },
       })
-      .then(response => {
-        const pet = response.data;
+      .then((response) => {
+        const pet = response.data.data[0];
+        // console.log("pet", pet);
         setPetName(pet.name);
-        setPetType(pet.idSpecies === 1 ? 'Perro' : 'Gato');
-        setGender(pet.gender === 0 ? 'Macho' : 'Hembra');
+        setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
+        setGender(pet.gender === 0 ? "Macho" : "Hembra");
         setDescription(pet.description);
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
-        navigate('/not-found');
+        //navigate("/not-found");
       });
-    }
+    // }
   }, [open, petId, authToken, navigate]);
+
+  // Obtener las imágenes asociadas a la mascota
+  useEffect(() => {
+    const getImgPet = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/image/pet/${petId}`
+        );
+
+        const result = await response.json();
+        //console.log("img", result);
+        setPreviews(result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    getImgPet();
+  }, [petId]);
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
     if (chosenFiles.length <= 4) {
       setFiles(chosenFiles);
-      setPreviews(chosenFiles.map(file => URL.createObjectURL(file)));
+      setPreviews(chosenFiles.map((file) => URL.createObjectURL(file)));
     } else {
       setError("Solo puedes subir un máximo de 4 fotografías.");
     }
@@ -102,7 +138,7 @@ const EditPetModal = ({ open, onClose, petId }) => {
   const handleRemovePreview = (index) => {
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
-    setPreviews(newFiles.map(file => URL.createObjectURL(file)));
+    setPreviews(newFiles.map((file) => URL.createObjectURL(file)));
   };
 
   const handleSubmit = async (event) => {
@@ -113,47 +149,85 @@ const EditPetModal = ({ open, onClose, petId }) => {
       return;
     }
 
-    const petFormData = new FormData();
-    petFormData.append("name", petName);
-    petFormData.append("age", 0);
-    petFormData.append("longevity", "");
-    petFormData.append("description", description);
-    petFormData.append("gender", gender === 'Macho' ? 0 : 1);
-    petFormData.append("size", 0);
-    petFormData.append("weight", 0);
-    petFormData.append("tag", "");
-    petFormData.append("createdBy", "");
-    petFormData.append("idSpecies", petType === 'Perro' ? 1 : 0);
-    petFormData.append("idBreed", 1);
+    console.log("petName", {
+      name: petName,
+      age: 0,
+      longevity: "",
+      description: description,
+      gender: 0,
+      size: 0,
+      weight: 0,
+      tag: "",
+      createdBy: "",
+      idSpecies: 1,
+      idBreed: 1,
+    });
+
+    const body = {
+      name: petName,
+      age: 0,
+      longevity: "",
+      description: description,
+      gender: 0,
+      size: 0,
+      weight: 0,
+      tag: "",
+      createdBy: "",
+      idSpecies: 1,
+      idBreed: 1,
+    };
+
+    // const petFormData = new FormData();
+    // petFormData.append("name", petName);
+    // petFormData.append("age", 0);
+    // petFormData.append("longevity", "");
+    // petFormData.append("description", description);
+    // petFormData.append("gender", gender === "Macho" ? 0 : 1);
+    // petFormData.append("size", 0);
+    // petFormData.append("weight", 0);
+    // petFormData.append("tag", "");
+    // petFormData.append("createdBy", "");
+    // petFormData.append("idSpecies", petType === "Perro" ? 2 : 1);
+    // petFormData.append("idBreed", 1);
 
     try {
       setLoading(true);
-      
+
       // Enviar la información de la mascota
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/pet/${petId}`, petFormData, {
+      const requestOptions = {
         headers: {
           Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+          // "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        redirect: "follow",
+      };
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/pet/${petId}`,
+        body
+      );
 
-      // Actualizar imágenes
-      if (files.length > 0) {
-        const imageFormData = new FormData();
-        files.forEach(file => imageFormData.append("image", file));
+      // // Actualizar imágenes
+      // if (files.length > 0) {
+      //   const imageFormData = new FormData();
+      //   files.forEach((file) => imageFormData.append("image", file));
 
-        await axios.post(`${process.env.REACT_APP_API_URL}/image/${petId}`, imageFormData, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-      }
+      //   await axios.post(
+      //     `${process.env.REACT_APP_API_URL}/image/${petId}`,
+      //     imageFormData,
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${authToken}`,
+      //         "Content-Type": "multipart/form-data",
+      //       },
+      //     }
+      //   );
+      // }
 
       setLoading(false);
       if (response.status === 200) {
         setSuccess("¡Mascota actualizada exitosamente!");
-        setError('');
+        setError("");
         onClose();
       } else {
         setError("Error al actualizar la mascota. Inténtalo de nuevo.");
@@ -168,7 +242,13 @@ const EditPetModal = ({ open, onClose, petId }) => {
   return (
     <Container maxWidth="sm">
       <FormWrapper>
-        <Typography variant="h4" component="h1" gutterBottom color="primary" sx={{ fontWeight: 'bold' }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          color="primary"
+          sx={{ fontWeight: "bold" }}
+        >
           EDITAR MASCOTA
         </Typography>
 
@@ -256,19 +336,36 @@ const EditPetModal = ({ open, onClose, petId }) => {
             />
           </Button>
 
-          <Typography variant="body2" color="textSecondary" sx={{ mt: 1, mb: 2 }}>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            sx={{ mt: 1, mb: 2 }}
+          >
             Puedes subir hasta 4 fotografías.
           </Typography>
 
           {/* Contenedor de previsualización de imágenes */}
           {previews.length > 0 && (
             <ImagePreviewWrapper>
-              {previews.map((preview, index) => (
-                <ImagePreview key={index}>
-                  <img src={preview} alt={`preview-${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <DeleteIcon onClick={() => handleRemovePreview(index)}>X</DeleteIcon>
-                </ImagePreview>
-              ))}
+              {previews.map((preview, index) => {
+                console.log(preview);
+                return (
+                  <ImagePreview key={index}>
+                    <img
+                      src={base64ToBlob(preview?.imagePet)}
+                      alt={`preview-${index}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <DeleteIcon onClick={() => handleRemovePreview(index)}>
+                      X
+                    </DeleteIcon>
+                  </ImagePreview>
+                );
+              })}
             </ImagePreviewWrapper>
           )}
 
@@ -288,11 +385,11 @@ const EditPetModal = ({ open, onClose, petId }) => {
               sx={{
                 flex: 1,
                 ml: 2,
-                borderColor: 'purple', // Borde morado
-                color: 'purple', // Texto morado
-                '&:hover': {
-                  borderColor: 'darkpurple', // Borde morado oscuro al pasar el ratón
-                  color: 'darkpurple', // Texto morado oscuro al pasar el ratón
+                borderColor: "purple", // Borde morado
+                color: "purple", // Texto morado
+                "&:hover": {
+                  borderColor: "darkpurple", // Borde morado oscuro al pasar el ratón
+                  color: "darkpurple", // Texto morado oscuro al pasar el ratón
                 },
               }}
               onClick={onClose}
@@ -309,7 +406,6 @@ const EditPetModal = ({ open, onClose, petId }) => {
 };
 
 export default EditPetModal;
-
 
 // import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
@@ -405,7 +501,7 @@ export default EditPetModal;
 
 //     try {
 //       setLoading(true);
-      
+
 //       // Enviar la información de la mascota
 //       const response = await axios.put(`${process.env.REACT_APP_API_URL}/pet/${petId}`, petFormData, {
 //         headers: {

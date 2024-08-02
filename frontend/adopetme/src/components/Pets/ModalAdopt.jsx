@@ -43,16 +43,35 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
 
   useEffect(() => {
     const getSinglePets = async () => {
-      console.log("ID", id);
       setLoading(true);
-      const response = await fetch(`https://service01.mercelab.com/pet/${id}`);
-      // const response = await fetch(
-      //   `${process.env.REACT_APP_API_URL}/pet/${id}`
-      // );
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/pet/${id}`
+      );
 
       const result = await response.json();
       setLoading(false);
-      setSinglePets(result.data[0]);
+
+      console.log("singlePets", result.data[0]);
+
+      const idUser = result?.data[0]?.createdBy;
+
+      let singlePet = result.data[0];
+
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/users_details/${idUser}`
+        );
+        const result = await response.json();
+
+        singlePet = {
+          ...singlePet,
+          ubication: result?.state + ", " + result?.country,
+        };
+      } catch (error) {
+        console.error("Failed to fetch pets:", error);
+      }
+
+      setSinglePets(singlePet);
       setIdContact(result.data[0].createdBy);
     };
 
@@ -64,7 +83,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
       try {
         setLoadingImg(true);
         const response = await fetch(
-          `https://service02.mercelab.com/image/pet/${id}`
+          `${process.env.REACT_APP_API_URL}/image/pet/${id}`
         );
 
         const result = await response.json();
@@ -73,7 +92,6 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
           setSinglePetsImg([]);
           return;
         }
-        console.log("result Img", result);
         setSinglePetsImg(result);
       } catch (error) {
         setLoadingImg(false);
@@ -486,7 +504,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         color="primary"
                         fontWeight="fontWeightBold"
                       >
-                        {"Perro"}
+                        {singlePets?.idSpecies === 1 ? "Gato" : "Perro"}
                       </Typography>
                       <Typography
                         variant="body"
@@ -513,7 +531,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         color="primary"
                         fontWeight="fontWeightBold"
                       >
-                        {"Guadalajara, México"}
+                        {singlePets?.ubication}
                       </Typography>
                       <Typography
                         variant="body"
@@ -578,7 +596,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
         )}
       </Dialog>
 
-      {idContact && (
+      {idContact & openModalContact && (
         <ProfileContact
           open={openModalContact}
           handleClose={handleCloseModalContact}
