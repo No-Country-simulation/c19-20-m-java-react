@@ -337,7 +337,8 @@ const CardsPets = ({
               pb: 2.5,
             }}
           >
-            {location.pathname === "/" ? (
+            {location.pathname === "/" ||
+            location.pathname === "/publicaciones" ? (
               <Button
                 variant="contained"
                 size="large"
