@@ -5,7 +5,9 @@ import com.adopetme.user_details_service.domain.dao.UserDetailsDAO;
 import com.adopetme.user_details_service.domain.dto.CreateUpdateUser;
 import com.adopetme.user_details_service.domain.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UpdateUserDetailsService {
 
     @Autowired
@@ -14,7 +16,6 @@ public class UpdateUserDetailsService {
     public UpdateUserDetailsService(UserDetailsDAO userDetailsDAO) {
         this.userDetailsDAO = userDetailsDAO;
     }
-
 
     public Integer updateUser(int id, CreateUpdateUser userDTO) {
         UserDetails userDetails = userDetailsDAO.getUserDetailsByID(id)
@@ -27,6 +28,5 @@ public class UpdateUserDetailsService {
 
         return userDetailsDAO.save(userDetails);
     }
-
 
 }
