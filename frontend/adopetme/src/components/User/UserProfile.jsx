@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Grid, TextField, Button, Modal, IconButton, Paper, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Avatar,
+  Grid,
+  TextField,
+  Button,
+  Modal,
+  IconButton,
+  Paper,
+  CircularProgress,
+  Alert
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../contexts/AuthContext';
 import PetForm from '../../Pages/PetForm';
+import EditProfileModal from './EditProfileModal';
 
 const UserProfile = () => {
   const { user, fetchUserDetails } = useAuth();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPetFormModalOpen, setIsPetFormModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
     console.log('User:', user);
@@ -38,6 +54,31 @@ const UserProfile = () => {
     setIsPetFormModalOpen(false);
   };
 
+  const handleOpenEditProfileModal = () => {
+    setIsEditProfileModalOpen(true);
+  };
+
+  const handleCloseEditProfileModal = () => {
+    setIsEditProfileModalOpen(false);
+  };
+
+  const handleSaveProfile = async (updatedDetails) => {
+    try {
+      // Aquí puedes hacer la llamada a la API para guardar los cambios
+      // Ejemplo: await axios.put(`${process.env.REACT_APP_API_URL}/users_details/${user.idUserDetails}`, updatedDetails);
+
+      // Para este ejemplo, simplemente actualizamos el estado localmente
+      setUserDetails(updatedDetails);
+      setMessageType('success');
+      setMessage('Perfil actualizado con éxito');
+      setIsEditProfileModalOpen(false);
+    } catch (error) {
+      setMessageType('error');
+      setMessage('Error al actualizar el perfil');
+      console.error('Error al actualizar el perfil:', error);
+    }
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -47,6 +88,11 @@ const UserProfile = () => {
       <Typography variant="h4" component="h1" sx={{ mb: 4, textAlign: 'center' }}>
         Perfil de Usuario
       </Typography>
+      {message && (
+        <Alert severity={messageType} sx={{ mb: 2 }}>
+          {message}
+        </Alert>
+      )}
       <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
         <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
           <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
@@ -100,7 +146,7 @@ const UserProfile = () => {
       </Paper>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" fullWidth>
+          <Button variant="contained" color="primary" fullWidth onClick={handleOpenEditProfileModal}>
             Editar Perfil
           </Button>
         </Grid>
@@ -124,6 +170,13 @@ const UserProfile = () => {
           <PetForm />
         </Box>
       </Modal>
+
+      <EditProfileModal
+        open={isEditProfileModalOpen}
+        handleClose={handleCloseEditProfileModal}
+        userDetails={userDetails}
+        handleSaveProfile={handleSaveProfile}
+      />
     </Box>
   );
 };
