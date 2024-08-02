@@ -17,7 +17,7 @@ const MainLayout = ({ children }) => {
       >
         <Box
           sx={{
-            mt: "74px",
+            mt: "1px",
             // mb: 4,
             position: "relative",
             minHeight: "calc(100vh - 74px)",

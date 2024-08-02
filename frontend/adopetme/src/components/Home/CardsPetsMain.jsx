@@ -36,12 +36,31 @@ const CardsPetsMain = () => {
           `${process.env.REACT_APP_API_URL}/pet/petimage`
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const result = await response.json();
         setLoading(false);
         const resultSlice = result.data.slice(0, 8);
-        setPets(resultSlice);
+
+        const newPets = await resultSlice.map(async (pet) => {
+          try {
+            const response = await fetch(
+              `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
+            );
+            const result = await response.json();
+
+            return {
+              ...pet,
+              ubication:
+                result?.city + ", " + result?.state + ", " + result?.country,
+            };
+          } catch (error) {
+            console.error("Failed to fetch pets:", error);
+          }
+        });
+
+        setPets(await Promise.all(newPets));
+        console.log(resultSlice);
       } catch (error) {
         console.error("Failed to fetch pets:", error);
         setLoading(false);
@@ -49,7 +68,6 @@ const CardsPetsMain = () => {
     };
     getPets();
   }, []);
-
 
   //*****************************************************FUNCTIONS**************************************************************** */
 
@@ -64,6 +82,29 @@ const CardsPetsMain = () => {
 
   const handleClickSeeMore = () => {
     navigate("/publicaciones");
+  };
+
+  const getUbicationsPets = async (array) => {
+    let ubication;
+    array.map(async (pet) => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
+        );
+        const result = await response.json();
+
+        const data = {
+          createdBy: pet?.createdBy,
+          ubication:
+            result?.city + ", " + result?.state + ", " + result?.country,
+        };
+        ubication.push(data);
+      } catch (error) {
+        console.error("Failed to fetch pets:", error);
+      }
+    });
+
+    return ubication;
   };
 
   return (
@@ -106,7 +147,7 @@ const CardsPetsMain = () => {
                   }
                   name={pet.name}
                   gender={pet?.gender}
-                  ubication={"ubicacion"}
+                  ubication={pet?.ubication}
                   handleClickAdopt={handleClickAdopt}
                   loading={loading}
                   loadingImg={loadingImg}

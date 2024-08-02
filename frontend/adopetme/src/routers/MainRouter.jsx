@@ -28,7 +28,10 @@ const MainRouter = () => {
               <Route path="/adopcion" element={<AdoptPets />} />
               <Route path="/registro-mascotas" element={<PetForm />} />
               <Route path="/profile" element={<UserProfile />} />
-              <Route path="/editor-mascotas-info" element={<EditPetModal />} />
+              <Route
+                path="/editor-mascotas-info/:petId"
+                element={<EditPetModal />}
+              />
               <Route path="/editor-mascotas" element={<EditPetPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
@@ -40,4 +43,3 @@ const MainRouter = () => {
 };
 
 export default MainRouter;
-

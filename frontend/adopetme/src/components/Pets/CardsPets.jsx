@@ -18,6 +18,8 @@ import PlaceIcon from "@mui/icons-material/Place";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 
+import { Link, useNavigate } from "react-router-dom"; //!ELIMINAR LUEGO SOLO ES PARA PRUEBA DE EDITAR MASCOTA
+
 const CardsPets = ({
   id,
   img,
@@ -29,6 +31,7 @@ const CardsPets = ({
   loadingImg,
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate(); //!ELIMINAR LUEGO SOLO ES PARA PRUEBA DE EDITAR MASCOTA
 
   return (
     <>
@@ -340,6 +343,18 @@ const CardsPets = ({
             >
               Ver perfil
             </Button>
+
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                autoFocus
+                onClick={() => {
+                  navigate(`/editor-mascotas-info/${id}`);
+                }}
+              >
+                Editar mascota ejemplo
+              </Button>
+            </Box>
           </CardActions>
         </Card>
       )}
