@@ -63,8 +63,29 @@ const PublicationsPets = () => {
         );
         const result = await response.json();
         setLoading(false);
-        pagination(result.data);
-        setAllPets(result?.data);
+
+        //ADD UBICATIONS
+        const newPets = await result.data.map(async (pet) => {
+          try {
+            const response = await fetch(
+              `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
+            );
+            const result = await response.json();
+
+            return {
+              ...pet,
+              ubication:
+                result?.city + ", " + result?.state + ", " + result?.country,
+            };
+          } catch (error) {
+            console.error("Failed to fetch pets:", error);
+          }
+        });
+
+        const petWithUbications = await Promise.all(newPets);
+
+        pagination(petWithUbications);
+        setAllPets(petWithUbications);
       };
       getPets();
     }
@@ -148,7 +169,7 @@ const PublicationsPets = () => {
                 }
                 name={pet?.name}
                 gender={pet?.gender}
-                ubication={"ubicacion"}
+                ubication={pet?.ubication}
                 handleClickAdopt={handleClickAdopt}
                 loading={loading}
                 loadingImg={loadingImg}

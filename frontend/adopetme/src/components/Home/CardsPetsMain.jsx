@@ -60,7 +60,6 @@ const CardsPetsMain = () => {
         });
 
         setPets(await Promise.all(newPets));
-        console.log(resultSlice);
       } catch (error) {
         console.error("Failed to fetch pets:", error);
         setLoading(false);
