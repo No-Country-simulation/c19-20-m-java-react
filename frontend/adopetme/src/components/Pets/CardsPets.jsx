@@ -18,7 +18,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 
-import { Link, useNavigate } from "react-router-dom"; //!ELIMINAR LUEGO SOLO ES PARA PRUEBA DE EDITAR MASCOTA
+import { useNavigate, useLocation } from "react-router-dom";
 
 const CardsPets = ({
   id,
@@ -31,7 +31,8 @@ const CardsPets = ({
   loadingImg,
 }) => {
   const theme = useTheme();
-  const navigate = useNavigate(); //!ELIMINAR LUEGO SOLO ES PARA PRUEBA DE EDITAR MASCOTA
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -336,25 +337,27 @@ const CardsPets = ({
               pb: 2.5,
             }}
           >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => handleClickAdopt(id)}
-            >
-              Ver perfil
-            </Button>
-
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            {location.pathname === "/" ? (
               <Button
                 variant="contained"
-                autoFocus
-                onClick={() => {
-                  navigate(`/editor-mascotas-info/${id}`);
-                }}
+                size="large"
+                onClick={() => handleClickAdopt(id)}
               >
-                Editar mascota ejemplo
+                Ver perfil
               </Button>
-            </Box>
+            ) : (
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="contained"
+                  autoFocus
+                  onClick={() => {
+                    navigate(`/editor-mascotas-info/${id}`);
+                  }}
+                >
+                  Editar mascota
+                </Button>
+              </Box>
+            )}
           </CardActions>
         </Card>
       )}
