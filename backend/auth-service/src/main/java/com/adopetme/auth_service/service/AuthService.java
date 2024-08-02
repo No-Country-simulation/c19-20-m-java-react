@@ -52,6 +52,8 @@ public class AuthService implements IAuthService {
         userDetailsDTO.setCountry("Argentina");
         userDetailsDTO.setState("Misiones");
         userDetailsDTO.setCity("Posadas");
+        userDetailsDTO.setFirstName(dto.getUsername());
+        userDetailsDTO.setLastName(dto.getLastname());
         AuthUser authUser = AuthUser.builder()
                 .username(dto.getUsername())
                 .password(passwordEncoder.encode(dto.getPassword()))
