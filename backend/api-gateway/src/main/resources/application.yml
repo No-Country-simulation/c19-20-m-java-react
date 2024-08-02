@@ -129,3 +129,13 @@ public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no ne
     #   method: "GET"
     # - uri: "/pet/search"
     #   method: "GET"
+
+## Admin Server
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
