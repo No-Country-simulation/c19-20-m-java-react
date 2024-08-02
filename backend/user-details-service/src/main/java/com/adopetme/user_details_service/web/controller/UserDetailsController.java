@@ -2,6 +2,7 @@ package com.adopetme.user_details_service.web.controller;
 
 import com.adopetme.user_details_service.domain.UserDetails;
 import com.adopetme.user_details_service.domain.dto.AllNames;
+import com.adopetme.user_details_service.domain.dto.CreateUpdateUser;
 import com.adopetme.user_details_service.domain.dto.UserDetailsWithPublications;
 import com.adopetme.user_details_service.domain.service.*;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +26,11 @@ public class UserDetailsController {
     private final DeleteUserByIdService deleteUserByIdService;
     @Autowired
     private final LocationDetailsService locationDetailsService;
+    @Autowired
+    private final GetUserWithPublicationsService getUserWithPublicationsService;
+    @Autowired
+    private UpdateUserDetailsService  updateUserDetailsService;
+
 
     public UserDetailsController(GetUserByIdService getUserByIdService, CreateUserService createUserService, DeleteUserByIdService deleteUserByIdService, LocationDetailsService locationDetailsService, GetUserWithPublicationsService getUserWithPublicationsService) {
         this.getUserByIdService = getUserByIdService;
@@ -34,6 +40,8 @@ public class UserDetailsController {
         this.getUserWithPublicationsService = getUserWithPublicationsService;
     }
 
+
+    //OBTENER UN USUARIO POR ID
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Search a product with an ID")
@@ -48,12 +56,14 @@ public class UserDetailsController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    //CREAR UN NUEVO USUARIO
 
    @PostMapping("/save")
    public ResponseEntity<Integer> save(@RequestBody UserDetails userDetails) {
        return new ResponseEntity<>(createUserService.execute(userDetails), HttpStatus.CREATED);
    }
 
+   //ELIMINAR UN USUARIO POR ID
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable("id") int userDetailsId) {
@@ -64,6 +74,8 @@ public class UserDetailsController {
         }
     }
 
+    //OBTENER LOS DETALLES DE UBICACION
+
     @GetMapping("/namesbyid/{idcountry}/{idstate}/{idcity}")
     public ResponseEntity<AllNames> getLocationNames(@PathVariable("idcountry") Long countryId,
                                                          @PathVariable("idstate") Long stateId,
@@ -72,12 +84,21 @@ public class UserDetailsController {
         return ResponseEntity.ok(locationNames);
     }
 
-    private final GetUserWithPublicationsService getUserWithPublicationsService;
+    //OBTENER UN USUARIO Y SUS PUBLICACIONES CON EL ID DE USUARIO
 
     @GetMapping("/{id}/publications")
     public ResponseEntity<UserDetailsWithPublications> getUserWithPublications(@PathVariable Long id) {
         UserDetailsWithPublications userWithPublications = getUserWithPublicationsService.getUserWithPublications(Math.toIntExact(id));
         return ResponseEntity.ok(userWithPublications);
     }
+
+    //REALIZAR CAMBIOS EN LOS DETALLES DE UN USUARIO POR ID
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Integer> updateUser(@PathVariable int id, @RequestBody CreateUpdateUser userDTO) {
+        Integer updatedUserId = updateUserDetailsService.updateUser(id, userDTO);
+        return ResponseEntity.ok(updatedUserId);
+    }
+
 
 }
