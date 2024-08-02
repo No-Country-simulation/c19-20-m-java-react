@@ -11,10 +11,13 @@ const UserProfile = () => {
   const [isPetFormModalOpen, setIsPetFormModalOpen] = useState(false);
 
   useEffect(() => {
+    console.log('User:', user);
     const fetchData = async () => {
-      if (user && user.id) {
+      if (user && user.idUserDetails) {
         try {
-          const details = await fetchUserDetails(user.id);
+          console.log('Fetching data for user:', user);
+          const details = await fetchUserDetails(user.idUserDetails);
+          console.log('User details fetched:', details);
           setUserDetails(details);
         } catch (error) {
           console.error('Error fetching user details:', error);
