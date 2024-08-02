@@ -1,0 +1,39 @@
+server:
+  port: 5055
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://service11.mercelab.com/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  application:
+    name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+  datasource:
+    url: jdbc:mariadb://nc-country.mysql.database.azure.com:3306/nc_user?useSSL=false&serverTimezone=UTC
+    username: adopetmedb
+    password: 1P3aYV2WDZlcNh1
+    driver-class-name: org.mariadb.jdbc.Driver
+  cloud:
+    openfeign:
+      client:
+        config:
+          userdetailsapi:
+            url: http://localhost:433/user-details-service/users_details
+
+
+jwt:
+  secret: aEPZLz7azPBLr4G5sfcjBzDtpEExdBZS
+
+admin-paths: #Agregar las urls que quieren que solo el admin acceda, tienen la plantilla comentada de abajo tanto para sin argumentos, como con argumentos en el caso del PUT
+  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
+#    -
+#      uri: "/clientes/crear"
+#      method: "POST"
