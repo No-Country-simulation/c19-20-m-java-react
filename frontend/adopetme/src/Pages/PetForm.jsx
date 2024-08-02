@@ -40,6 +40,7 @@ const PetForm = () => {
     const chosenFiles = Array.from(event.target.files);
     if (chosenFiles.length <= 4) {
       setFiles(chosenFiles);
+      console.log("Selected files:", chosenFiles);
     } else {
       setError("Solo puedes subir un máximo de 4 fotografías.");
     }
@@ -92,26 +93,52 @@ const PetForm = () => {
     formData.append("weight", 0);
     formData.append("tag", "");
     formData.append("createdBy", "");
-    formData.append("idSpecies", petType === "Perro" ? 1 : 0); //number
+    formData.append("idSpecies", petType === "Perro" ? 2 : 1);  //number
     formData.append("idBreed", 1);
 
     //add file to FormData
     files.map((file) => formData.append("image", file));
 
+    // Imprimir los datos del FormData
+  const formDataObj = {};
+  formData.forEach((value, key) => {
+    formDataObj[key] = value;
+  });
+  console.log("FormData contents:", formDataObj);
+  
+
     try {
-      console.log("url", process.env.REACT_APP_API_URL);
+      // console.log("url", process.env.REACT_APP_API_URL);
+
+  
       
       // Simulación de envío de datos a una base de datos
-      setLoading(true);
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
+        `https://service01.mercelab.com/pet/savewithimage`,
         {
-          Authorization: `Bearer ${authToken}`,
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
           body: formData,
         }
       );
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      const responseBody = await response.json();
+      console.log("Response body:", responseBody);
       setLoading(false);
+      // setLoading(true);
+      // const response = await fetch(
+      //   `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
+      //   {
+      //     Authorization: `Bearer ${authToken}`,
+      //     method: "POST",
+      //     body: formData,
+      //   }
+      // );
+      // setLoading(false);
 
       if (response.ok) {
         //FETCH PARA GUARDAR IMAGEN
