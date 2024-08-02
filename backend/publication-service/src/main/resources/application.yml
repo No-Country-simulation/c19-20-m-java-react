@@ -7,7 +7,7 @@ spring:
     show-sql: true
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://nc-country.mysql.database.azure.com:3306/nc_pet
+    url: jdbc:mariadb://190.223.58.254:3307/nc_pet
     username: adopetmedb
     password: 1P3aYV2WDZlcNh1
 
