@@ -12,7 +12,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user) {
+      if (user && user.id) {
         try {
           const details = await fetchUserDetails(user.id);
           setUserDetails(details);
