@@ -8,6 +8,7 @@ pipeline {
                     
                     services.each { service ->
                         dir("backend/${service}") {
+                            sh 'chmod +x mvnw'
                             sh './mvnw clean package -DskipTests'
                             sh "nohup java -jar target/${service}.jar &"
                         }
