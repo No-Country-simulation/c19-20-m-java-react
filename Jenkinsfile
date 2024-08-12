@@ -4,7 +4,7 @@ pipeline {
         stage('Build and Deploy Microservices') {
             steps {
                 script {
-                    def services = ['admin-server']
+                    def services = ['admin-server-0.0.1-SNAPSHOT']
                     
                     services.each { service ->
                         dir("backend/${service}") {
