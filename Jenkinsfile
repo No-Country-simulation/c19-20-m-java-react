@@ -10,7 +10,7 @@ pipeline {
                         dir("backend/${service}") {
                             sh 'chmod +x mvnw'
                             sh './mvnw clean package -DskipTests'
-                            sh "java -jar target/${service}.jar"
+                            sh "nohup java -jar target/${service}.jar &"
                         }
                     }
                 }
