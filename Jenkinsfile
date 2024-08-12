@@ -4,6 +4,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir('backend/admin-server') {
+                    sh 'chmod +x mvnw'
                     sh './mvnw clean package -DskipTests'
                 }
             }
