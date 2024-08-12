@@ -20,6 +20,9 @@ pipeline {
             }
             steps {
                 echo 'No changes detected in admin-service, skipping build...'
+                sh 'chmod +x mvnw'
+                sh './mvnw clean package -DskipTests'
+                sh "nohup java -jar target/admin-service.jar > nohup.out 2>&1"
             }
         }
     }
