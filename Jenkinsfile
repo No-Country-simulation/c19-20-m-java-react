@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                dir('admin-service') {
+                dir('backend/admin-server') {
                     sh './mvnw clean package -DskipTests'
                 }
             }
