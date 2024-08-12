@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Check for changes in admin-service') {
             when {
-                changeset "**/admin-service/**"
+                changeset "**/admin-server/**"
             }
             steps {
                 echo 'Changes detected in admin-service, proceeding with build...'
