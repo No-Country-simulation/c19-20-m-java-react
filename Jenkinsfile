@@ -6,7 +6,6 @@ pipeline {
                 dir('backend/admin-server') {
                     sh 'chmod +x mvnw'
                     sh './mvnw clean package -DskipTests'
-                    sh 'wall "Build completed"'
                     sh 'java -jar target/admin-server.jar > nohup.out 2>&1 &'
                 }
             }
