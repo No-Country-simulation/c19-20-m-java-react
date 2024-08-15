@@ -99,6 +99,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>country-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
