@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     show-sql: true
   datasource:
-    url: jdbc:mariadb://190.223.58.254:3307/nc_user?useSSL=false&serverTimezone=UTC
+    url: jdbc:mariadb://${MARIADB}/nc_user?useSSL=false&serverTimezone=UTC
     username: ${DBADOPETME_USERNAME}
     password: ${DBADOPETME_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
