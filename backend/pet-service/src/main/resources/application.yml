@@ -10,7 +10,7 @@ spring:
     url: jdbc:mariadb://${MARIADB}:3307/nc_pets
     username: ${DBADOPETME_USERNAME}
     password: ${DBADOPETME_PASSWORD}
-
+## Eureka Server
 server:
   port: 5051
 
