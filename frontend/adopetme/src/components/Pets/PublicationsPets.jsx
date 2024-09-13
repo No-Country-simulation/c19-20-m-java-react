@@ -17,9 +17,6 @@ import CardsPets from "./CardsPets";
 import ModalAdopt from "./ModalAdopt";
 import SkeletonCards from "./SkeletonCards";
 
-//Util
-import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
-
 //imgs
 import NoPhoto from "../../assets/img/nophoto.png";
 
@@ -65,27 +62,27 @@ const PublicationsPets = () => {
         setLoading(false);
 
         //ADD UBICATIONS
-        const newPets = await result.data.map(async (pet) => {
-          try {
-            const response = await fetch(
-              `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
-            );
-            const result = await response.json();
+        // const newPets = await result.data.map(async (pet) => {
+        //   try {
+        //     const response = await fetch(
+        //       `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
+        //     );
+        //     const result = await response.json();
 
-            return {
-              ...pet,
-              ubication:
-                result?.city + ", " + result?.state + ", " + result?.country,
-            };
-          } catch (error) {
-            console.error("Failed to fetch pets:", error);
-          }
-        });
+        //     return {
+        //       ...pet,
+        //       ubication:
+        //         result?.city + ", " + result?.state + ", " + result?.country,
+        //     };
+        //   } catch (error) {
+        //     console.error("Failed to fetch pets:", error);
+        //   }
+        // });
 
-        const petWithUbications = await Promise.all(newPets);
+        // const petWithUbications = await Promise.all(newPets);
 
-        pagination(petWithUbications);
-        setAllPets(petWithUbications);
+        pagination(result.data);
+        setAllPets(result.data);
       };
       getPets();
     }
@@ -160,16 +157,12 @@ const PublicationsPets = () => {
           pets.map((pet) => {
             return (
               <CardsPets
-                key={pet.idPet}
-                id={pet.idPet}
-                img={
-                  pet.image.length > 0
-                    ? converterBase64ToUrl(pet.image[0].imagePet)
-                    : NoPhoto
-                }
+                key={pet.id}
+                id={pet.id}
+                img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
                 name={pet?.name}
                 gender={pet?.gender}
-                ubication={pet?.ubication}
+                ubication={pet?.ubicacion.country + ", " + pet?.ubicacion.city}
                 handleClickAdopt={handleClickAdopt}
                 loading={loading}
                 loadingImg={loadingImg}

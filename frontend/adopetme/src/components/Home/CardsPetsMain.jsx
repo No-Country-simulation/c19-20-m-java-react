@@ -12,9 +12,6 @@ import CardsPets from "../Pets/CardsPets";
 import ModalAdopt from "../Pets/ModalAdopt";
 import SkeletonCards from "../Pets/SkeletonCards";
 
-//Utils
-import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
-
 //Img
 import NoPhoto from "../../assets/img/nophoto.png";
 
@@ -42,24 +39,7 @@ const CardsPetsMain = () => {
         setLoading(false);
         const resultSlice = result.data.slice(0, 8);
 
-        const newPets = await resultSlice.map(async (pet) => {
-          try {
-            const response = await fetch(
-              `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
-            );
-            const result = await response.json();
-
-            return {
-              ...pet,
-              ubication:
-                result?.city + ", " + result?.state + ", " + result?.country,
-            };
-          } catch (error) {
-            console.error("Failed to fetch pets:", error);
-          }
-        });
-
-        setPets(await Promise.all(newPets));
+        setPets(resultSlice);
       } catch (error) {
         console.error("Failed to fetch pets:", error);
         setLoading(false);
@@ -81,29 +61,6 @@ const CardsPetsMain = () => {
 
   const handleClickSeeMore = () => {
     navigate("/publicaciones");
-  };
-
-  const getUbicationsPets = async (array) => {
-    let ubication;
-    array.map(async (pet) => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users_details/${pet?.createdBy}`
-        );
-        const result = await response.json();
-
-        const data = {
-          createdBy: pet?.createdBy,
-          ubication:
-            result?.city + ", " + result?.state + ", " + result?.country,
-        };
-        ubication.push(data);
-      } catch (error) {
-        console.error("Failed to fetch pets:", error);
-      }
-    });
-
-    return ubication;
   };
 
   return (
@@ -137,16 +94,14 @@ const CardsPetsMain = () => {
           : pets.map((pet) => {
               return (
                 <CardsPets
-                  key={Math.random()}
-                  id={pet.idPet}
-                  img={
-                    pet.image.length > 0
-                      ? converterBase64ToUrl(pet.image[0].imagePet)
-                      : NoPhoto
-                  }
+                  key={pet.id}
+                  id={pet.id}
+                  img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
                   name={pet.name}
                   gender={pet?.gender}
-                  ubication={pet?.ubication}
+                  ubication={
+                    pet?.ubicacion.country + ", " + pet?.ubicacion.city
+                  }
                   handleClickAdopt={handleClickAdopt}
                   loading={loading}
                   loadingImg={loadingImg}

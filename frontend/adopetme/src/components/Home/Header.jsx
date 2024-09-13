@@ -118,11 +118,11 @@ export default function PrimarySearchAppBar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const handleProfile = () => {
-    navigate('/profile');
+    navigate("/profile");
     handleMenuClose();
   };
 
@@ -166,7 +166,7 @@ export default function PrimarySearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       {user ? (
-        <>
+        <Box>
           <MenuItem onClick={handleProfile}>
             <IconButton
               size="large"
@@ -180,7 +180,7 @@ export default function PrimarySearchAppBar() {
             <Typography
               variant="body1"
               component="p"
-              sx={{ fontWeight: 'bold', ml: 1 }}
+              sx={{ fontWeight: "bold", ml: 1 }}
             >
               Mi Perfil
             </Typography>
@@ -198,25 +198,35 @@ export default function PrimarySearchAppBar() {
             <Typography
               variant="body1"
               component="p"
-              sx={{ fontWeight: 'bold', ml: 1 }}
+              sx={{ fontWeight: "bold", ml: 1 }}
             >
               Cerrar Sesión
             </Typography>
           </MenuItem>
-        </>
+        </Box>
       ) : (
-        <>
+        <Box>
           <MenuItem onClick={handleOpenRegister}>
-            <Button variant="outlined" sx={{ color: 'black', borderColor: 'black', width: '100%' }}>
+            <Button
+              variant="outlined"
+              sx={{ color: "black", borderColor: "black", width: "100%" }}
+            >
               Regístrate
             </Button>
           </MenuItem>
           <MenuItem onClick={handleOpenLogin}>
-            <Button variant="contained" sx={{ backgroundColor: 'secondary.main', color: 'primary.main', width: '100%' }}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "secondary.main",
+                color: "primary.main",
+                width: "100%",
+              }}
+            >
               Iniciar Sesión
             </Button>
           </MenuItem>
-        </>
+        </Box>
       )}
     </Menu>
   );
@@ -231,10 +241,10 @@ export default function PrimarySearchAppBar() {
             alt="Logo"
             sx={{
               height: 40,
-              cursor: 'pointer',
-              display: { xs: 'none', sm: 'block' },
+              cursor: "pointer",
+              display: { xs: "none", sm: "block" },
             }}
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
           />
           <Paper
             elevation={0}

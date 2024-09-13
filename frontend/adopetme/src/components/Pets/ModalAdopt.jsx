@@ -20,9 +20,6 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 import { Carousel } from "react-responsive-carousel";
 
-//Utils
-import converterBase64ToUrl from "../../utils/converterBase64ToUrl";
-
 //Img
 import noPhoto from "../../assets/img/nophoto.png";
 import ProfileContact from "./ProfileContact";
@@ -51,55 +48,16 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
       const result = await response.json();
       setLoading(false);
 
-      console.log("singlePets", result.data[0]);
+      const idUser = result?.data.createdBy;
 
-      const idUser = result?.data[0]?.createdBy;
-
-      let singlePet = result.data[0];
-
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users_details/${idUser}`
-        );
-        const result = await response.json();
-
-        singlePet = {
-          ...singlePet,
-          ubication: result?.state + ", " + result?.country,
-        };
-      } catch (error) {
-        console.error("Failed to fetch pets:", error);
-      }
+      let singlePet = result.data;
 
       setSinglePets(singlePet);
-      setIdContact(result.data[0].createdBy);
+      setSinglePetsImg(singlePet.images);
+      setIdContact(idUser);
     };
 
     getSinglePets();
-  }, [id]);
-
-  useEffect(() => {
-    const getImgPet = async () => {
-      try {
-        setLoadingImg(true);
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/image/pet/${id}`
-        );
-
-        const result = await response.json();
-        setLoadingImg(false);
-        if (result.status === 404) {
-          setSinglePetsImg([]);
-          return;
-        }
-        setSinglePetsImg(result);
-      } catch (error) {
-        setLoadingImg(false);
-        setSinglePetsImg([]);
-        console.log("error", error);
-      }
-    };
-    getImgPet();
   }, [id]);
 
   //*****************************************************FUNCTIONS**************************************************************** */
@@ -107,7 +65,6 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
   const handleZoom = (img) => {
     setIndexImgZoom(img);
     setOpenZoom(true);
-    console.log("index zoom", img);
   };
 
   const handleCloseZoom = () => {
@@ -392,25 +349,19 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                   <Box>
                     <Carousel>
                       {singlePetsImg.length > 0 ? (
-                        singlePetsImg?.map((pet, index) => (
+                        singlePetsImg?.map((img, index) => (
                           <Box
-                            key={pet.idPet}
+                            key={img.id}
                             sx={{
                               height: 400,
                               cursor: "zoom-in",
                               display: "flex",
                               justifyContent: "center",
                             }}
-                            onClick={() =>
-                              handleZoom(converterBase64ToUrl(pet.imagePet))
-                            }
+                            onClick={() => handleZoom(img.image)}
                           >
                             <img
-                              src={
-                                pet.imagePet
-                                  ? converterBase64ToUrl(pet.imagePet)
-                                  : noPhoto
-                              }
+                              src={img.image ? img.image : noPhoto}
                               alt={`pet-${index}`}
                             />
                           </Box>
@@ -477,7 +428,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         color="primary"
                         fontWeight="fontWeightBold"
                       >
-                        {singlePets?.gender === 1 ? "Hembra" : "Macho"}
+                        {singlePets?.gender === "hembra" ? "Hembra" : "Macho"}
                       </Typography>
                       <Typography
                         variant="body"
@@ -503,8 +454,9 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         variant="body"
                         color="primary"
                         fontWeight="fontWeightBold"
+                        textTransform={"capitalize"}
                       >
-                        {singlePets?.idSpecies === 1 ? "Gato" : "Perro"}
+                        {singlePets?.specie.name}
                       </Typography>
                       <Typography
                         variant="body"
@@ -531,7 +483,9 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         color="primary"
                         fontWeight="fontWeightBold"
                       >
-                        {singlePets?.ubication}
+                        {singlePets?.ubicacion.country +
+                          ", " +
+                          singlePets?.ubicacion.city}
                       </Typography>
                       <Typography
                         variant="body"

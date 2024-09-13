@@ -117,7 +117,7 @@ const CardsPets = ({
                   width={20}
                   height={20}
                 >
-                  {gender === "MACHO" ? (
+                  {gender === "macho" ? (
                     <MaleIcon
                       fontSize="large"
                       color="primary"
@@ -293,7 +293,7 @@ const CardsPets = ({
                 alignContent="flex-start"
                 columnGap={2}
               >
-                {gender === "MACHO" ? (
+                {gender === "macho" ? (
                   <MaleIcon
                     fontSize="large"
                     color="primary"
@@ -311,6 +311,7 @@ const CardsPets = ({
                   sx={{ ml: -0.8 }}
                   variant="body1"
                   fontWeight="fontWeightBold"
+                  textTransform={"capitalize"}
                 >
                   {gender}
                 </Typography>
