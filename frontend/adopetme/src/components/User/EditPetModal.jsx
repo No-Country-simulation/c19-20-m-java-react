@@ -96,7 +96,7 @@ const EditPetModal = ({ open, onClose }) => {
         // console.log("pet", pet);
         setPetName(pet.name);
         setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
-        setGender(pet.gender === 0 ? "Macho" : "Hembra");
+        setGender(pet.gender);
         setDescription(pet.description);
         setLoading(false);
       })
@@ -508,7 +508,6 @@ export default EditPetModal;
 //   const [success, setSuccess] = useState('');
 //   const [loading, setLoading] = useState(false);
 
-
 //   const navigate = useNavigate();
 
 //   const authToken = localStorage.getItem('token');
@@ -762,7 +761,6 @@ export default EditPetModal;
 
 // export default EditPetModal;
 
-
 // // import React, { useState, useEffect } from 'react';
 // // import axios from 'axios';
 // // import { Button, TextField, MenuItem, FormControl, InputLabel, Select, CircularProgress, Typography, Box, Container, Paper, Alert } from '@mui/material';
@@ -857,7 +855,7 @@ export default EditPetModal;
 
 // //     try {
 // //       setLoading(true);
-      
+
 // //       // Enviar la información de la mascota
 // //       const response = await axios.put(`${process.env.REACT_APP_API_URL}/pet/${petId}`, petFormData, {
 // //         headers: {
