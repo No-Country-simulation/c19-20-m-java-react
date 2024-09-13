@@ -20,3 +20,13 @@ eureka:
       defaultZone: http://localhost:5061/eureka/
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+## Admin Server
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

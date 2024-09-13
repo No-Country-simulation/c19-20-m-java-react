@@ -1,21 +1,22 @@
-package com.adopetme.api_gateway.configuration;
+package com.adopetme.api_gateway.filter;
 
+import com.adopetme.api_gateway.configuration.RouteValidator;
 import com.adopetme.api_gateway.dto.RequestDTO;
-import com.adopetme.api_gateway.dto.TokenDto;
+import com.adopetme.api_gateway.exception.InvalidToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
+    @Autowired
+    private RouteValidator routeValidator;
 
-    private WebClient.Builder webClient;
+    private final WebClient.Builder webClient;
 
     public AuthFilter(WebClient.Builder webClient) {
         super(Config.class);
@@ -25,33 +26,32 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
+            RequestDTO requestDTO = new RequestDTO(exchange.getRequest().getPath().toString(), exchange.getRequest().getMethod().toString());
+
+            if (routeValidator.isPublicPath(requestDTO)){
+                return chain.filter(exchange);
+            }
+
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange,HttpStatus.BAD_REQUEST);
+                throw new InvalidToken("No te encuentras validado.");
             }
 
             String tokenHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String [] chunks = tokenHeader.split(" ");
-            if (chunks.length != 2 || !chunks[0].equals("Bearer")) {
-                return onError(exchange, HttpStatus.BAD_REQUEST);
+            String [] header = tokenHeader.split(" ");
+
+            if (header.length != 2 || !header[0].equals("Bearer")) {
+                throw new InvalidToken("El token no es correcto.");
             }
 
             return webClient.build()
                     .post()
-                    .uri("http://auth-service/auth/validate?token=" + chunks[1])
+                    .uri("http://api-gateway/auth/validate?token=" + header[1])
                     .bodyValue(new RequestDTO(exchange.getRequest().getPath().toString(), exchange.getRequest().getMethod().toString()))
-                    .retrieve().bodyToMono(TokenDto.class)
-                    .map(t -> {
-                        t.getToken();
-                        return exchange;
-                    }).flatMap(chain::filter);
+                    .retrieve().bodyToMono(String.class)
+                    .map(t -> exchange)
+                    .flatMap(chain::filter)
+                    .onErrorResume(error -> Mono.error(new InvalidToken("El token no es valido para acceder a esta ruta.")));
         });
-    }
-
-    public Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(status);
-        response.getHeaders().set("X-Error-Message","Error");
-        return response.setComplete();
     }
 
     public static class Config{}

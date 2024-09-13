@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: https://service11.mercelab.com/eureka
+      defaultZone: http://localhost:5061/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
@@ -22,7 +22,7 @@ spring:
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowed-origins: "*"
             allowed-methods: "*"
             allowed-headers: "*"
@@ -35,14 +35,107 @@ spring:
           uri: lb://USER-DETAILS-SERVICE
           predicates:
             - Path=/users_details/**
+        # Configuration for pet-service
+        - id: pet-service-post
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/savewithimage
+            - Method=POST
           filters:
-            - AuthFilter #Para que funcione el token deben agregar el filtro tambien, tal cual como esta aca
-
+            - AuthFilter
+        # Configuration for pet-service-get
+        - id: pet-service-get
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/petuser
+            - Method=GET
+          filters:
+            - AuthFilter
+        # Configuration for pet-ID-service-get
+        - id: pet-service-get-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/{id}
+            - Method=GET
+        # Configuration for pet-ID-service-put
+        - id: pet-service-put-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/{id}
+            - Method=PUT
+          filters:
+            - AuthFilter
+        # Configuration for pet-ID-service-delete
+        - id: pet-service-delete-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/{id}
+            - Method=DELETE
+          filters:
+            - AuthFilter
+        # Configuration for pet-service-image
+        - id: pet-service-delete-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/petimage
+            - Method=GET
+        # Configuration for pet-service-image-id
+        - id: pet-service-delete-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/petimages/{id}
+            - Method=GET
+        # Configuration for pet-service-search
+        - id: pet-service-delete-id
+          uri: lb://PET-SERVICE
+          predicates:
+            - Path=/pet/search
+            - Method=GET
+        # Configuration for species
+        - id: specie-service
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/species/**
+        # Configuration for image
+        - id: image-service
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+        # Configuration for breed
+        - id: specie-service
+          uri: lb://SPECIE-SERVICE
+          predicates:
+            - Path=/breed/**
+        # Configuration for country
+        - id: country-service
+          uri: lb://COUNTRY-SERVICE
+          predicates:
+            - Path=/country/**
+        # Configuration for state
+        - id: state-service
+          uri: lb://STATE-SERVICE
+          predicates:
+            - Path=/state/**
+        # Configuration for city
+        - id: city-service
+          uri: lb://CITY-SERVICE
+          predicates:
+            - Path=/city/**
 public-paths: #Aca deben colocar las rutas que quieren que sean publicas y no necesiten token
-  paths: #Si van a usar algun @PathVariable, deben usar "{1}.+". Ej: "/clientes/cliente/{1}.+"
-    -
-      uri: "/auth/login"
-      method: "POST"
-    -
-      uri: "/auth/validate"
-      method: "POST"
+  paths:
+    # - uri: "/pet/petimage"
+    #   method: "GET"
+    # - uri: "/pet/petimages/{id}"
+    #   method: "GET"
+    # - uri: "/pet/search"
+    #   method: "GET"
+
+## Admin Server
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

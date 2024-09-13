@@ -49,7 +49,11 @@ public class AuthService implements IAuthService {
         checkExistence(dto.getUsername(), FOUND, "registrar");
 
         UserDetailsDTO userDetailsDTO = modelMapper.map(dto, UserDetailsDTO.class);
-
+        userDetailsDTO.setCountry("Argentina");
+        userDetailsDTO.setState("Misiones");
+        userDetailsDTO.setCity("Posadas");
+        userDetailsDTO.setFirstName(dto.getUsername());
+        userDetailsDTO.setLastName(dto.getLastname());
         AuthUser authUser = AuthUser.builder()
                 .username(dto.getUsername())
                 .password(passwordEncoder.encode(dto.getPassword()))

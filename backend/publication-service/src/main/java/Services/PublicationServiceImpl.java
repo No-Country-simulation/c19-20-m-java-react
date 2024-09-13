@@ -88,4 +88,11 @@ public class PublicationServiceImpl implements PublicationService {
         publication.setTypePublication(publicationDTO.getTypePublication());
         return publication;
     }
+
+    @Override
+    public List<Publication> getPublicationsByUserId(Long userId) {
+        return publicationRepository.findByUserId(userId);
+    }
+
+
 }

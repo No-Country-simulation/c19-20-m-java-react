@@ -26,8 +26,9 @@ public class JwtService implements IJwtService {
     public String createToken(AuthUser user) {
         return Jwts.builder()
                 .subject(user.getUsername())
-                .issuedAt(new Date())
                 .claim("rol",user.getRol().name())
+                .claim("idUserDetails",user.getId_user_details())
+                .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + 3600*1000))
                 .signWith(this.getPrivateKey())
                 .compact();

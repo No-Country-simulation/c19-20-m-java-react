@@ -8,7 +8,7 @@ public class JwtTokenDecoder {
     public static Integer getUserId(String token) {
         token = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(token);
-        Integer userId = jwt.getClaim("id_user_details").asInt();
+        Integer userId = jwt.getClaim("idUserDetails").asInt();
         return userId;
     }
 }
