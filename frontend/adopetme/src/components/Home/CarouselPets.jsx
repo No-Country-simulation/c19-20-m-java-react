@@ -10,7 +10,9 @@ const CarouselPets = () => {
 
   useEffect(() => {
     const getPets = async () => {
-      const response = await fetch("https://dog.ceo/api/breed/hound/images/random/10");
+      const response = await fetch(
+        "https://dog.ceo/api/breed/hound/images/random/10"
+      );
       const result = await response.json();
       setPets(result.message);
     };
@@ -18,7 +20,7 @@ const CarouselPets = () => {
   }, []);
 
   return (
-    <Box width="80%" mx="auto" my={4}>
+    <Box mx="auto" my={4}>
       <Typography
         variant="h4"
         fontWeight="fontWeightBold"
@@ -49,7 +51,7 @@ const CarouselPets = () => {
                         borderRadius: "10px",
                         boxShadow: 1,
                         overflow: "hidden",
-                        p: 1
+                        p: 1,
                       }}
                     >
                       <Box
@@ -63,13 +65,10 @@ const CarouselPets = () => {
                           borderRadius: "10px",
                         }}
                       />
-                        <Typography
-                            variant="body2"
-                            textAlign="center"
-                            mt={1}
-                        >
-                            Este es Bob, encontro una familia que lo ama y cuida y esta disfrutando su nueva vida.
-                        </Typography>
+                      <Typography variant="body2" textAlign="center" mt={1}>
+                        Este es Bob, encontro una familia que lo ama y cuida y
+                        esta disfrutando su nueva vida.
+                      </Typography>
                     </Box>
                   </Grid>
                 ))}
