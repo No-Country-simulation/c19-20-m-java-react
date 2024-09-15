@@ -14,55 +14,54 @@ import aliado4 from "../shared/aliado4.png";
 
 export default function Aliados() {
   return (
-    <Box
-      sx={{
-        bgcolor: "#8c52ff",
-        padding: 2,
-      }}
-    >
+    <Box sx={{ py: 3 }}>
       <Stack
         sx={{ bgcolor: "#8c52ff", padding: 2 }}
         flexDirection={{ xs: "column", md: "row" }}
         alignItems={"center"}
         justifyContent={"center"}
       >
-        <Typography 
+        <Typography
           fontWeight="fontWeightBold"
-          variant="h3" 
+          variant="h3"
           color="white"
           textAlign="center"
         >
           MARCAS ALIADAS
         </Typography>
       </Stack>
-      
+
       <Stack
-        sx={{ bgcolor: "#8c52ff", padding: 2 }}
         flexDirection={{ xs: "column", md: "row" }}
         alignItems={"center"}
-        justifyContent={"space-around"}
-        spacing={2}
+        justifyContent={"space-between"}
       >
         {[aliado1, aliado2, aliado3, aliado4].map((aliado, index) => (
-          <Box key={index} sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexWrap: "wrap", width: "100%", alignItems: "center" }}>
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Avatar
               alt={`Aliado ${index + 1}`}
               src={aliado}
               sx={{ width: { xs: 200, md: 200 }, height: { xs: 200, md: 200 } }}
               variant="square"
-
-              
-
             />
-            <Typography 
-              fontWeight="fontWeightBold" 
-              variant="h5" 
+            <Typography
+              fontWeight="fontWeightBold"
+              variant="h5"
               color="white"
-              textAlign="center"
               sx={{ marginTop: 1 }}
-              // alignItems="flex-end"
             >
-              {["HILL'S PET NUTRITION", "PETSMART", "PURINA", "PEDIGREE"][index]}
+              {
+                ["HILL'S PET NUTRITION", "PETSMART", "PURINA", "PEDIGREE"][
+                  index
+                ]
+              }
             </Typography>
           </Box>
         ))}

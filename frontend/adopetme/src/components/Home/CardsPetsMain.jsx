@@ -79,12 +79,14 @@ const CardsPetsMain = () => {
           xs: 1,
           sm: 4,
         }}
+        whiteSpace={"collapse"}
         direction="row"
         useFlexGap
         flexWrap="wrap"
         justifyContent="center"
-        width="80%"
-        mx="auto"
+        // width="80%"
+        // mx="auto"
+        margin={-4}
         sx={{ mt: 4 }}
       >
         {loading
@@ -110,7 +112,7 @@ const CardsPetsMain = () => {
             })}
       </Stack>
 
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
         <Button
           size="large"
           color="primary"

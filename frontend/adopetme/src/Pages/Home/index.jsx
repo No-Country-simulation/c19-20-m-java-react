@@ -4,15 +4,18 @@ import CardsPetsMain from "../../components/Home/CardsPetsMain";
 import CarouselPets from "../../components/Home/CarouselPets";
 import Mision from "../../components/Home/Mision&Vision";
 import Aliados from "../../components/Home/Aliados";
+import { Container } from "@mui/material";
 
 const index = () => {
   return (
     <div>
       <Banner />
-      <Mision />
-      <CardsPetsMain />
-      <CarouselPets />
-      <Aliados />
+      <Container maxWidth="xl">
+        <Mision />
+        <CardsPetsMain />
+        <CarouselPets />
+        <Aliados />
+      </Container>
     </div>
   );
 };
