@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -6,11 +6,16 @@ import {
   Typography,
   Modal,
   IconButton,
-  Grid
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+  Grid,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile }) => {
+const EditProfileModal = ({
+  open,
+  handleClose,
+  userDetails,
+  handleSaveProfile,
+}) => {
   const [formValues, setFormValues] = useState(userDetails);
 
   const handleChange = (e) => {
@@ -42,7 +47,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="Nombre Completo"
               name="fullName"
-              value={formValues?.fullName || ''}
+              value={formValues?.firstname + " " + formValues?.lastname || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -51,7 +56,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="Nombre de Usuario"
               name="username"
-              value={formValues?.username || ''}
+              value={formValues?.username || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -60,7 +65,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="Correo Electrónico"
               name="email"
-              value={formValues?.email || ''}
+              value={formValues?.email || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -69,7 +74,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="Teléfono"
               name="phone"
-              value={formValues?.phone || ''}
+              value={formValues?.phone || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -78,7 +83,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="País"
               name="country"
-              value={formValues?.country || ''}
+              value={formValues?.country || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -87,7 +92,7 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
               fullWidth
               label="Ciudad"
               name="city"
-              value={formValues?.city || ''}
+              value={formValues?.city || ""}
               onChange={handleChange}
             />
           </Grid>
@@ -106,13 +111,13 @@ const EditProfileModal = ({ open, handleClose, userDetails, handleSaveProfile })
 };
 
 const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };

@@ -93,13 +93,13 @@ const CardsPetsMain = () => {
           ? [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
               <SkeletonCards key={Math.random()} />
             ))
-          : pets.map((pet) => {
+          : pets?.map((pet) => {
               return (
                 <CardsPets
-                  key={pet.id}
-                  id={pet.id}
+                  key={pet?.id}
+                  id={pet?.id}
                   img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
-                  name={pet.name}
+                  name={pet?.name}
                   gender={pet?.gender}
                   ubication={
                     pet?.ubicacion.country + ", " + pet?.ubicacion.city
