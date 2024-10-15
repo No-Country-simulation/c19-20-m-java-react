@@ -16,10 +16,9 @@ import {
   Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import base64ToBlob from "../../utils/converterBase64ToUrl";
-
 
 // Estilos para la vista previa de imágenes
 const ImagePreviewWrapper = styled(Box)(({ theme }) => ({
@@ -62,7 +61,7 @@ const ButtonWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const EditPetModal = ({ open, onClose }) => {
-  const { user} = useAuth();
+  const { user } = useAuth();
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
   const [gender, setGender] = useState("");
@@ -80,6 +79,7 @@ const EditPetModal = ({ open, onClose }) => {
   const authToken = localStorage.getItem("token");
 
   useEffect(() => {
+    console.log("file", files);
     console.log("open", open);
     console.log("petId", petId);
     console.log("authToken", authToken);
@@ -87,7 +87,7 @@ const EditPetModal = ({ open, onClose }) => {
       navigate("/not-found");
       return;
     }
-  
+
     // if (open) {
     setLoading(true);
     axios
@@ -99,6 +99,7 @@ const EditPetModal = ({ open, onClose }) => {
       .then((response) => {
         const pet = response.data.data;
         console.log("pet", pet);
+        setPreviews(pet.images);
         setPetName(pet.name);
         setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
         setGender(pet.gender);
@@ -130,7 +131,6 @@ const EditPetModal = ({ open, onClose }) => {
   //   getImgPet();
   // }, [petId]);
 
-
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
     if (chosenFiles.length <= 4) {
@@ -147,6 +147,53 @@ const EditPetModal = ({ open, onClose }) => {
     setPreviews(newFiles.map((file) => URL.createObjectURL(file)));
   };
 
+  const handleDeleteImage = () => {
+    console.log("vamos a eliminar una imagen");
+  };
+
+  const handleUpdateImage = async () => {
+    if (files.length <= 0) {
+      setSuccess("¡Mascota actualizada exitosamente!");
+      setError("");
+      onClose();
+      setLoading(false);
+
+      return;
+    }
+    console.log("vamos a editar imagenes", files);
+
+    const imageFormData = new FormData();
+    files.forEach((file) => imageFormData.append("image", file));
+
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/add_image/${petId}`,
+        imageFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("result img", response);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+    // // }
+
+    // setLoading(false);
+    // if (response.status === 200) {
+    //   setSuccess("¡Mascota actualizada exitosamente!");
+    //   setError("");
+    //   onClose();
+    // } else {
+    //   setError("Error al actualizar la mascota. Inténtalo de nuevo.");
+    // }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -161,7 +208,7 @@ const EditPetModal = ({ open, onClose }) => {
     petFormData.append("gender", gender);
     petFormData.append("createdBy", user.id);
     petFormData.append("idSpecies", petType === "Perro" ? 2 : 1);
-    
+
     try {
       setLoading(true);
 
@@ -177,10 +224,9 @@ const EditPetModal = ({ open, onClose }) => {
       // const response = await axios.patch(
       //   `${process.env.REACT_APP_API_URL}/pet/${petId}`,
       //   requestOptions,
-        
+
       // );
       // console.log(response);
-
 
       const requestOptions = {
         headers: {
@@ -189,7 +235,7 @@ const EditPetModal = ({ open, onClose }) => {
         },
         redirect: "follow", // Otras opciones que puedas necesitar
       };
-      
+
       try {
         const response = await axios.patch(
           `${process.env.REACT_APP_API_URL}/pet/${petId}`,
@@ -197,49 +243,16 @@ const EditPetModal = ({ open, onClose }) => {
           requestOptions // Encabezados y demás configuraciones
         );
         console.log(response.data); // Procesar la respuesta
+
+        if (response.data.status === "success") {
+          handleUpdateImage();
+        }
       } catch (error) {
-        console.error("Error actualizando la información de la mascota:", error);
+        console.error(
+          "Error actualizando la información de la mascota:",
+          error
+        );
       }
-      
-
-      const body = {
-        imagePet: previews[0].imagePet,
-        idPet: petId,
-      };
-
-      const idImg = previews[0].idImage;
-
-      console.log("idImg", idImg);
-      console.log("body", body);
-
-      // Actualizar imágenes
-      // if (files.length > 0) {
-      const imageFormData = new FormData();
-      files.forEach((file) => imageFormData.append("image", file));
-
-      await axios
-        .put(`${process.env.REACT_APP_API_URL}${idImg}`, body, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("result img", response);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-      // }
-
-      setLoading(false);
-      // if (response.status === 200) {
-      //   setSuccess("¡Mascota actualizada exitosamente!");
-      //   setError("");
-      //   onClose();
-      // } else {
-      //   setError("Error al actualizar la mascota. Inténtalo de nuevo.");
-      // }
     } catch (error) {
       setLoading(false);
       setError("Error al conectar con la base de datos.");
@@ -359,7 +372,7 @@ const EditPetModal = ({ open, onClose }) => {
                 return (
                   <ImagePreview key={index}>
                     <img
-                      src={base64ToBlob(preview?.imagePet)}
+                      src={preview?.image}
                       alt={`preview-${index}`}
                       style={{
                         width: "100%",
