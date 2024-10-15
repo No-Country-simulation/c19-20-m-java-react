@@ -18,6 +18,8 @@ import { styled } from "@mui/system";
 import { useTheme } from "@mui/material";
 import Loading from "../components/shared/Loading";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+
 
 const FormWrapper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -27,7 +29,10 @@ const FormWrapper = styled(Paper)(({ theme }) => ({
   overflowY: 'auto',
 }));
 
+
+
 const PetForm = () => {
+  const { user } = useAuth();
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
   const [gender, setGender] = useState("");
@@ -37,6 +42,7 @@ const PetForm = () => {
   const [success, setSuccess] = useState("");
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
+  
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
@@ -50,6 +56,7 @@ const PetForm = () => {
 
   const navigate = useNavigate();
   const authToken = localStorage.getItem('token');
+      console.log("Token", authToken);
 
     if (!authToken) {
       navigate('/not-found');
@@ -64,6 +71,8 @@ const PetForm = () => {
   const countWords = (text) => {
     return text.split(/\s+/).filter(Boolean).length;
   };
+
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -90,11 +99,11 @@ const PetForm = () => {
     formData.append("age", 0);
     formData.append("longevity", ""); // La longevidad, serial algo parecido, 0 cachorro, 1 joven y 2 anciano
     formData.append("description", description); // Minimo 50 maximo 250 caracteres
-    formData.append("gender", gender === "Macho" ? 0 : 1);
+    formData.append("gender", gender);
     formData.append("size", 0);
     formData.append("weight", 0);
     formData.append("tag", "");
-    formData.append("createdBy", "");
+    formData.append("createdBy", user.id);
     formData.append("idSpecies", petType === "Perro" ? 2 : 1);  //number
     formData.append("idBreed", 1);
 
@@ -116,7 +125,7 @@ const PetForm = () => {
       
       // Simulación de envío de datos a una base de datos
       const response = await fetch(
-        `https://service01.mercelab.com/pet/savewithimage`,
+        `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
         {
           method: "POST",
           headers: {

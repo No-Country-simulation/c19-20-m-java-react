@@ -16,9 +16,10 @@ import {
   Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
-// import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useParams } from "react-router-dom";
 import base64ToBlob from "../../utils/converterBase64ToUrl";
+
 
 // Estilos para la vista previa de imágenes
 const ImagePreviewWrapper = styled(Box)(({ theme }) => ({
@@ -61,6 +62,7 @@ const ButtonWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const EditPetModal = ({ open, onClose }) => {
+  const { user} = useAuth();
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
   const [gender, setGender] = useState("");
@@ -78,22 +80,25 @@ const EditPetModal = ({ open, onClose }) => {
   const authToken = localStorage.getItem("token");
 
   useEffect(() => {
+    console.log("open", open);
+    console.log("petId", petId);
+    console.log("authToken", authToken);
     if (!authToken) {
       navigate("/not-found");
       return;
     }
-
+  
     // if (open) {
     setLoading(true);
     axios
       .get(`${process.env.REACT_APP_API_URL}/pet/${petId}`, {
-        // headers: {
-        //   Authorization: `Bearer ${authToken}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       })
       .then((response) => {
-        const pet = response.data.data[0];
-        // console.log("pet", pet);
+        const pet = response.data.data;
+        console.log("pet", pet);
         setPetName(pet.name);
         setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
         setGender(pet.gender);
@@ -102,28 +107,29 @@ const EditPetModal = ({ open, onClose }) => {
       })
       .catch(() => {
         setLoading(false);
-        //navigate("/not-found");
+        // navigate("/not-found");
       });
     // }
   }, [open, petId, authToken, navigate]);
 
   // Obtener las imágenes asociadas a la mascota
-  useEffect(() => {
-    const getImgPet = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/image/pet/${petId}`
-        );
+  // useEffect(() => {
+  //   const getImgPet = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.REACT_APP_API_URL}/image/pet/${petId}`
+  //       );
 
-        const result = await response.json();
-        //console.log("img", result);
-        setPreviews(result);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-    getImgPet();
-  }, [petId]);
+  //       const result = await response.json();
+  //       //console.log("img", result);
+  //       setPreviews(result);
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   };
+  //   getImgPet();
+  // }, [petId]);
+
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
@@ -149,47 +155,13 @@ const EditPetModal = ({ open, onClose }) => {
       return;
     }
 
-    console.log("petName", {
-      name: petName,
-      age: 0,
-      longevity: "",
-      description: description,
-      gender: 0,
-      size: 0,
-      weight: 0,
-      tag: "",
-      createdBy: "",
-      idSpecies: 1,
-      idBreed: 1,
-    });
-
-    const body = {
-      name: petName,
-      age: 0,
-      longevity: "",
-      description: description,
-      gender: 0,
-      size: 0,
-      weight: 0,
-      tag: "",
-      createdBy: "",
-      idSpecies: 1,
-      idBreed: 1,
-    };
-
-    // const petFormData = new FormData();
-    // petFormData.append("name", petName);
-    // petFormData.append("age", 0);
-    // petFormData.append("longevity", "");
-    // petFormData.append("description", description);
-    // petFormData.append("gender", gender === "Macho" ? 0 : 1);
-    // petFormData.append("size", 0);
-    // petFormData.append("weight", 0);
-    // petFormData.append("tag", "");
-    // petFormData.append("createdBy", "");
-    // petFormData.append("idSpecies", petType === "Perro" ? 2 : 1);
-    // petFormData.append("idBreed", 1);
-
+    const petFormData = new FormData();
+    petFormData.append("name", petName);
+    petFormData.append("description", description);
+    petFormData.append("gender", gender);
+    petFormData.append("createdBy", user.id);
+    petFormData.append("idSpecies", petType === "Perro" ? 2 : 1);
+    
     try {
       setLoading(true);
 
@@ -199,43 +171,36 @@ const EditPetModal = ({ open, onClose }) => {
       //     Authorization: `Bearer ${authToken}`,
       //     // "Content-Type": "application/json",
       //   },
-      //   body: JSON.stringify(body),
+      //   body: petFormData,
       //   redirect: "follow",
       // };
-      // const response = await axios.put(
+      // const response = await axios.patch(
       //   `${process.env.REACT_APP_API_URL}/pet/${petId}`,
-      //   body
+      //   requestOptions,
+        
       // );
+      // console.log(response);
 
-      // const myHeaders = new Headers();
-      // myHeaders.append("Content-Type", "application/json");
-      // myHeaders.append("Authorization", `Bearer ${authToken}`);
 
-      // const raw = JSON.stringify({
-      //   name: "prueba",
-      //   age: 0,
-      //   longevity: "",
-      //   description: "Updated description of the pet dsdfsijfisdjfosdjdspjp.",
-      //   gender: 0,
-      //   size: 0,
-      //   weight: 0,
-      //   tag: "",
-      //   createdBy: "",
-      //   idSpecies: 1,
-      //   idBreed: 1,
-      // });
-
-      // const requestOptions = {
-      //   method: "PUT",
-      //   headers: myHeaders,
-      //   body: raw,
-      //   redirect: "follow",
-      // };
-
-      // fetch("https://service01.mercelab.com/pet/1", requestOptions)
-      //   .then((response) => response.text())
-      //   .then((result) => console.log(result))
-      //   .catch((error) => console.error(error));
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Token de autenticación
+          // No necesitas "Content-Type" ya que FormData lo manejará automáticamente
+        },
+        redirect: "follow", // Otras opciones que puedas necesitar
+      };
+      
+      try {
+        const response = await axios.patch(
+          `${process.env.REACT_APP_API_URL}/pet/${petId}`,
+          petFormData, // FormData con la información a actualizar
+          requestOptions // Encabezados y demás configuraciones
+        );
+        console.log(response.data); // Procesar la respuesta
+      } catch (error) {
+        console.error("Error actualizando la información de la mascota:", error);
+      }
+      
 
       const body = {
         imagePet: previews[0].imagePet,
@@ -253,7 +218,7 @@ const EditPetModal = ({ open, onClose }) => {
       files.forEach((file) => imageFormData.append("image", file));
 
       await axios
-        .put(`https://service01.mercelab.com/image/${idImg}`, body, {
+        .put(`${process.env.REACT_APP_API_URL}${idImg}`, body, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "multipart/form-data",
