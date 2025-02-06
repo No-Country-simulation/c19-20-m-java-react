@@ -275,6 +275,13 @@ export default function PrimarySearchAppBar() {
           >
             {user ? (
               <>
+                <h4
+                  variant="outlined"
+                  sx={{ color: "black", borderColor: "black", width: "100%" }}
+                >
+                  {user?.username}
+                </h4>
+
                 <IconButton
                   size="large"
                   edge="end"

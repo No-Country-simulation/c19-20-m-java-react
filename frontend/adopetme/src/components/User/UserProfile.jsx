@@ -42,11 +42,11 @@ const UserProfile = () => {
           setUserDetails(details);
 
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/pet/petimage`
+            `${process.env.REACT_APP_API_URL}/pets`
           );
 
-          if (response.data && Array.isArray(response.data.data)) {
-            const userPets = response.data.data.filter(
+          if (response.data && Array.isArray(response.data)) {
+            const userPets = response.data.filter(
               (pet) => pet.createdBy === user.id
             );
 
@@ -247,7 +247,7 @@ const UserProfile = () => {
               <CardsPets
                 key={pet?.id}
                 id={pet?.id}
-                img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
+                img={pet.images.length > 0 ? pet.images[0] : NoPhoto}
                 name={pet?.name}
                 gender={pet?.gender}
                 ubication={pet?.ubicacion.country + ", " + pet?.ubicacion.city}

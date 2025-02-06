@@ -7,13 +7,13 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
       const decodedToken = jwtDecode(storedToken);
-      //console.log("Decoded token on initial load:", decodedToken);
       setUser({ id: decodedToken.id_user_details, ...decodedToken });
     }
   }, []);
@@ -21,18 +21,19 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/login`,
+        `${process.env.REACT_APP_API_URL}/auth-login`,
         { username, password }
       );
 
-      const { token } = response.data.data.token;
+      const token = response.data.token;
       localStorage.setItem("token", token);
       const decodedToken = jwtDecode(token);
-      //console.log("Decoded token on login:", decodedToken);
-      setUser({ id: decodedToken.id_user_details, ...decodedToken });
+      setUser({ id: decodedToken.id, ...decodedToken });
+      setMessage("");
       setToken(token);
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.error("Error logging in:", error.response.data.message);
+      setMessage(error.response.data.message);
       throw error;
     }
   };
@@ -46,9 +47,8 @@ export const AuthProvider = ({ children }) => {
   const fetchUserDetails = async (id) => {
     if (!id) throw new Error("Invalid user ID");
     try {
-      //console.log(`Fetching user details with ID: ${id}`);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/auth/users_details/${id}`,
+        `${process.env.REACT_APP_API_URL}/users/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         }
       );
 
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error fetching user details:", error);
       throw error;
@@ -64,7 +64,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, fetchUserDetails }}>
+    <AuthContext.Provider
+      value={{ user, login, message, logout, fetchUserDetails }}
+    >
       {children}
     </AuthContext.Provider>
   );

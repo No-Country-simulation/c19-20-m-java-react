@@ -91,7 +91,7 @@ const EditPetModal = ({ open, onClose }) => {
     // if (open) {
     setLoading(true);
     axios
-      .get(`${process.env.REACT_APP_API_URL}/pet/${petId}`, {
+      .get(`${process.env.REACT_APP_API_URL}/pets/${petId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },

@@ -55,9 +55,7 @@ const PublicationsPets = () => {
       }
     } else {
       const getPets = async () => {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/pet/petimage`
-        );
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/pets/`);
         const result = await response.json();
         setLoading(false);
 
@@ -81,8 +79,8 @@ const PublicationsPets = () => {
 
         // const petWithUbications = await Promise.all(newPets);
 
-        pagination(result.data);
-        setAllPets(result.data);
+        pagination(result);
+        setAllPets(result);
       };
       getPets();
     }
@@ -159,7 +157,7 @@ const PublicationsPets = () => {
               <CardsPets
                 key={pet.id}
                 id={pet.id}
-                img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
+                img={pet.images.length > 0 ? pet.images[0] : NoPhoto}
                 name={pet?.name}
                 gender={pet?.gender}
                 ubication={pet?.ubicacion.country + ", " + pet?.ubicacion.city}

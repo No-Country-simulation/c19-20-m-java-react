@@ -1,30 +1,31 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { useAuth } from '../../contexts/AuthContext';
-import { Box, Button, TextField, Typography, Modal } from '@mui/material';
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { useAuth } from "../../contexts/AuthContext";
+import { Box, Button, TextField, Typography, Modal } from "@mui/material";
 
 const validationSchema = yup.object({
-  username: yup.string().required('Nombre de usuario es requerido'),
-  password: yup.string().required('Contraseña es requerida'),
+  username: yup.string().required("Nombre de usuario es requerido"),
+  password: yup.string().required("Contraseña es requerida"),
 });
 
 const LoginModal = ({ open, handleClose }) => {
-  const { login } = useAuth();
-  const [errorMessage, setErrorMessage] = useState('');
+  const { login, message } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
         await login(values.username, values.password);
         handleClose();
+        setErrorMessage(message);
       } catch (error) {
-        setErrorMessage('Error en el inicio de sesión');
+        setErrorMessage("Error en el inicio de sesión");
         setSubmitting(false);
       }
     },
@@ -60,7 +61,13 @@ const LoginModal = ({ open, handleClose }) => {
             helperText={formik.touched.password && formik.errors.password}
             margin="normal"
           />
-          <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
+          <Button
+            color="primary"
+            variant="contained"
+            fullWidth
+            type="submit"
+            sx={{ mt: 2 }}
+          >
             Iniciar Sesión
           </Button>
         </form>
@@ -75,13 +82,13 @@ const LoginModal = ({ open, handleClose }) => {
 };
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };

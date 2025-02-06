@@ -16,11 +16,11 @@ export const SearchProvider = ({ children }) => {
       // );
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/pet/search?param=${value}`
+        `${process.env.REACT_APP_API_URL}/pets?specie=${value}`
       );
 
       setLoading(false);
-      setFilteredPets(response.data.data);
+      setFilteredPets(response.data);
     } catch (error) {
       setLoading(false);
       setFilteredPets([]);

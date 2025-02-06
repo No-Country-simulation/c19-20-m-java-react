@@ -29,16 +29,15 @@ const CardsPetsMain = () => {
     setLoading(true);
     const getPets = async () => {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/pet/petimage`
-        );
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/pets`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const result = await response.json();
-        setLoading(false);
-        const resultSlice = result.data.slice(0, 8);
 
+        setLoading(false);
+
+        const resultSlice = result.slice(0, 8);
         setPets(resultSlice);
       } catch (error) {
         console.error("Failed to fetch pets:", error);
@@ -98,7 +97,7 @@ const CardsPetsMain = () => {
                 <CardsPets
                   key={pet?.id}
                   id={pet?.id}
-                  img={pet.images.length > 0 ? pet.images[0].image : NoPhoto}
+                  img={pet?.images.length > 0 ? pet?.images[0] : NoPhoto}
                   name={pet?.name}
                   gender={pet?.gender}
                   ubication={

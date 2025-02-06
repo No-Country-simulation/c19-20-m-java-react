@@ -1,0 +1,78 @@
+{
+  "pets": [
+    {
+      "name": "junior",
+      "description": "descripcion ejemplo",
+      "gender": "macho",
+      "specie": "perro",
+      "createdBy": "1",
+      "status": "active",
+      "id": "1",
+      "images": [
+        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
+        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
+        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
+      ]
+    },
+    {
+      "name": "Json",
+      "description": "descripcion json",
+      "gender": "hembra",
+      "specie": "gato",
+      "createdBy": "1",
+      "status": "active",
+      "id": "TG-Oj5K",
+      "images": [
+        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
+        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
+        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
+      ]
+    }
+  ],
+  "species": [
+    {
+      "id": "1",
+      "name": "perro",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "name": "gato",
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "name": "toro",
+      "status": "delete"
+    }
+  ],
+  "images": [],
+  "users": [
+    {
+      "id": "1",
+      "firstname": "daniel",
+      "lastname": "pruebaapaellido",
+      "username": "dgonzalez",
+      "email": "prueba3@gmail.com",
+      "phone": "1234567899",
+      "country": "Mexico",
+      "state": "Yucatan",
+      "city": "Merida",
+      "password": "12345678",
+      "rol": "admin"
+    },
+    {
+      "id": "2",
+      "firstname": "John",
+      "lastname": "pruebaapaellido",
+      "username": "japellido",
+      "email": "prueba2@gmail.com",
+      "phone": "1234567899",
+      "country": "Colombia",
+      "state": "Bogota",
+      "city": "Medellin",
+      "password": "12345678",
+      "rol": "admin"
+    }
+  ]
+}

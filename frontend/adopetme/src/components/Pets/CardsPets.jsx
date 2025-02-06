@@ -33,7 +33,6 @@ const CardsPets = ({
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-
   return (
     <>
       {loading ? (

@@ -32,11 +32,11 @@ const ProfileContact = ({ open, handleClose, id }) => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/auth/users_details/${id}`
+          `${process.env.REACT_APP_API_URL}/users/${id}`
         );
         const result = await response.json();
         setLoading(false);
-        setProfile(result.data);
+        setProfile(result);
       } catch (error) {
         setLoading(false);
         console.log("error", error);

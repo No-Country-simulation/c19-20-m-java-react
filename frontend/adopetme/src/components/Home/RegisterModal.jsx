@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, Field } from 'formik';
-import * as yup from 'yup';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Formik, Form, Field } from "formik";
+import * as yup from "yup";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -13,40 +13,58 @@ import {
   Alert,
   useMediaQuery,
   useTheme,
-  CircularProgress
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+  CircularProgress,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Esquema de validación
 const validationSchema = yup.object({
-  firstname: yup.string().matches(/^[a-zA-Z\s]*$/, 'Nombre no debe contener signos de puntuación').required('Nombre es requerido'),
-  username: yup.string().required('Nombre de usuario es requerido'),
-  email: yup.string().email('Ingrese un correo válido').required('Correo es requerido'),
-  phone: yup.string().matches(/^\+\d{1,3}\d{7,14}$/, 'Teléfono debe ser un número válido con código de país').required('Teléfono es requerido'),
-  country: yup.string().required('País es requerido'),
-  city: yup.string().required('Ciudad es requerida'),
-  password: yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('Contraseña es requerida'),
-  lastname: yup.string().required('Apellidos son requeridos')
+  firstname: yup
+    .string()
+    .matches(/^[a-zA-Z\s]*$/, "Nombre no debe contener signos de puntuación")
+    .required("Nombre es requerido"),
+  username: yup.string().required("Nombre de usuario es requerido"),
+  email: yup
+    .string()
+    .email("Ingrese un correo válido")
+    .required("Correo es requerido"),
+  phone: yup
+    .string()
+    .matches(
+      /^\+\d{1,3}\d{7,14}$/,
+      "Teléfono debe ser un número válido con código de país"
+    )
+    .required("Teléfono es requerido"),
+  country: yup.string().required("País es requerido"),
+  city: yup.string().required("Ciudad es requerida"),
+  password: yup
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .required("Contraseña es requerida"),
+  lastname: yup.string().required("Apellidos son requeridos"),
 });
 
 const RegisterModal = ({ open, handleClose }) => {
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState(''); // 'success' o 'error'
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // 'success' o 'error'
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
+  const [states, setStates] = useState([]);
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/country/all`);
-        setCountries(response.data);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/countries/all`
+        );
+        setCountries(response.data.data);
         setLoadingCountries(false);
       } catch (error) {
-        console.error('Error fetching countries:', error);
+        console.error("Error fetching countries:", error);
         setLoadingCountries(false);
       }
     };
@@ -56,32 +74,59 @@ const RegisterModal = ({ open, handleClose }) => {
 
   const handleCountryChange = async (event, setFieldValue) => {
     const country = event.target.value;
-    setFieldValue('country', country);
+    setFieldValue("country", country);
     setLoadingCities(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/country/states/${country}`);
-      setCities(response.data);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/countries/state/${country}`
+      );
+
+      setStates(response.data.data);
+      setLoadingCities(false);
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      setLoadingCities(false);
+      console.error("Error fetching cities:", error);
     }
-    setLoadingCities(false);
+  };
+
+  const handleStateChange = async (event, setFieldValue) => {
+    const state = event.target.value;
+    setFieldValue("state", state);
+    setLoadingCities(true);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/countries/cities/${state}`
+      );
+      setCities(response.data.data);
+      setLoadingCities(false);
+    } catch (error) {
+      setLoadingCities(false);
+      console.error("Error fetching state:", error);
+    }
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log('Enviando datos:', values);
+    console.log("Enviando datos:", values);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/create`, values, {
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/create`,
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
-      setMessageType('success');
-      setMessage('Registro exitoso');
-      console.log('Respuesta del servidor:', response.data);
+      );
+      setMessageType("success");
+      setMessage("Registro exitoso");
+      console.log("Respuesta del servidor:", response.data);
     } catch (error) {
-      setMessageType('error');
-      setMessage('Error en el registro');
-      console.error('Error en el registro:', error.response?.data || error.message);
+      setMessageType("error");
+      setMessage("Error en el registro");
+      console.error(
+        "Error en el registro:",
+        error.response?.data || error.message
+      );
     }
     setSubmitting(false);
   };
@@ -94,20 +139,26 @@ const RegisterModal = ({ open, handleClose }) => {
             <CloseIcon />
           </IconButton>
         </Box>
-        <Typography id="register-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+        <Typography
+          id="register-modal-title"
+          variant="h6"
+          component="h2"
+          sx={{ mb: 2 }}
+        >
           Registro
         </Typography>
         <Formik
           initialValues={{
-            firstname: '',
-            lastname: '',
-            username: '',
-            email: '',
-            phone: '',
-            country: '',
-            city: '',
-            password: '',
-            rol: 'USER' // Valor por defecto
+            firstname: "",
+            lastname: "",
+            username: "",
+            email: "",
+            phone: "",
+            country: "",
+            state: "",
+            //city: "",
+            password: "",
+            rol: "USER", // Valor por defecto
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -179,13 +230,42 @@ const RegisterModal = ({ open, handleClose }) => {
                   label="País"
                   fullWidth
                   margin="normal"
-                  onChange={(event) => handleCountryChange(event, setFieldValue)}
+                  onChange={(event) =>
+                    handleCountryChange(event, setFieldValue)
+                  }
                   error={touched.country && !!errors.country}
                   helperText={touched.country && errors.country}
                 >
-                  {countries.map((country) => (
-                    <MenuItem key={country.code} value={country.name}>
-                      {country.name}
+                  {countries?.map((country) => (
+                    <MenuItem
+                      key={country.country_name}
+                      value={country.country_name}
+                    >
+                      {country.country_name}
+                    </MenuItem>
+                  ))}
+                </Field>
+              )}
+              {loadingCountries ? (
+                <CircularProgress />
+              ) : (
+                <Field
+                  as={TextField}
+                  select
+                  name="state"
+                  label="Estado"
+                  fullWidth
+                  margin="normal"
+                  onChange={(event) => handleStateChange(event, setFieldValue)}
+                  error={touched.state && !!errors.state}
+                  helperText={touched.state && errors.state}
+                >
+                  {states?.map((country) => (
+                    <MenuItem
+                      key={country.state_name}
+                      value={country.state_name}
+                    >
+                      {country.state_name}
                     </MenuItem>
                   ))}
                 </Field>
@@ -204,13 +284,20 @@ const RegisterModal = ({ open, handleClose }) => {
                   helperText={touched.city && errors.city}
                 >
                   {cities.map((city) => (
-                    <MenuItem key={city.id} value={city.name}>
-                      {city.name}
+                    <MenuItem key={city.city_name} value={city.city_name}>
+                      {city.city_name}
                     </MenuItem>
                   ))}
                 </Field>
               )}
-              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={isSubmitting}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+                disabled={isSubmitting}
+              >
                 Registrarse
               </Button>
             </Form>
@@ -227,15 +314,15 @@ const RegisterModal = ({ open, handleClose }) => {
 };
 
 const style = (fullScreen) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: fullScreen ? '90%' : 400,
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: fullScreen ? "90%" : 400,
+  maxHeight: "90vh",
+  overflowY: "auto",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 });

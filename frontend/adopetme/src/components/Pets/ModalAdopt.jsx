@@ -42,15 +42,15 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
     const getSinglePets = async () => {
       setLoading(true);
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/pet/${id}`
+        `${process.env.REACT_APP_API_URL}/pets/${id}`
       );
 
       const result = await response.json();
       setLoading(false);
 
-      const idUser = result?.data.createdBy;
+      const idUser = result?.createdBy;
 
-      let singlePet = result.data;
+      let singlePet = result;
 
       setSinglePets(singlePet);
       setSinglePetsImg(singlePet.images);
@@ -178,7 +178,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                           color="primary"
                           fontWeight="fontWeightBold"
                         >
-                          {singlePets?.gender === 1 ? "Hembra" : "Macho"}
+                          {singlePets?.gender}
                         </Typography>
                       </Skeleton>
                       <Skeleton animation="wave" variant="text">
@@ -358,10 +358,10 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                               display: "flex",
                               justifyContent: "center",
                             }}
-                            onClick={() => handleZoom(img.image)}
+                            onClick={() => handleZoom(img)}
                           >
                             <img
-                              src={img.image ? img.image : noPhoto}
+                              src={img ? img : noPhoto}
                               alt={`pet-${index}`}
                             />
                           </Box>
@@ -456,7 +456,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                         fontWeight="fontWeightBold"
                         textTransform={"capitalize"}
                       >
-                        {singlePets?.specie.name}
+                        {singlePets?.idSpecies}
                       </Typography>
                       <Typography
                         variant="body"
