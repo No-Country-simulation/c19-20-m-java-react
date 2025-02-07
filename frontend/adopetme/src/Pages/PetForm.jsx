@@ -20,16 +20,13 @@ import Loading from "../components/shared/Loading";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-
 const FormWrapper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   marginTop: theme.spacing(4),
   marginBottom: theme.spacing(4),
-  maxHeight: '80vh', // Limita la altura del contenedor
-  overflowY: 'auto',
+  maxHeight: "80vh", // Limita la altura del contenedor
+  overflowY: "auto",
 }));
-
-
 
 const PetForm = () => {
   const { user } = useAuth();
@@ -42,7 +39,6 @@ const PetForm = () => {
   const [success, setSuccess] = useState("");
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
-  
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
@@ -55,13 +51,13 @@ const PetForm = () => {
   };
 
   const navigate = useNavigate();
-  const authToken = localStorage.getItem('token');
-      console.log("Token", authToken);
+  const authToken = localStorage.getItem("token");
+  console.log("Token", authToken);
 
-    if (!authToken) {
-      navigate('/not-found');
-      return;
-    }
+  if (!authToken) {
+    navigate("/not-found");
+    return;
+  }
 
   const validateName = (name) => {
     const namePattern = /^[A-Za-z\s]+$/;
@@ -71,8 +67,6 @@ const PetForm = () => {
   const countWords = (text) => {
     return text.split(/\s+/).filter(Boolean).length;
   };
-
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -94,49 +88,33 @@ const PetForm = () => {
 
     // Crear un objeto de datos para enviar
     const formData = new FormData();
-
     formData.append("name", petName);
-    formData.append("age", 0);
-    formData.append("longevity", ""); // La longevidad, serial algo parecido, 0 cachorro, 1 joven y 2 anciano
-    formData.append("description", description); // Minimo 50 maximo 250 caracteres
     formData.append("gender", gender);
-    formData.append("size", 0);
-    formData.append("weight", 0);
-    formData.append("tag", "");
     formData.append("createdBy", user.id);
-    formData.append("idSpecies", petType === "Perro" ? 2 : 1);  //number
-    formData.append("idBreed", 1);
-
-    //add file to FormData
-    files.map((file) => formData.append("image", file));
+    formData.append("specie", petType); //number
+    formData.append("status", "active");
 
     // Imprimir los datos del FormData
-  const formDataObj = {};
-  formData.forEach((value, key) => {
-    formDataObj[key] = value;
-  });
-  console.log("FormData contents:", formDataObj);
-  
+    const formDataObj = {};
+    formDataObj.images = [""];
+    formData.forEach((value, key) => {
+      formDataObj[key] = value;
+    });
+    console.log("FormData contents:", formDataObj);
 
     try {
-      // console.log("url", process.env.REACT_APP_API_URL);
-
-  
-      
       // Simulación de envío de datos a una base de datos
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: formData,
-        }
-      );
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/pets`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataObj),
+      });
 
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
+      // console.log("Response status:", response.status);
+      // console.log("Response headers:", response.headers);
       const responseBody = await response.json();
       console.log("Response body:", responseBody);
       setLoading(false);

@@ -87,7 +87,7 @@ server.use("/pets", (req, res, next) => {
       "specie",
       "createdBy",
       "status",
-      "image",
+      "images",
     ];
     const areAllKeysValidWithMessage = (body, obj) => {
       return body.every((key) => {

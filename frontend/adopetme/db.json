@@ -12,7 +12,12 @@
         "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
         "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
         "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
-      ]
+      ],
+      "ubicacion": {
+        "country": "Mexico",
+        "state": "Yucatan",
+        "city": "Merida"
+      }
     },
     {
       "name": "Json",
@@ -26,7 +31,77 @@
         "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
         "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
         "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
-      ]
+      ],
+      "ubicacion": {
+        "country": "Mexico",
+        "state": "Yucatan",
+        "city": "Merida"
+      }
+    },
+    {
+      "name": "susi",
+      "description": "descripcion susi",
+      "gender": "hembra",
+      "specie": "gato",
+      "createdBy": "2",
+      "status": "active",
+      "id": "2",
+      "images": [
+        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
+        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
+        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
+      ],
+      "ubicacion": {
+        "country": "Colombia",
+        "state": "Bogota",
+        "city": "Medellin"
+      }
+    },
+    {
+      "name": "asdas",
+      "description": "dsfdsfsdfdsdgdskmdfkmdfkgmdgmdfkhodkhodkfphdsklfphspflgsplgpslgpsf",
+      "gender": "Macho",
+      "createdBy": "2",
+      "specie": "Perro",
+      "status": "active",
+      "images": [
+        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
+      ],
+      "id": "FYY8GLA",
+      "ubicacion": {
+        "country": "Colombia",
+        "state": "Bogota",
+        "city": "Medellin"
+      }
+    },
+    {
+      "name": "cansancio",
+      "description": "dfdsfsd isiofjrsioj sfosjfiisjfsip jfip fstrghrhyertheryheheyrgergergrggrgrgrfrfgfggg",
+      "gender": "Macho",
+      "createdBy": "2",
+      "specie": "Perro",
+      "status": "active",
+      "images": [
+        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
+      ],
+      "id": "DwVvocr",
+      "ubicacion": {
+        "country": "Colombia",
+        "state": "Bogota",
+        "city": "Medellin"
+      }
+    },
+    {
+      "images": [
+        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
+      ],
+      "name": "otro",
+      "description": "efsfdsfsdfsdfsfsdfds fdsfsd fsdfsdgs dfsdfsdfsdf sdfsdfsd fsdf sd fsdf",
+      "gender": "Macho",
+      "createdBy": "2",
+      "specie": "Gato",
+      "status": "active",
+      "id": "7u4daS6"
     }
   ],
   "species": [
