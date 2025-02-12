@@ -11,10 +11,6 @@ const multer = require("multer");
 const path = require("path");
 
 const server = express();
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-
-const fileType = require("file-type");
-const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 
 // Usar CORS de forma predeterminada para todas las rutas
