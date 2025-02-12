@@ -1,107 +1,29 @@
 {
   "pets": [
     {
-      "name": "junior",
-      "description": "descripcion ejemplo",
-      "gender": "macho",
-      "specie": "perro",
-      "createdBy": "1",
-      "status": "active",
-      "id": "1",
-      "images": [
-        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
-        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
-        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
-      ],
-      "ubicacion": {
-        "country": "Mexico",
-        "state": "Yucatan",
-        "city": "Merida"
-      }
-    },
-    {
-      "name": "Json",
-      "description": "descripcion json",
-      "gender": "hembra",
-      "specie": "gato",
-      "createdBy": "1",
-      "status": "active",
-      "id": "TG-Oj5K",
-      "images": [
-        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
-        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
-        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
-      ],
-      "ubicacion": {
-        "country": "Mexico",
-        "state": "Yucatan",
-        "city": "Merida"
-      }
-    },
-    {
       "name": "susi",
-      "description": "descripcion susi",
-      "gender": "hembra",
+      "description": "hola soy susi una mascota muy traviesa y juguetona estoy buscando un hogar nuevo",
+      "gender": "macho",
+      "createdBy": "1",
       "specie": "gato",
-      "createdBy": "2",
       "status": "active",
-      "id": "2",
-      "images": [
-        "https://lujan365.com.ar/download/multimedia.normal.b96b365c9cd6b2b1.706572726f732d63616c6c656a65726f732d325f6e6f726d616c2e6a7067.jpg",
-        "https://cdn.agenciasinc.es/var/ezwebin_site/storage/images/_aliases/img_1col/noticias/los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos/11001596-2-esl-MX/Los-perros-en-libertad-distinguen-las-expresiones-faciales-de-los-humanos.jpg",
-        "https://www.elcomercio.com/wp-content/uploads/2024/04/perros-callejeros-quito-el-comercio2-1024x683.jpg"
-      ],
+      "id": "rzb2e",
+      "images": ["http://localhost:4000/images/susi-gato-1-1739320479012.png"],
       "ubicacion": {
-        "country": "Colombia",
-        "state": "Bogota",
-        "city": "Medellin"
+        "country": "Mexico",
+        "state": "Yucatan",
+        "city": "Merida"
       }
     },
     {
-      "name": "asdas",
-      "description": "dsfdsfsdfdsdgdskmdfkmdfkgmdgmdfkhodkhodkfphdsklfphspflgsplgpslgpsf",
-      "gender": "Macho",
-      "createdBy": "2",
-      "specie": "Perro",
-      "status": "active",
-      "images": [
-        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
-      ],
-      "id": "FYY8GLA",
-      "ubicacion": {
-        "country": "Colombia",
-        "state": "Bogota",
-        "city": "Medellin"
-      }
-    },
-    {
-      "name": "cansancio",
-      "description": "dfdsfsd isiofjrsioj sfosjfiisjfsip jfip fstrghrhyertheryheheyrgergergrggrgrgrfrfgfggg",
-      "gender": "Macho",
-      "createdBy": "2",
-      "specie": "Perro",
-      "status": "active",
-      "images": [
-        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
-      ],
-      "id": "DwVvocr",
-      "ubicacion": {
-        "country": "Colombia",
-        "state": "Bogota",
-        "city": "Medellin"
-      }
-    },
-    {
-      "images": [
-        "https://www.portalambiental.com.mx/sites/default/files/media/image/2022/07/perro_0.jpeg"
-      ],
-      "name": "otro",
-      "description": "efsfdsfsdfsdfsfsdfds fdsfsd fsdfsdgs dfsdfsdfsdf sdfsdfsd fsdf sd fsdf",
-      "gender": "Macho",
-      "createdBy": "2",
+      "name": "SUSI",
+      "gender": "Hembra",
+      "createdBy": "1",
       "specie": "Gato",
       "status": "active",
-      "id": "7u4daS6"
+      "description": "Hola soy susi una gatita que esta en busqueda de un hogar ",
+      "id": "ky84y",
+      "images": ["http://localhost:4000/images/SUSI-Gato-1-1739320740128.png"]
     }
   ],
   "species": [
@@ -125,7 +47,7 @@
   "users": [
     {
       "id": "1",
-      "firstname": "daniel",
+      "firstname": "Daniel",
       "lastname": "pruebaapaellido",
       "username": "dgonzalez",
       "email": "prueba3@gmail.com",
@@ -138,9 +60,9 @@
     },
     {
       "id": "2",
-      "firstname": "John",
-      "lastname": "pruebaapaellido",
-      "username": "japellido",
+      "firstname": "Jhon",
+      "lastname": "serna",
+      "username": "jserna",
       "email": "prueba2@gmail.com",
       "phone": "1234567899",
       "country": "Colombia",

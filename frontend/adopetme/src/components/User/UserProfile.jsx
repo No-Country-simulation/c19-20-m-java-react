@@ -123,159 +123,182 @@ const UserProfile = () => {
   }
 
   return (
-    <Box sx={{ p: 4, maxWidth: "800px", margin: "auto" }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        sx={{ mb: 4, textAlign: "center" }}
-      >
-        Perfil de Usuario
-      </Typography>
-      {message && (
-        <Alert severity={messageType} sx={{ mb: 2 }}>
-          {message}
-        </Alert>
-      )}
-      <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          flexDirection="column"
-        >
-          <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
-          <Typography variant="h6" sx={{ textAlign: "center" }}>
-            {userDetails?.firstname + " " + userDetails?.lastname}
-          </Typography>
-          <Typography
-            variant="body1"
-            color="textSecondary"
-            sx={{ textAlign: "center" }}
-          >
-            @{userDetails?.username}
-          </Typography>
-          <Typography
-            variant="body1"
-            color="textSecondary"
-            sx={{ textAlign: "center", mt: 2 }}
-          >
-            {userDetails?.description}
-          </Typography>
-        </Box>
-      </Paper>
-      <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Información de Contacto
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Correo Electrónico"
-              value={userDetails?.email || ""}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Teléfono"
-              value={userDetails?.phone || ""}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="País"
-              value={userDetails?.country || ""}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Ciudad"
-              value={userDetails?.city || ""}
-              disabled
-            />
-          </Grid>
-        </Grid>
-      </Paper>
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleOpenEditProfileModal}
-          >
-            Editar Perfil
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleOpenPetFormModal}
-          >
-            Registrar Mascota
-          </Button>
-        </Grid>
-      </Grid>
-
-      <Typography variant="h6" component="h2" sx={{ mt: 4, mb: 2 }}>
-        Mis Mascotas en Adopción
-      </Typography>
-      <Stack
-        spacing={{
-          xs: 1,
-          sm: 4,
+    <Box>
+      <Box
+        sx={{
+          p: 2,
+          maxWidth: "75%",
+          margin: "auto",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
         }}
-        direction="row"
-        useFlexGap
-        flexWrap="wrap"
-        justifyContent="center"
-        //width="80%"
-        mx="auto"
-        sx={{ mt: 4 }}
       >
-        {loading
-          ? [1, 2, 3, 4, 5, 6, 7, 8].map((item) => <SkeletonCards key={item} />)
-          : pets.map((pet) => (
-              <CardsPets
-                key={pet?.id}
-                id={pet?.id}
-                img={pet.images.length > 0 ? pet.images[0] : NoPhoto}
-                name={pet?.name}
-                gender={pet?.gender}
-                ubication={pet?.ubicacion.country + ", " + pet?.ubicacion.city}
-                handleClickAdopt={handleClickAdopt}
-              />
-            ))}
-      </Stack>
-
-      <Modal open={isPetFormModalOpen} onClose={handleClosePetFormModal}>
-        <Box sx={modalStyle}>
-          <Box display="flex" justifyContent="flex-end">
-            <IconButton onClick={handleClosePetFormModal}>
-              <CloseIcon />
-            </IconButton>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ mb: 4, textAlign: "center" }}
+        >
+          Perfil de Usuario
+        </Typography>
+        {message && (
+          <Alert severity={messageType} sx={{ mb: 2 }}>
+            {message}
+          </Alert>
+        )}
+        <Paper elevation={3} sx={{ p: 2, mb: 4, width: "50%" }}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+          >
+            <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
+            <Typography variant="h6" sx={{ textAlign: "center" }}>
+              {userDetails?.firstname + " " + userDetails?.lastname}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              sx={{ textAlign: "center" }}
+            >
+              @{userDetails?.username}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              sx={{ textAlign: "center", mt: 2 }}
+            >
+              {userDetails?.description}
+            </Typography>
           </Box>
-          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-            Registrar Mascota
+        </Paper>
+        <Paper elevation={3} sx={{ p: 2, mb: 4, width: "50%" }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Información de Contacto
           </Typography>
-          <PetForm />
-        </Box>
-      </Modal>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Correo Electrónico"
+                value={userDetails?.email || ""}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Teléfono"
+                value={userDetails?.phone || ""}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="País"
+                value={userDetails?.country || ""}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Ciudad"
+                value={userDetails?.city || ""}
+                disabled
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+        <Grid container spacing={2} sx={{ mb: 4 }} md={6}>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleOpenEditProfileModal}
+            >
+              Editar Perfil
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleOpenPetFormModal}
+            >
+              Registrar Mascota
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
 
-      <EditProfileModal
-        open={isEditProfileModalOpen}
-        handleClose={handleCloseEditProfileModal}
-        userDetails={userDetails}
-        handleSaveProfile={handleSaveProfile}
-      />
+      <Box>
+        <Typography
+          variant="h5"
+          component="h3"
+          textAlign={"center"}
+          sx={{ mt: 4, mb: 2 }}
+        >
+          Mis Mascotas en Adopción
+        </Typography>
+        <Stack
+          spacing={{
+            xs: 1,
+            sm: 4,
+          }}
+          direction="row"
+          useFlexGap
+          flexWrap="wrap"
+          justifyContent="center"
+          //width="80%"
+          mx="auto"
+          sx={{ mt: 4 }}
+        >
+          {loading
+            ? [1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                <SkeletonCards key={item} />
+              ))
+            : pets.map((pet) => (
+                <CardsPets
+                  key={pet?.id}
+                  id={pet?.id}
+                  img={pet.images.length > 0 ? pet.images[0] : NoPhoto}
+                  name={pet?.name}
+                  gender={pet?.gender}
+                  ubication={
+                    pet?.ubicacion.country + ", " + pet?.ubicacion.city
+                  }
+                  handleClickAdopt={handleClickAdopt}
+                />
+              ))}
+        </Stack>
+
+        <Modal open={isPetFormModalOpen} onClose={handleClosePetFormModal}>
+          <Box sx={modalStyle}>
+            <Box display="flex" justifyContent="flex-end">
+              <IconButton onClick={handleClosePetFormModal}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+              Registrar Mascota
+            </Typography>
+            <PetForm />
+          </Box>
+        </Modal>
+
+        <EditProfileModal
+          open={isEditProfileModalOpen}
+          handleClose={handleCloseEditProfileModal}
+          userDetails={userDetails}
+          handleSaveProfile={handleSaveProfile}
+        />
+      </Box>
     </Box>
   );
 };

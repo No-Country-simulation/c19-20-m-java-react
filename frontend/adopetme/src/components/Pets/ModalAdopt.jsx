@@ -351,7 +351,7 @@ const ModalAdopt = ({ open, handleCloseModal, id }) => {
                       {singlePetsImg.length > 0 ? (
                         singlePetsImg?.map((img, index) => (
                           <Box
-                            key={img.id}
+                            key={index}
                             sx={{
                               height: 400,
                               cursor: "zoom-in",

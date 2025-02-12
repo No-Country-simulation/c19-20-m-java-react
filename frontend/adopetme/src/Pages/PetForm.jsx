@@ -70,6 +70,7 @@ const PetForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError("");
 
     if (!validateName(petName)) {
       setError("El nombre solo puede contener letras y espacios.");
@@ -93,41 +94,23 @@ const PetForm = () => {
     formData.append("createdBy", user.id);
     formData.append("specie", petType); //number
     formData.append("status", "active");
+    formData.append("description", description);
 
-    // Imprimir los datos del FormData
-    const formDataObj = {};
-    formDataObj.images = [""];
-    formData.forEach((value, key) => {
-      formDataObj[key] = value;
-    });
-    console.log("FormData contents:", formDataObj);
+    // Agregar las imágenes (puedes seleccionar varios archivos)
+    files.forEach((file) => formData.append("images", file));
 
     try {
       // Simulación de envío de datos a una base de datos
       const response = await fetch(`${process.env.REACT_APP_API_URL}/pets`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
+          Authorization: authToken,
         },
-        body: JSON.stringify(formDataObj),
+        body: formData,
       });
 
-      // console.log("Response status:", response.status);
-      // console.log("Response headers:", response.headers);
       const responseBody = await response.json();
-      console.log("Response body:", responseBody);
       setLoading(false);
-      // setLoading(true);
-      // const response = await fetch(
-      //   `${process.env.REACT_APP_API_URL}/pet/savewithimage`,
-      //   {
-      //     Authorization: `Bearer ${authToken}`,
-      //     method: "POST",
-      //     body: formData,
-      //   }
-      // );
-      // setLoading(false);
 
       if (response.ok) {
         //FETCH PARA GUARDAR IMAGEN

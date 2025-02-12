@@ -1,14 +1,29 @@
 const jsonServer = require("json-server");
-const server = jsonServer.create();
+const serverJson = jsonServer.create();
 const router = jsonServer.router("db.json"); // db.json es donde están tus datos
 const middlewares = jsonServer.defaults();
 const auth = require("json-server-auth");
-const permissions = require("./permissions");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+
+const server = express();
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+const fileType = require("file-type");
+const { v4: uuidv4 } = require("uuid");
+const cors = require("cors");
+
+// Usar CORS de forma predeterminada para todas las rutas
+server.use(cors());
+
 // Middleware para procesar el cuerpo de las solicitudes
 server.use(bodyParser.json());
+
+server.use(jsonServer.defaults()); // Middleware de json-server
 
 server.use(middlewares);
 
@@ -62,6 +77,37 @@ server.use("/users/:id", (req, res, next) => {
 });
 
 //?==================================Pets==============================
+
+// Configuración de multer para almacenar los archivos en la carpeta 'uploads'
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images"); // La carpeta donde se guardarán los archivos
+  },
+  filename: (req, file, cb) => {
+    const specie = req.body.specie;
+    const createdBy = req.body.createdBy;
+    const name = req.body.name;
+    const [originalName, extension] = file.originalname.split(".");
+    const fileName = `${name}-${specie}-${createdBy}-${Date.now()}.${extension}`;
+    cb(null, fileName); // Nombre único para cada archivo
+  },
+});
+
+const fileFilter = async (req, file, cb) => {
+  if (req.files && req.files.every((file) => file.size > 0.5 * 1024 * 1024)) {
+    cb(new Error("El tamaño del archivo no debe exceder 0.5MB"), false);
+  } else {
+    cb(null, true);
+  }
+};
+
+// Configurar multer para aceptar un solo archivo llamado 'file' (puedes cambiar el nombre del campo si lo prefieres)
+const upload = multer({ storage, fileFilter });
+
+// Configurar la carpeta 'images' para que se pueda acceder desde la URL
+server.use("/images", express.static(path.join(__dirname, "images")));
+
+// Ruta personalizada para '/pets' que maneja GET y POST
 server.use("/pets", (req, res, next) => {
   if (req.method === "GET") {
     const pets = router.db.get("pets").value();
@@ -79,29 +125,69 @@ server.use("/pets", (req, res, next) => {
   }
 
   if (req.method === "POST") {
-    //validate body
-    const body = [
-      "name",
-      "description",
-      "gender",
-      "specie",
-      "createdBy",
-      "status",
-      "images",
-    ];
-    const areAllKeysValidWithMessage = (body, obj) => {
-      return body.every((key) => {
-        if (obj[key] === undefined || obj[key] === null || obj[key] === "") {
-          return res.status(400).json({ message: `'${key}' es requerido.` });
-        }
-        return true;
-      });
-    };
+    // Verificar si se está enviando un archivo
+    upload.array("images", 3)(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
 
-    areAllKeysValidWithMessage(body, req.body);
+      const body = [
+        "name",
+        "description",
+        "gender",
+        "specie",
+        "createdBy",
+        "status",
+      ];
+      const areAllKeysValidWithMessage = (body, obj) => {
+        return body.every((key) => {
+          if (obj[key] === undefined || obj[key] === null || obj[key] === "") {
+            //return res.status(400).json({ message: `'${key}' es requerido.` });
+            return false;
+          }
+          return true;
+        });
+      };
+
+      //areAllKeysValidWithMessage(body, req.body);
+      const isValid = areAllKeysValidWithMessage(body, req.body);
+      if (!isValid)
+        return res.status(400).json({ message: `Falta parametros` });
+
+      // Si el archivo es válido y la validación de los otros campos pasó, guardamos la información
+      if (req.files && req.files.length > 0) {
+        const uploadedFiles = req.files.map((file) => ({
+          filename: file.filename,
+          path: file.path,
+          mimetype: file.mimetype,
+          size: file.size,
+        }));
+
+        const onlyPath = uploadedFiles.map((file) =>
+          file.path.replace(/\\/g, "/")
+        );
+        const baseUrl = req.protocol + "://" + req.get("host");
+        const fullUrls = onlyPath.map((url) => baseUrl + "/" + url);
+
+        const generateUniqueId = () => {
+          return Math.random().toString(36).substr(2, 5);
+        };
+
+        const newPet = {
+          ...req.body,
+          id: generateUniqueId(),
+          images: req.files ? fullUrls : null, // Aquí guardamos la ruta del archivo subido
+        };
+
+        // Agregar la nueva mascota a la base de datos
+        router.db.get("pets").push(newPet).write();
+
+        return res.status(201).json(newPet);
+      }
+    });
+  } else {
+    next(); // Continuar con el siguiente middleware si es necesario
   }
-
-  next();
 });
 
 server.use("/pets/:id", (req, res, next) => {
