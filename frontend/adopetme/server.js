@@ -12,6 +12,9 @@ const path = require("path");
 
 const server = express();
 const cors = require("cors");
+const fs = require("fs");
+//const marked = require("marked");
+const { marked } = require("marked");
 
 // Usar CORS de forma predeterminada para todas las rutas
 server.use(cors());
@@ -22,6 +25,8 @@ server.use(bodyParser.json());
 server.use(jsonServer.defaults()); // Middleware de json-server
 
 server.use(middlewares);
+
+let imageId = null;
 
 //?=================================Users===========================
 server.use("/users", (req, res, next) => {
@@ -73,18 +78,51 @@ server.use("/users/:id", (req, res, next) => {
 });
 
 //?==================================Pets==============================
-
 // Configuración de multer para almacenar los archivos en la carpeta 'uploads'
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images"); // La carpeta donde se guardarán los archivos
   },
   filename: (req, file, cb) => {
-    const specie = req.body.specie;
-    const createdBy = req.body.createdBy;
-    const name = req.body.name;
+    const petId = req.params.id;
+    const urlParams = new URLSearchParams(req.url.split("?")[1]);
+    const params = {};
+    urlParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    const imageId = params.imageId;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+    const petImages = pet ? pet.images : [];
+    let newImageName = null;
+
+    if (pet && pet.images.length >= 3) {
+      //return res.status(400).json({ message: "No puedes subir mas de 3 imagenes" });
+      cb(new Error("No puedes subir mas de 3 imagenes"), false);
+      return;
+    }
+
+    petImages.forEach((image) => {
+      //Extraer el nombre de la imagen
+      const imageName = path.basename(image);
+      const [uniqueId, name, specie, createdBy, timestamp] =
+        imageName.split("-");
+
+      if (uniqueId === imageId) {
+        newImageName = `${uniqueId}-${name}-${specie}-${createdBy}-${timestamp}`;
+      }
+    });
+
+    const {
+      specie = pet.specie,
+      createdBy = pet.createdBy,
+      name = pet.name,
+    } = req.body || {};
+
+    const generateUniqueId = Math.random().toString(36).substr(2, 5);
     const [originalName, extension] = file.originalname.split(".");
-    const fileName = `${name}-${specie}-${createdBy}-${Date.now()}.${extension}`;
+    const fileName = newImageName
+      ? newImageName
+      : `${generateUniqueId}-${name}-${specie}-${createdBy}-${Date.now()}.${extension}`;
     cb(null, fileName); // Nombre único para cada archivo
   },
 });
@@ -102,6 +140,7 @@ const upload = multer({ storage, fileFilter });
 
 // Configurar la carpeta 'images' para que se pueda acceder desde la URL
 server.use("/images", express.static(path.join(__dirname, "images")));
+server.use("/images", express.static(path.join(__dirname, "public")));
 
 // Ruta personalizada para '/pets' que maneja GET y POST
 server.use("/pets", (req, res, next) => {
@@ -121,6 +160,22 @@ server.use("/pets", (req, res, next) => {
   }
 
   if (req.method === "POST") {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "No autorizado. Token requerido." });
+    }
+
+    // Verificar si el token es válido
+    jwt.verify(token, "mi_clave_secreta", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Token inválido" });
+      }
+
+      req.user = decoded;
+    });
     // Verificar si se está enviando un archivo
     upload.array("images", 3)(req, res, async (err) => {
       if (err) {
@@ -230,7 +285,6 @@ server.use("/pets/:id", (req, res, next) => {
       "specie",
       "createdBy",
       "status",
-      "image",
     ];
 
     const areAllKeysValidWithMessage = (body, obj) => {
@@ -250,9 +304,181 @@ server.use("/pets/:id", (req, res, next) => {
         .status(404)
         .json({ message: "No tiene permitido editar esta mascota" });
     }
+
+    const updatedPet = {
+      ...pet,
+      ...req.body,
+      images: pet.images,
+    };
+
+    console.log("updatedPet", updatedPet);
+    router.db.get("pets").find({ id: petId }).assign(updatedPet).write();
+
+    return res.status(200).json(updatedPet);
+  }
+
+  //console.log("pet", pet);
+
+  next();
+});
+
+//?==================================Images==============================
+// Middleware personalizado para verificar
+const updateMidleware = (req, res, next) => {
+  const urlParams = new URLSearchParams(req.url.split("?")[1]);
+  const imageId = urlParams.get("imageId");
+  const petId = req.params.id;
+  const pet = router.db.get("pets").find({ id: petId }).value();
+  if (!pet) {
+    return res.status(404).json({ message: "Mascota no encontrada" });
+  }
+
+  if (!imageId) {
+    return res.status(400).json({ message: "imageId es requerido." });
+  }
+
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "No autorizado. Token requerido." });
+  }
+
+  // Verificar si el token es válido
+  jwt.verify(token, "mi_clave_secreta", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+
+    req.user = decoded;
+  });
+
+  // Verificar si el usuario es el creador de la mascota
+  if (req.user.id !== pet.createdBy) {
+    return res.status(403).json({
+      message: "No tiene permiso para actualizar las imágenes de esta mascota",
+    });
   }
 
   next();
+};
+
+const newMidleware = (req, res, next) => {
+  console.log("newMidleware", req.file);
+  const petId = req.params.id;
+  const pet = router.db.get("pets").find({ id: petId }).value();
+  if (!pet) {
+    return res.status(404).json({ message: "Mascota no encontrada" });
+  }
+
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "No autorizado. Token requerido." });
+  }
+
+  // Verificar si el token es válido
+  jwt.verify(token, "mi_clave_secreta", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+
+    req.user = decoded;
+  });
+
+  // Verificar si el usuario es el creador de la mascota
+  if (req.user.id !== pet.createdBy) {
+    return res.status(403).json({
+      message: "No tiene permiso para actualizar las imágenes de esta mascota",
+    });
+  }
+
+  next();
+};
+
+server.put(
+  "/image/:id",
+  updateMidleware,
+  upload.single("image"),
+  (req, res) => {
+    const petId = req.params.id;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+
+    const uploadedFile = {
+      filename: req.file.filename,
+      path: req.file.path,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+    };
+
+    const onlyPath = uploadedFile.path.replace(/\\/g, "/");
+    const baseUrl = req.protocol + "://" + req.get("host");
+    const fullUrls = baseUrl + "/" + onlyPath;
+    console.log("onlyPath", fullUrls);
+    // pet.images = fullUrls;
+
+    // router.db.get("pets").find({ id: petId }).assign(pet).write();
+
+    return res.status(200).json(pet);
+  }
+);
+
+server.post("/image/:id", newMidleware, upload.single("image"), (req, res) => {
+  const petId = req.params.id;
+  const pet = router.db.get("pets").find({ id: petId }).value();
+
+  const uploadedFile = {
+    filename: req.file.filename,
+    path: req.file.path,
+    mimetype: req.file.mimetype,
+    size: req.file.size,
+  };
+
+  const onlyPath = uploadedFile.path.replace(/\\/g, "/");
+  const baseUrl = req.protocol + "://" + req.get("host");
+  const fullUrls = baseUrl + "/" + onlyPath;
+  console.log("onlyPath", fullUrls);
+
+  pet.images = pet.images ? [...pet.images, fullUrls] : [fullUrls];
+  router.db.get("pets").find({ id: petId }).assign(pet).write();
+
+  // router.db.get("pets").find({ id: petId }).assign(pet).write();
+
+  return res.status(200).json(pet);
+});
+
+server.delete("/image/:id", updateMidleware, (req, res) => {
+  const petId = req.params.id;
+  const pet = router.db.get("pets").find({ id: petId }).value();
+
+  const urlParams = new URLSearchParams(req.url.split("?")[1]);
+  const imageId = urlParams.get("imageId");
+
+  const imageIndex = pet.images.findIndex((image) => {
+    const imageName = path.basename(image);
+    const [uniqueId] = imageName.split("-");
+    return uniqueId === imageId;
+  });
+
+  if (imageIndex === -1) {
+    return res.status(404).json({ message: "Imagen no encontrada" });
+  }
+
+  const imagePath = pet.images[imageIndex];
+  const relativeImagePath = imagePath.replace(
+    `${req.protocol}://${req.get("host")}/`,
+    ""
+  );
+
+  fs.unlink(relativeImagePath, (err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error al eliminar la imagen" });
+    }
+
+    pet.images.splice(imageIndex, 1);
+    router.db.get("pets").find({ id: petId }).assign(pet).write();
+
+    return res.status(200).json({ message: "Imagen eliminada correctamente" });
+  });
 });
 
 //?=====================ESPECIES===============================
@@ -326,6 +552,42 @@ server.post("/auth-login", (req, res) => {
       username: user.username,
       rol: user.role,
     },
+  });
+});
+
+//?============================================DOCUMENTACION==================================
+// Ruta principal para mostrar la documentación
+server.get("/document", (req, res) => {
+  // Leemos el archivo README.md
+  fs.readFile(path.join(__dirname, "DOCUMENT.md"), "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).send("Error al leer el archivo README.md");
+    }
+
+    // Convertimos el contenido Markdown a HTML usando marked
+    const htmlContent = marked(data);
+
+    // Enviamos el HTML como respuesta
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Documentación API</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #007bff; }
+            pre { background-color: #f4f4f4; padding: 10px; border-radius: 4px; }
+            code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 4px; }
+          </style>
+        </head>
+        <body>
+          <h1>Documentación de la API</h1>
+          <div>${htmlContent}</div>
+        </body>
+      </html>
+    `);
   });
 });
 
