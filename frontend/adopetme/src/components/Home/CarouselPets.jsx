@@ -10,11 +10,12 @@ const CarouselPets = () => {
 
   useEffect(() => {
     const getPets = async () => {
-      const response = await fetch(
-        "https://dog.ceo/api/breed/hound/images/random/10"
-      );
-      const result = await response.json();
-      setPets(result.message);
+      // const response = await fetch(
+      //   "https://dog.ceo/api/breed/hound/images/random/10"
+      // );
+      // const result = await response.json();
+      // setPets(result.message);
+      setPets([]);
     };
     getPets();
   }, []);
