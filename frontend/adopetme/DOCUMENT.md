@@ -112,7 +112,7 @@ POST http://localhost:4000/image/i7cqm
   - `id` (requerido): El ID (string) de la mascota a la que pertenece la imagen.
 
   - **Parámetro de consulta (query parameter)**:
-  - `imageId` (requerido): El ID de la imagen que se va actualizar. Un identificador adicional de la imagen pasado como parámetro de consulta.
+  - `imageId` (requerido): El ID de la imagen que se va actualizar. Un identificador adicional de la imagen pasado como parámetro de consulta. <br><br>Se obtiene de la url de la imagen ejemplo: http://localhost:4000/images/<span style="color: red;">4ck8</span>-susi-gato-1-1739474178912.png <br><br><span style="color: red;">4ck8</span> seria el ID de la imagen.
 
   - **Cuerpo de la solicitud**:
   - `file` (requerido): El archivo de la imagen que se desea subir, que debe ser enviado como un campo `image` de tipo `multipart/form-data`.
