@@ -11,6 +11,37 @@
       "images": [
         "http://localhost:4000/images/38qas-Tom-Gato-1-1739487024431.jpg",
         "http://localhost:4000/images/q73zg-Tom-Gato-1-1739487024435.jpg"
+      ],
+      "ubicacion": {
+        "country": "Mexico",
+        "state": "Yucatan",
+        "city": "Merida"
+      }
+    },
+    {
+      "name": "Max",
+      "gender": "Macho",
+      "createdBy": "2",
+      "specie": "Perro",
+      "status": "active",
+      "description": "Soy Max, (golden retriever) lleno de energía. ¡Me encanta jugar a buscar la pelota y dar paseos por el parque! Soy muy cariñoso y leal, busco un hogar donde me den mucho amor.",
+      "id": "vjbx3",
+      "images": [
+        "http://localhost:4000/images/fj035-Max-Perro-2-1739564098841.jpeg",
+        "http://localhost:4000/images/8lj7b-Max-Perro-2-1739564098842.jpg"
+      ]
+    },
+    {
+      "name": "Luna",
+      "gender": "Hembra",
+      "createdBy": "2",
+      "specie": "Perro",
+      "status": "active",
+      "description": "Soy Luna, una (bulldog francés) muy tranquila y cariñosa. ¡Me encanta dormir siestas y acurrucarme en el sofá! Soy muy sociable y me llevo bien con niños y otros animales.",
+      "id": "c89se",
+      "images": [
+        "http://localhost:4000/images/nh3e3-Luna-Perro-2-1739564207997.jpg",
+        "http://localhost:4000/images/v015t-Luna-Perro-2-1739564207998.jpg"
       ]
     }
   ],
