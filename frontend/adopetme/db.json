@@ -1,8 +1,8 @@
 {
   "pets": [
     {
-      "name": "Tom",
-      "gender": "Macho",
+      "name": "Tomyyy",
+      "gender": "Hembra",
       "createdBy": "1",
       "specie": "Gato",
       "status": "active",
@@ -29,7 +29,12 @@
       "images": [
         "http://localhost:4000/images/fj035-Max-Perro-2-1739564098841.jpeg",
         "http://localhost:4000/images/8lj7b-Max-Perro-2-1739564098842.jpg"
-      ]
+      ],
+      "ubicacion": {
+        "country": "Colombia",
+        "state": "Bogota",
+        "city": "Medellin"
+      }
     },
     {
       "name": "Luna",
@@ -42,7 +47,12 @@
       "images": [
         "http://localhost:4000/images/nh3e3-Luna-Perro-2-1739564207997.jpg",
         "http://localhost:4000/images/v015t-Luna-Perro-2-1739564207998.jpg"
-      ]
+      ],
+      "ubicacion": {
+        "country": "Colombia",
+        "state": "Bogota",
+        "city": "Medellin"
+      }
     }
   ],
   "species": [

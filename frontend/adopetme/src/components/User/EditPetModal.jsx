@@ -58,7 +58,7 @@ const ButtonWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const EditPetModal = ({ open, onClose }) => {
+const EditPetModal = ({ onClose }) => {
   const { user } = useAuth();
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
@@ -80,29 +80,29 @@ const EditPetModal = ({ open, onClose }) => {
       return;
     }
 
-    if (open) {
-      console.log("Pet ID", petId);
-      setLoading(true);
-      axios
-        .get(`http://localhost:4000/pets/${petId}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        })
-        .then((response) => {
-          const pet = response.data;
-          setPreviews(pet.images);
-          setPetName(pet.name);
-          setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
-          setGender(pet.gender);
-          setDescription(pet.description);
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-  }, [open, petId, authToken, navigate]);
+    // if (open) {
+    console.log("Pet ID", petId);
+    setLoading(true);
+    axios
+      .get(`http://localhost:4000/pets/${petId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((response) => {
+        const pet = response.data;
+        setPreviews(pet.images);
+        setPetName(pet.name);
+        setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
+        setGender(pet.gender);
+        setDescription(pet.description);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+    // }
+  }, [petId, authToken, navigate]);
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
@@ -133,16 +133,12 @@ const EditPetModal = ({ open, onClose }) => {
     files.forEach((file) => imageFormData.append("image", file));
 
     await axios
-      .post(
-        `http://localhost:4000/add_image/${petId}`,
-        imageFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
+      .post(`http://localhost:4000/add_image/${petId}`, imageFormData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((response) => {
         console.log("result img", response);
       })
@@ -164,27 +160,33 @@ const EditPetModal = ({ open, onClose }) => {
       description: description,
       gender: gender,
       createdBy: user.id,
-      idSpecies: petType === "Perro" ? 2 : 1,
+      specie: petType,
+      status: "active",
     };
 
     try {
       setLoading(true);
+      setError("");
 
       const requestOptions = {
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          Authorization: authToken,
         },
         redirect: "follow",
       };
 
-      const response = await axios.patch(
-        `http://localhost:4000/pet/${petId}`,
+      const response = await axios.put(
+        `http://localhost:4000/pets/${petId}`,
         petFormData,
         requestOptions
       );
-
-      if (response.data.status === "success") {
-        handleUpdateImage();
+      console.log("response", response);
+      if (response.status === 200) {
+        //await handleUpdateImage();
+        setSuccess("¡Mascota actualizada exitosamente!");
+        setError("");
+        setLoading(false);
+        //onClose();
       }
     } catch (error) {
       setLoading(false);
