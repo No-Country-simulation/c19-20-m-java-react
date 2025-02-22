@@ -66,6 +66,7 @@ const EditPetModal = ({ onClose }) => {
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -80,71 +81,54 @@ const EditPetModal = ({ onClose }) => {
       return;
     }
 
-    // if (open) {
-    console.log("Pet ID", petId);
     setLoading(true);
     axios
       .get(`http://localhost:4000/pets/${petId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers: { Authorization: authToken  },
       })
       .then((response) => {
         const pet = response.data;
-        setPreviews(pet.images);
+        setPreviews(pet.images.map((img, index) => ({ id: index, url: img })));
         setPetName(pet.name);
-        setPetType(pet.idSpecies === 1 ? "Perro" : "Gato");
+        setPetType(pet.specie);
         setGender(pet.gender);
         setDescription(pet.description);
-        setLoading(false);
       })
-      .catch(() => {
-        setLoading(false);
-      });
-    // }
+      .catch(() => setError("Error al cargar los datos"))
+      .finally(() => setLoading(false));
   }, [petId, authToken, navigate]);
 
   const handleFileChange = (event) => {
     const chosenFiles = Array.from(event.target.files);
-    if (chosenFiles.length <= 4) {
-      setFiles(chosenFiles);
-      setPreviews(chosenFiles.map((file) => URL.createObjectURL(file)));
-    } else {
+    if (previews.length + chosenFiles.length > 4) {
       setError("Solo puedes subir un máximo de 4 fotografías.");
+      return;
     }
+    const newFiles = chosenFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+      isNew: true,
+    }));
+    setFiles([...files, ...chosenFiles]);
+    setPreviews([...previews, ...newFiles]);
   };
 
   const handleRemovePreview = (index) => {
-    const newFiles = files.filter((_, i) => i !== index);
-    setFiles(newFiles);
-    setPreviews(newFiles.map((file) => URL.createObjectURL(file)));
-  };
+    const removedImage = previews[index];
 
-  const handleUpdateImage = async () => {
-    if (files.length <= 0) {
-      setSuccess("¡Mascota actualizada exitosamente!");
-      setError("");
-      onClose();
-      setLoading(false);
-      return;
+    if (removedImage.isNew) {
+      setFiles(files.filter((_, i) => i !== index));
+    } else {
+      setImagesToDelete((prev) => [...prev, removedImage.id]);
     }
 
-    const imageFormData = new FormData();
-    files.forEach((file) => imageFormData.append("image", file));
+    setPreviews(previews.filter((_, i) => i !== index));
+  };
 
-    await axios
-      .post(`http://localhost:4000/add_image/${petId}`, imageFormData, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log("result img", response);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+  const handleDeleteImage = (imageId) => {
+    if (!imagesToDelete.includes(imageId)) {
+      setImagesToDelete((prev) => [...prev, imageId]);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -155,71 +139,55 @@ const EditPetModal = ({ onClose }) => {
       return;
     }
 
-    const petFormData = {
-      name: petName,
-      description: description,
-      gender: gender,
-      createdBy: user.id,
-      specie: petType,
-      status: "active",
-    };
-
     try {
       setLoading(true);
       setError("");
 
-      const requestOptions = {
-        headers: {
-          Authorization: authToken,
-        },
-        redirect: "follow",
-      };
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("image", file));
 
-      const response = await axios.put(
-        `http://localhost:4000/pets/${petId}`,
-        petFormData,
-        requestOptions
-      );
-      console.log("response", response);
-      if (response.status === 200) {
-        //await handleUpdateImage();
-        setSuccess("¡Mascota actualizada exitosamente!");
-        setError("");
-        setLoading(false);
-        //onClose();
+        await axios.post(`http://localhost:4000/image/${petId}`, formData, {
+          headers: {
+            Authorization: authToken,
+            // "Content-Type": "multipart/form-data",
+          },
+        });
       }
-    } catch (error) {
+
+      await axios.put(
+        `http://localhost:4000/pets/${petId}`,
+        {
+          name: petName,
+          description,
+          gender,
+          createdBy: user.id,
+          specie: petType,
+          status: "active",
+          imagesToDelete,
+        },
+        {
+          headers: { Authorization: authToken },
+        }
+      );
+
+      setSuccess("¡Mascota actualizada exitosamente!");
       setLoading(false);
-      setError("Error al conectar con la base de datos.");
-      console.error(error);
+      onClose();
+    } catch (error) {
+      setError("Error al actualizar la mascota.");
+      setLoading(false);
     }
   };
 
   return (
     <Container maxWidth="sm">
       <FormWrapper>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          color="primary"
-          sx={{ fontWeight: "bold" }}
-        >
+        <Typography variant="h4" color="primary" sx={{ fontWeight: "bold" }}>
           EDITAR MASCOTA
         </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
-
+        {error && <Alert severity="error">{error}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
             fullWidth
@@ -231,7 +199,6 @@ const EditPetModal = ({ onClose }) => {
             onChange={(e) => setPetName(e.target.value)}
             required
           />
-
           <FormControl fullWidth variant="outlined" margin="normal">
             <InputLabel id="pet-type-label">Tipo de mascota</InputLabel>
             <Select
@@ -245,7 +212,6 @@ const EditPetModal = ({ onClose }) => {
               <MenuItem value="Gato">Gato</MenuItem>
             </Select>
           </FormControl>
-
           <FormControl fullWidth variant="outlined" margin="normal">
             <InputLabel id="gender-label">Género</InputLabel>
             <Select
@@ -259,7 +225,6 @@ const EditPetModal = ({ onClose }) => {
               <MenuItem value="Hembra">Hembra</MenuItem>
             </Select>
           </FormControl>
-
           <TextField
             fullWidth
             label="Descripción"
@@ -274,7 +239,6 @@ const EditPetModal = ({ onClose }) => {
             required
             helperText="La descripción debe tener entre 50 y 250 caracteres."
           />
-
           <Button
             variant="contained"
             component="label"
@@ -291,7 +255,6 @@ const EditPetModal = ({ onClose }) => {
               onChange={handleFileChange}
             />
           </Button>
-
           <Typography
             variant="body2"
             color="textSecondary"
@@ -299,13 +262,12 @@ const EditPetModal = ({ onClose }) => {
           >
             Puedes subir hasta 4 fotografías.
           </Typography>
-
           {previews.length > 0 && (
             <ImagePreviewWrapper>
               {previews.map((preview, index) => (
                 <ImagePreview key={index}>
                   <img
-                    src={preview}
+                    src={preview.url || (preview.file && URL.createObjectURL(preview.file))}
                     alt={`preview-${index}`}
                     style={{
                       width: "100%",
@@ -316,11 +278,15 @@ const EditPetModal = ({ onClose }) => {
                   <DeleteIcon onClick={() => handleRemovePreview(index)}>
                     X
                   </DeleteIcon>
+                  {preview.id && (
+                    <DeleteIcon onClick={() => handleDeleteImage(preview.id)}>
+                      X
+                    </DeleteIcon>
+                  )}
                 </ImagePreview>
               ))}
             </ImagePreviewWrapper>
           )}
-
           <ButtonWrapper sx={{ mt: 2 }}>
             <Button
               type="submit"
@@ -330,7 +296,6 @@ const EditPetModal = ({ onClose }) => {
             >
               Guardar Cambios
             </Button>
-
             <Button
               type="button"
               variant="outlined"
@@ -351,7 +316,6 @@ const EditPetModal = ({ onClose }) => {
           </ButtonWrapper>
         </Box>
       </FormWrapper>
-
       {loading && <CircularProgress />}
     </Container>
   );
