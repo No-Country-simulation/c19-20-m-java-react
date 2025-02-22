@@ -10,13 +10,19 @@
       "id": "s3uw5",
       "images": [
         "http://localhost:4000/images/38qas-Tom-Gato-1-1739487024431.jpg",
-        "http://localhost:4000/images/q73zg-Tom-Gato-1-1739487024435.jpg"
+        "http://localhost:4000/images/1whmb-Tomyyy-Gato-1-1740185965824.jpg",
+        "http://localhost:4000/images/l6p2w-Tomyyy-Gato-1-1740185966020.jpg"
       ],
       "ubicacion": {
         "country": "Mexico",
         "state": "Yucatan",
         "city": "Merida"
-      }
+      },
+      "imagesToDelete": [
+        2,
+        1,
+        0
+      ]
     },
     {
       "name": "Max",
@@ -55,6 +61,26 @@
         "state": "Bogota",
         "city": "Medellin"
       }
+    },
+    {
+      "name": "superman",
+      "gender": "Hembra",
+      "createdBy": "1",
+      "specie": "Gato",
+      "status": "active",
+      "description": "Hola soy un perrito de prueba llamado supermanfgeger erter eyry ",
+      "id": "d0o9b",
+      "images": [
+        "http://localhost:4000/images/kls2k-prueba-Perro-1-1740186366162.jpg",
+        "http://localhost:4000/images/0afcd-prueba-Perro-1-1740186462064.jpg",
+        "http://localhost:4000/images/xhrgb-prueba-Perro-1-1740186462301.jpg"
+      ],
+      "ubicacion": {
+        "country": "Mexico",
+        "state": "Yucatan",
+        "city": "Merida"
+      },
+      "imagesToDelete": []
     }
   ],
   "species": [

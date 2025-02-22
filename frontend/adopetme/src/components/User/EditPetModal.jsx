@@ -58,7 +58,7 @@ const ButtonWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const EditPetModal = ({ onClose }) => {
+const EditPetModal = () => {
   const { user } = useAuth();
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
@@ -84,7 +84,7 @@ const EditPetModal = ({ onClose }) => {
     setLoading(true);
     axios
       .get(`http://localhost:4000/pets/${petId}`, {
-        headers: { Authorization: authToken  },
+        headers: { Authorization: authToken },
       })
       .then((response) => {
         const pet = response.data;
@@ -144,15 +144,15 @@ const EditPetModal = ({ onClose }) => {
       setError("");
 
       if (files.length > 0) {
-        const formData = new FormData();
-        files.forEach((file) => formData.append("image", file));
-
-        await axios.post(`http://localhost:4000/image/${petId}`, formData, {
-          headers: {
-            Authorization: authToken,
-            // "Content-Type": "multipart/form-data",
-          },
-        });
+        for (const file of files) {
+          const formData = new FormData();
+          formData.append("image", file);
+          await axios.post(`http://localhost:4000/image/${petId}`, formData, {
+            headers: {
+              Authorization: authToken,
+            },
+          });
+        }
       }
 
       await axios.put(
@@ -173,7 +173,6 @@ const EditPetModal = ({ onClose }) => {
 
       setSuccess("¡Mascota actualizada exitosamente!");
       setLoading(false);
-      onClose();
     } catch (error) {
       setError("Error al actualizar la mascota.");
       setLoading(false);
@@ -267,7 +266,10 @@ const EditPetModal = ({ onClose }) => {
               {previews.map((preview, index) => (
                 <ImagePreview key={index}>
                   <img
-                    src={preview.url || (preview.file && URL.createObjectURL(preview.file))}
+                    src={
+                      preview.url ||
+                      (preview.file && URL.createObjectURL(preview.file))
+                    }
                     alt={`preview-${index}`}
                     style={{
                       width: "100%",
