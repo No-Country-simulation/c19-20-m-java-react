@@ -95,11 +95,9 @@ const storage = multer.diskStorage({
     const petImages = pet ? pet.images : [];
     let newImageName = null;
 
-    if (pet && pet.images.length >= 3) {
-      //return res.status(400).json({ message: "No puedes subir mas de 3 imagenes" });
-      cb(new Error("No puedes subir mas de 3 imagenes"), false);
-      return;
-    }
+    // NOTA: No validamos el límite de 3 imágenes aquí porque el usuario puede estar
+    // eliminando imágenes en la misma petición. La validación se hace en el endpoint
+    // después de procesar las eliminaciones.
 
     petImages.forEach((image) => {
       //Extraer el nombre de la imagen
@@ -113,13 +111,17 @@ const storage = multer.diskStorage({
     });
 
     const {
-      specie = pet.specie,
-      createdBy = pet.createdBy,
-      name = pet.name,
+      specie = pet ? (pet.specie || 'Unknown') : 'Unknown',
+      createdBy = pet ? (pet.createdBy || '0') : '0',
+      name = pet ? (pet.name || 'Pet') : 'Pet',
     } = req.body || {};
 
     const generateUniqueId = Math.random().toString(36).substr(2, 5);
-    const [originalName, extension] = file.originalname.split(".");
+
+    // Extraer extensión de forma segura
+    const filenameParts = file.originalname.split('.');
+    const extension = filenameParts.length > 1 ? filenameParts.pop() : 'jpg';
+
     const fileName = newImageName
       ? newImageName
       : `${generateUniqueId}-${name}-${specie}-${createdBy}-${Date.now()}.${extension}`;
@@ -141,6 +143,144 @@ const upload = multer({ storage, fileFilter });
 // Configurar la carpeta 'images' para que se pueda acceder desde la URL
 server.use("/images", express.static(path.join(__dirname, "images")));
 server.use("/images", express.static(path.join(__dirname, "public")));
+
+//?==================================Complete Pet Update with Images==============================
+// IMPORTANTE: Este endpoint debe estar ANTES del middleware genérico server.use("/pets")
+// para que no sea interceptado por la validación antigua
+server.put(
+  "/pets/:id/complete",
+  (req, res, next) => {
+    const petId = req.params.id;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+
+    if (!pet) {
+      return res.status(404).json({ message: "Mascota no encontrada" });
+    }
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ message: "No autorizado. Token requerido." });
+    }
+
+    // Verificar si el token es válido
+    jwt.verify(token, "mi_clave_secreta", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Token inválido" });
+      }
+
+      req.user = decoded;
+    });
+
+    // Verificar si el usuario es el creador de la mascota
+    if (req.user.id !== pet.createdBy) {
+      return res.status(403).json({
+        message: "No tiene permiso para actualizar esta mascota",
+      });
+    }
+
+    next();
+  },
+  upload.array("newImages", 3),
+  async (req, res) => {
+    const petId = req.params.id;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+
+    // DEBUG: Log para ver qué se está recibiendo
+    console.log("=== DEBUG COMPLETE UPDATE ===");
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
+    console.log("petId:", petId);
+    console.log("============================");
+
+    try {
+      // 1. Procesar imágenes a eliminar
+      let imagesToDelete = [];
+      if (req.body.imagesToDelete) {
+        try {
+          imagesToDelete = JSON.parse(req.body.imagesToDelete);
+        } catch (e) {
+          // Si no es JSON, asumir que es un array de strings
+          imagesToDelete = Array.isArray(req.body.imagesToDelete)
+            ? req.body.imagesToDelete
+            : [req.body.imagesToDelete];
+        }
+      }
+
+      // Eliminar físicamente las imágenes marcadas
+      for (const imageId of imagesToDelete) {
+        const imageIndex = pet.images.findIndex((image) => {
+          const imageName = path.basename(image);
+          const [uniqueId] = imageName.split("-");
+          return uniqueId === imageId;
+        });
+
+        if (imageIndex !== -1) {
+          const imagePath = pet.images[imageIndex];
+          const relativeImagePath = imagePath.replace(
+            `${req.protocol}://${req.get("host")}/`,
+            ""
+          );
+
+          // Eliminar archivo físico
+          try {
+            if (fs.existsSync(relativeImagePath)) {
+              fs.unlinkSync(relativeImagePath);
+            }
+          } catch (err) {
+            console.error("Error eliminando archivo:", err);
+          }
+
+          // Remover del array de imágenes
+          pet.images.splice(imageIndex, 1);
+        }
+      }
+
+      // 2. Subir nuevas imágenes
+      if (req.files && req.files.length > 0) {
+        const baseUrl = req.protocol + "://" + req.get("host");
+
+        for (const file of req.files) {
+          const onlyPath = file.path.replace(/\\/g, "/");
+          const fullUrl = baseUrl + "/" + onlyPath;
+          pet.images = pet.images ? [...pet.images, fullUrl] : [fullUrl];
+        }
+      }
+
+      // 3. Validar que no se excedan 3 imágenes
+      if (pet.images.length > 3) {
+        return res.status(400).json({
+          message: "No puedes tener más de 3 imágenes por mascota"
+        });
+      }
+
+      // 4. Actualizar datos de texto
+      const updatedPet = {
+        ...pet,
+        name: req.body.name || pet.name,
+        description: req.body.description || pet.description,
+        gender: req.body.gender || pet.gender,
+        specie: req.body.specie || pet.specie,
+        status: req.body.status || pet.status,
+        images: pet.images,
+      };
+
+      // Limpiar el campo imagesToDelete si existe
+      delete updatedPet.imagesToDelete;
+
+      // 5. Guardar en la base de datos
+      router.db.get("pets").find({ id: petId }).assign(updatedPet).write();
+
+      return res.status(200).json(updatedPet);
+    } catch (error) {
+      console.error("Error en actualización completa:", error);
+      return res.status(500).json({
+        message: "Error al actualizar la mascota",
+        error: error.message
+      });
+    }
+  }
+);
 
 // Ruta personalizada para '/pets' que maneja GET y POST
 server.use("/pets", (req, res, next) => {
@@ -476,10 +616,146 @@ server.delete("/image/:id", updateMidleware, (req, res) => {
 
     pet.images.splice(imageIndex, 1);
     router.db.get("pets").find({ id: petId }).assign(pet).write();
-
     return res.status(200).json({ message: "Imagen eliminada correctamente" });
   });
 });
+
+//?==================================Complete Pet Update with Images==============================
+// Endpoint combinado para actualización completa de mascota (texto + imágenes)
+server.put(
+  "/pets/:id/complete",
+  (req, res, next) => {
+    const petId = req.params.id;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+
+    if (!pet) {
+      return res.status(404).json({ message: "Mascota no encontrada" });
+    }
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ message: "No autorizado. Token requerido." });
+    }
+
+    // Verificar si el token es válido
+    jwt.verify(token, "mi_clave_secreta", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Token inválido" });
+      }
+
+      req.user = decoded;
+    });
+
+    // Verificar si el usuario es el creador de la mascota
+    if (req.user.id !== pet.createdBy) {
+      return res.status(403).json({
+        message: "No tiene permiso para actualizar esta mascota",
+      });
+    }
+
+    next();
+  },
+  upload.array("newImages", 3),
+  async (req, res) => {
+    const petId = req.params.id;
+    const pet = router.db.get("pets").find({ id: petId }).value();
+
+    // DEBUG: Log para ver qué se está recibiendo
+    console.log("=== DEBUG COMPLETE UPDATE ===");
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
+    console.log("petId:", petId);
+    console.log("============================");
+
+    try {
+      // 1. Procesar imágenes a eliminar
+      let imagesToDelete = [];
+      if (req.body.imagesToDelete) {
+        try {
+          imagesToDelete = JSON.parse(req.body.imagesToDelete);
+        } catch (e) {
+          // Si no es JSON, asumir que es un array de strings
+          imagesToDelete = Array.isArray(req.body.imagesToDelete)
+            ? req.body.imagesToDelete
+            : [req.body.imagesToDelete];
+        }
+      }
+
+      // Eliminar físicamente las imágenes marcadas
+      for (const imageId of imagesToDelete) {
+        const imageIndex = pet.images.findIndex((image) => {
+          const imageName = path.basename(image);
+          const [uniqueId] = imageName.split("-");
+          return uniqueId === imageId;
+        });
+
+        if (imageIndex !== -1) {
+          const imagePath = pet.images[imageIndex];
+          const relativeImagePath = imagePath.replace(
+            `${req.protocol}://${req.get("host")}/`,
+            ""
+          );
+
+          // Eliminar archivo físico
+          try {
+            if (fs.existsSync(relativeImagePath)) {
+              fs.unlinkSync(relativeImagePath);
+            }
+          } catch (err) {
+            console.error("Error eliminando archivo:", err);
+          }
+
+          // Remover del array de imágenes
+          pet.images.splice(imageIndex, 1);
+        }
+      }
+
+      // 2. Subir nuevas imágenes
+      if (req.files && req.files.length > 0) {
+        const baseUrl = req.protocol + "://" + req.get("host");
+
+        for (const file of req.files) {
+          const onlyPath = file.path.replace(/\\/g, "/");
+          const fullUrl = baseUrl + "/" + onlyPath;
+          pet.images = pet.images ? [...pet.images, fullUrl] : [fullUrl];
+        }
+      }
+
+      // 3. Validar que no se excedan 3 imágenes
+      if (pet.images.length > 3) {
+        return res.status(400).json({
+          message: "No puedes tener más de 3 imágenes por mascota"
+        });
+      }
+
+      // 4. Actualizar datos de texto
+      const updatedPet = {
+        ...pet,
+        name: req.body.name || pet.name,
+        description: req.body.description || pet.description,
+        gender: req.body.gender || pet.gender,
+        specie: req.body.specie || pet.specie,
+        status: req.body.status || pet.status,
+        images: pet.images,
+      };
+
+      // Limpiar el campo imagesToDelete si existe
+      delete updatedPet.imagesToDelete;
+
+      // 5. Guardar en la base de datos
+      router.db.get("pets").find({ id: petId }).assign(updatedPet).write();
+
+      return res.status(200).json(updatedPet);
+    } catch (error) {
+      console.error("Error en actualización completa:", error);
+      return res.status(500).json({
+        message: "Error al actualizar la mascota",
+        error: error.message
+      });
+    }
+  }
+);
 
 //?=====================ESPECIES===============================
 server.use("/species", (req, res, next) => {

@@ -11,7 +11,6 @@ import UserProfile from "../components/User/UserProfile";
 import { SearchProvider } from "../contexts/SearchContext";
 import { AuthProvider } from "../contexts/AuthContext";
 import NotFoundPage from "../Pages/NotFoundPage";
-import EditPetPage from "../components/User/EditPetPage";
 import EditPetModal from "../components/User/EditPetModal";
 import Profile from "../components/Profile/Profile";
 
@@ -32,7 +31,6 @@ const MainRouter = () => {
                 path="/editor-mascotas-info/:petId"
                 element={<EditPetModal />}
               />
-              <Route path="/editor-mascotas" element={<EditPetPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </MainLayout>

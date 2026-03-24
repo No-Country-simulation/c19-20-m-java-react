@@ -1,17 +1,16 @@
 {
   "pets": [
     {
-      "name": "Tomyyy",
+      "name": "Perla",
       "gender": "Hembra",
       "createdBy": "1",
-      "specie": "Gato",
+      "specie": "Perro",
       "status": "active",
-      "description": "Hola soy tom y estoy muy contento por ser parte de la familia.",
+      "description": "Hola, soy Perla una perrita Bulldog que necesita un nuevo hogar. Fui rescatada por un gran hombre como Daniel pero él no puede tenerme en su casita, así que necesito una nueva. ",
       "id": "s3uw5",
       "images": [
-        "http://localhost:4000/images/38qas-Tom-Gato-1-1739487024431.jpg",
-        "http://localhost:4000/images/1whmb-Tomyyy-Gato-1-1740185965824.jpg",
-        "http://localhost:4000/images/l6p2w-Tomyyy-Gato-1-1740185966020.jpg"
+        "http://localhost:4000/images/tqmo6-Perla-Perro-1-1774371926211.jpg",
+        "http://localhost:4000/images/jwaxc-Perla-Perro-1-1774371926222.jpg"
       ],
       "ubicacion": {
         "country": "Mexico",
@@ -34,8 +33,7 @@
       "id": "vjbx3",
       "images": [
         "http://localhost:4000/images/fj035-Max-Perro-2-1739564098841.jpeg",
-        "http://localhost:4000/images/8lj7b-Max-Perro-2-1739564098842.jpg",
-        "http://localhost:4000/images/n98io-Max-Perro-2-1740184126371.jpg"
+        "http://localhost:4000/images/8lj7b-Max-Perro-2-1739564098842.jpg"
       ],
       "ubicacion": {
         "country": "Colombia",
@@ -48,32 +46,36 @@
       "name": "Lunita",
       "gender": "Hembra",
       "createdBy": "2",
-      "specie": "Perro",
+      "specie": "Gato",
       "status": "active",
-      "description": "Soy Luna, una (bulldog francés) muy tranquila y cariñosa. ¡Me encanta dormir siestas y acurrucarme en el sofá! Soy muy sociable y me llevo bien con niños y otros animales.",
+      "description": "Soy Lunita, una gatica de ojitos claros y un hermoso color de piel negro. Necesito ser adoptada ya que mis papitos viajarán a otro país y no pueden llevarme con ellos. Dame un lugar en tu hogar. ",
       "id": "c89se",
       "images": [
-        "http://localhost:4000/images/nh3e3-Luna-Perro-2-1739564207997.jpg",
-        "http://localhost:4000/images/v015t-Luna-Perro-2-1739564207998.jpg"
+        "http://localhost:4000/images/hs5zm-Lunita-Gato-2-1774370015734.jpg",
+        "http://localhost:4000/images/d7hva-Lunita-Gato-2-1774370015744.jpg",
+        "http://localhost:4000/images/c7c8a-Lunita-Gato-2-1774370015755.jpg"
       ],
       "ubicacion": {
         "country": "Colombia",
         "state": "Bogota",
         "city": "Medellin"
-      }
+      },
+      "imagesToDelete": [
+        1,
+        0
+      ]
     },
     {
-      "name": "superman",
-      "gender": "Hembra",
+      "name": "Marocco",
+      "gender": "Macho",
       "createdBy": "1",
       "specie": "Gato",
       "status": "active",
-      "description": "Hola soy un perrito de prueba llamado supermanfgeger erter eyry ",
+      "description": "Soy Marocco, un gatico persa muy hermoso que quiere ser adoptado, ya que mis papis por su trabajo no pueden ya cuidar de mí pues viajan mucho. Así que necesito una casita donde me puedan llenar de mucho amor. ",
       "id": "d0o9b",
       "images": [
-        "http://localhost:4000/images/kls2k-prueba-Perro-1-1740186366162.jpg",
-        "http://localhost:4000/images/0afcd-prueba-Perro-1-1740186462064.jpg",
-        "http://localhost:4000/images/xhrgb-prueba-Perro-1-1740186462301.jpg"
+        "http://localhost:4000/images/f23wp-Marocco-Gato-1-1774372064059.jpg",
+        "http://localhost:4000/images/4alc2-Marocco-Gato-1-1774372064070.jpg"
       ],
       "ubicacion": {
         "country": "Mexico",
