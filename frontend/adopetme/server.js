@@ -1,6 +1,18 @@
 const jsonServer = require("json-server");
 const serverJson = jsonServer.create();
-const router = jsonServer.router("db.json"); // db.json es donde están tus datos
+const os = require('os');
+const isVercel = process.env.VERCEL === '1';
+let dbPath = "db.json";
+
+// Vercel Serverless Functions filesystem is read-only, we must move DB and images to /tmp/
+if (isVercel) {
+  dbPath = path.join(os.tmpdir(), 'db.json');
+  if (!fs.existsSync(dbPath)) {
+    fs.copyFileSync(path.join(__dirname, 'db.json'), dbPath);
+  }
+}
+
+const router = jsonServer.router(dbPath); // db.json es donde están tus datos
 const middlewares = jsonServer.defaults();
 const auth = require("json-server-auth");
 const jwt = require("jsonwebtoken");
@@ -21,6 +33,14 @@ server.use(cors());
 
 // Middleware para procesar el cuerpo de las solicitudes
 server.use(bodyParser.json());
+
+// Remover el prefijo /api en Vercel (ya que json-server espera las rutas desde la raiz)
+server.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    req.url = req.url.replace('/api', '') || '/';
+  }
+  next();
+});
 
 server.use(jsonServer.defaults()); // Middleware de json-server
 
@@ -81,7 +101,14 @@ server.use("/users/:id", (req, res, next) => {
 // Configuración de multer para almacenar los archivos en la carpeta 'uploads'
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "images"); // La carpeta donde se guardarán los archivos
+    let destUrl = "images";
+    if (isVercel) {
+      destUrl = path.join(os.tmpdir(), "images");
+      if (!fs.existsSync(destUrl)) {
+        fs.mkdirSync(destUrl);
+      }
+    }
+    cb(null, destUrl); // La carpeta donde se guardarán los archivos
   },
   filename: (req, file, cb) => {
     const petId = req.params.id;
@@ -141,6 +168,9 @@ const fileFilter = async (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // Configurar la carpeta 'images' para que se pueda acceder desde la URL
+if (isVercel) {
+  server.use("/images", express.static(path.join(os.tmpdir(), "images")));
+}
 server.use("/images", express.static(path.join(__dirname, "images")));
 server.use("/images", express.static(path.join(__dirname, "public")));
 
@@ -869,6 +899,10 @@ server.get("/document", (req, res) => {
 
 server.use(router);
 
-server.listen(4000, () => {
-  console.log("JSON Server is running on http://localhost:4000");
-});
+if (!isVercel) {
+  server.listen(4000, () => {
+    console.log("JSON Server is running on http://localhost:4000");
+  });
+}
+
+module.exports = server;
