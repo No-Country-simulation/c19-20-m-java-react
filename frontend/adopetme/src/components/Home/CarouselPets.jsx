@@ -10,12 +10,16 @@ const CarouselPets = () => {
 
   useEffect(() => {
     const getPets = async () => {
-      // const response = await fetch(
-      //   "https://dog.ceo/api/breed/hound/images/random/10"
-      // );
-      // const result = await response.json();
-      // setPets(result.message);
-      setPets([]);
+      try {
+        const response = await fetch(
+          "https://dog.ceo/api/breed/hound/images/random/10"
+        );
+        const result = await response.json();
+        setPets(result.message);
+      } catch (error) {
+        console.error("Error fetching adopted pets:", error);
+        setPets([]);
+      }
     };
     getPets();
   }, []);
@@ -67,8 +71,7 @@ const CarouselPets = () => {
                         }}
                       />
                       <Typography variant="body2" textAlign="center" mt={1}>
-                        Este es Bob, encontro una familia que lo ama y cuida y
-                        esta disfrutando su nueva vida.
+                        ¡Mascotas con un lindo hogar! (Texto de referencia, según cada mascota adoptada)
                       </Typography>
                     </Box>
                   </Grid>
