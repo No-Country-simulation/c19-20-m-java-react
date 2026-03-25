@@ -1,6 +1,8 @@
 const jsonServer = require("json-server");
 const serverJson = jsonServer.create();
 const os = require('os');
+const path = require('path');
+const fs = require('fs');
 const isVercel = process.env.VERCEL === '1';
 let dbPath = "db.json";
 
@@ -20,11 +22,9 @@ const bodyParser = require("body-parser");
 
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
 
 const server = express();
 const cors = require("cors");
-const fs = require("fs");
 //const marked = require("marked");
 const { marked } = require("marked");
 
