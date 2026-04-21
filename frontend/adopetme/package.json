@@ -17,6 +17,7 @@
     "express": "^4.21.2",
     "file-type": "^16.5.4",
     "formik": "^2.4.6",
+    "json-server": "^0.17.4",
     "json-server-auth": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
