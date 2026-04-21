@@ -12,7 +12,7 @@ if (isVercel) {
   try {
     dbPath = path.join(os.tmpdir(), 'db.json');
     if (!fs.existsSync(dbPath)) {
-      fs.copyFileSync(path.join(__dirname, 'db.json'), dbPath);
+      fs.copyFileSync(path.join(__dirname, '../db.json'), dbPath);
     }
   } catch (err) {
     startupError = err.toString();
@@ -187,8 +187,8 @@ const upload = multer({ storage, fileFilter });
 if (isVercel) {
   server.use("/images", express.static(path.join(os.tmpdir(), "images")));
 }
-server.use("/images", express.static(path.join(__dirname, "images")));
-server.use("/images", express.static(path.join(__dirname, "public")));
+server.use("/images", express.static(path.join(__dirname, "../images")));
+server.use("/images", express.static(path.join(__dirname, "../public")));
 
 //?==================================Complete Pet Update with Images==============================
 // IMPORTANTE: Este endpoint debe estar ANTES del middleware genérico server.use("/pets")
@@ -881,7 +881,7 @@ server.post("/auth-login", (req, res) => {
 // Ruta principal para mostrar la documentación
 server.get("/document", (req, res) => {
   // Leemos el archivo README.md
-  fs.readFile(path.join(__dirname, "DOCUMENT.md"), "utf8", (err, data) => {
+  fs.readFile(path.join(__dirname, "../DOCUMENT.md"), "utf8", (err, data) => {
     if (err) {
       return res.status(500).send("Error al leer el archivo README.md");
     }

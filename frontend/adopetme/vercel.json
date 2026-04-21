@@ -1,25 +1,14 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    },
-    {
-      "src": "vercel-wrapper.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["db.json"]
-      }
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "db.json"
     }
-  ],
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/vercel-wrapper.js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/(.*)",
