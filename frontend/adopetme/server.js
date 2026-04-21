@@ -7,10 +7,16 @@ const isVercel = process.env.VERCEL === '1';
 let dbPath = "db.json";
 
 // Vercel Serverless Functions filesystem is read-only, we must move DB and images to /tmp/
+let startupError = null;
 if (isVercel) {
-  dbPath = path.join(os.tmpdir(), 'db.json');
-  if (!fs.existsSync(dbPath)) {
-    fs.copyFileSync(path.join(__dirname, 'db.json'), dbPath);
+  try {
+    dbPath = path.join(os.tmpdir(), 'db.json');
+    if (!fs.existsSync(dbPath)) {
+      fs.copyFileSync(path.join(__dirname, 'db.json'), dbPath);
+    }
+  } catch (err) {
+    startupError = err.toString();
+    console.error("Vercel Startup Error:", startupError);
   }
 }
 
@@ -33,6 +39,16 @@ server.use(cors());
 
 // Middleware para procesar el cuerpo de las solicitudes
 server.use(bodyParser.json());
+
+server.use((req, res, next) => {
+  if (startupError) {
+    return res.status(500).json({
+      message: "Vercel Startup Error. Verifica que db.json y otros archivos esten siendo enviados correctamente o haya permisos de lectura.",
+      error: startupError
+    });
+  }
+  next();
+});
 
 // Remover el prefijo /api en Vercel (ya que json-server espera las rutas desde la raiz)
 server.use((req, res, next) => {
